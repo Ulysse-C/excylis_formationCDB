@@ -65,6 +65,11 @@ public class Computer {
 		return company;
 	}
 	
+
+	public int getCompanyId() {
+		return companyId;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -87,7 +92,4 @@ public class Computer {
 		return stringBuilder.toString();
 	}
 
-	public int getCompanyId() {
-		return companyId;
-	}
 }

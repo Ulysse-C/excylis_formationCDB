@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,11 @@ public class DAOComputer {
 	private DAOCompany daoCompany;
 
 	private String listComputerQuery = "SELECT id,name,introduced,discontinued,company_id FROM computer";
-	private String getComputerByIdQuery = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id=?";
-	private String getComputerByNameQuery = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name=?";
-	private String createComputer = "INSERT INTO computer (id, name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?, ?)";
+	private String getComputerByIdQuery = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id = ?";
+	private String getComputerByNameQuery = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name = ?";
+	private String createComputerQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+	private String updateComputerNameQuery = "UPDATE computer SET name = ? WHERE id = ?";
+	private String deleteComputerByIdQuery = "DELETE FROM computer WHERE id = ?";
 
 	private DAOComputer() {
 		dbConnection = DBConnection.getDaoConnection();
@@ -60,7 +63,6 @@ public class DAOComputer {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			computer = getSingleComputerFromResultSet(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return computer;
@@ -74,7 +76,6 @@ public class DAOComputer {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			computer = getSingleComputerFromResultSet(resultSet);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return computer;
@@ -87,7 +88,6 @@ public class DAOComputer {
 				computerList.add(convertToComputer(resultSetComputerList));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return computerList;
@@ -130,28 +130,64 @@ public class DAOComputer {
 		boolean isCreated = false;
 		if (computer != null) {
 			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(createComputer);
-				preparedStatement.setInt(1, computer.getId());
-				preparedStatement.setNString(2, computer.getName());
+				PreparedStatement preparedStatement = connection.prepareStatement(createComputerQuery, Statement.RETURN_GENERATED_KEYS);
+				preparedStatement.setNString(1, computer.getName());
 				if ( computer.getIntroduced() != null) {
-					preparedStatement.setDate(3, Date.valueOf(computer.getIntroduced()));
+					preparedStatement.setDate(2, Date.valueOf(computer.getIntroduced()));
+				} else {
+					preparedStatement.setNull(2, Types.DATE);
+				}
+				if ( computer.getDiscontinued() != null) {
+					preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinued()));
 				} else {
 					preparedStatement.setNull(3, Types.DATE);
 				}
-				if ( computer.getDiscontinued() != null) {
-					preparedStatement.setDate(4, Date.valueOf(computer.getDiscontinued()));
-				} else {
-					preparedStatement.setNull(4, Types.DATE);
-				}
-				preparedStatement.setInt(5, computer.getCompanyId());
-				int row = preparedStatement.executeUpdate();
+				preparedStatement.setInt(4, computer.getCompanyId());
+				preparedStatement.executeUpdate();
+				/*
+				if(returnLastInsertId) {
+					   ResultSet rs = preparedStatement.getGeneratedKeys();
+					    rs.next();
+					   int auto_id = rs.getInt(1);
+					}
+				*/
 				isCreated = true;
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return isCreated;
+	}
+
+	public boolean updateComputerName(Computer computer) {
+		boolean isUpdated = false;
+		if (computer != null) {
+			try (Connection connection = dbConnection.getconnection()) {
+				PreparedStatement preparedStatement = connection.prepareStatement(updateComputerNameQuery);
+				preparedStatement.setNString(1, computer.getName());
+				preparedStatement.setInt(2, computer.getId());
+				preparedStatement.executeUpdate();
+				isUpdated = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return isUpdated;
+	}
+
+	public boolean deleteComputerById(Computer computer) {
+		boolean isDeleted = false;
+		if (computer != null) {
+			try (Connection connection = dbConnection.getconnection()) {
+				PreparedStatement preparedStatement = connection.prepareStatement(deleteComputerByIdQuery);
+				preparedStatement.setInt(1, computer.getId());
+				preparedStatement.executeUpdate();
+				isDeleted = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return isDeleted;
 	}
 
 }

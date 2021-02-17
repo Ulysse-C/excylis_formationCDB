@@ -46,4 +46,12 @@ public class ComputerService {
 
 	}
 
+	public boolean updateComputerName(Computer computer) {
+		return daoComputer.updateComputerName(computer);
+	}
+
+	public boolean deleteComputerById(Computer computer) {
+		return daoComputer.deleteComputerById(computer);
+	}
+
 }

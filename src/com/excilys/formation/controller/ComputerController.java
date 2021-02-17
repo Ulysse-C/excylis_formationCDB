@@ -28,4 +28,12 @@ public class ComputerController {
 		return computerService.createComputer(computer);
 
 	}
+
+	public boolean updateComputerName(Computer computer) {
+		return computerService.updateComputerName(computer);
+	}
+
+	public boolean deleteComputerById(Computer computer) {
+		return computerService.deleteComputerById(computer);
+	}
 }

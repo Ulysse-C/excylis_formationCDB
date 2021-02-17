@@ -46,13 +46,32 @@ public class CLIHandler {
 
 	public boolean createComputer(String[] inputList) {
 		Computer computer = null;
-		if (inputList.length > 3 && isInteger(inputList[1], 10) && isInteger(inputList[3], 10)) {
-			int computerId = Integer.parseInt(inputList[1]);
-			int companyID = Integer.parseInt(inputList[3]);
-			computer = new Computer(inputList[2],computerId, companyID);
+		if (inputList.length > 2 && isInteger(inputList[2], 10)) {
+			int companyID = Integer.parseInt(inputList[2]);
+			computer = new Computer(inputList[1],0, companyID);
 		}
 		return computerController.createComputer(computer);
 	}
+	
+	public boolean updateComputer(String[] inputList) {
+		Computer computer = null;
+		if (inputList.length > 2 && isInteger(inputList[1], 10)) {
+			int computerID = Integer.parseInt(inputList[1]);
+			computer = new Computer(inputList[2],computerID, 0);
+		}
+		return computerController.updateComputerName(computer);	
+		}
+	
+	public boolean deleteComputer(String[] inputList) {
+		Computer computer = null;
+		if (inputList.length > 1 && isInteger(inputList[1], 10)) {
+			int computerID = Integer.parseInt(inputList[1]);
+			computer = new Computer("",computerID, 0);
+		}
+		return computerController.deleteComputerById(computer);	
+		}
+
+	
 
 	// https://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java
 	private boolean isInteger(String s, int radix) {
@@ -71,4 +90,7 @@ public class CLIHandler {
 		return true;
 	}
 
+	
+
+	
 }

@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class DBConnection {
 
-	private static DBConnection daoConnection;
+	private static DBConnection dbConnection;
 	private Connection connection;
 	
 	private String URL = "jdbc:mysql://localhost/computer-database-db";
@@ -16,13 +16,13 @@ public class DBConnection {
 			private String password = "qwerty1234";
 
 	private DBConnection() {
-	}
+	} 
 
 	public static DBConnection getDaoConnection() {
-		if (daoConnection == null) {
-			daoConnection = new DBConnection();
+		if (dbConnection == null) {
+			dbConnection = new DBConnection();
 		}
-		return daoConnection;
+		return dbConnection;
 	}
 
 	protected Connection getconnection() {

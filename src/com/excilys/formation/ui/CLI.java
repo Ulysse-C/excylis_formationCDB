@@ -72,18 +72,27 @@ public class CLI {
 			break;
 		case "4":
 			if (inputList.length > 1) {
-				printCreationResult(cliHandler.createComputer(inputList));
+				printResult(cliHandler.createComputer(inputList), "created");
+			}
+			break;
+		case "5":
+			if (inputList.length > 1) {
+				printResult(cliHandler.updateComputer(inputList), "updated");
+			}
+			break;
+		case "6":
+			if (inputList.length > 1) {
+				printResult(cliHandler.deleteComputer(inputList), "deleted");
 			}
 			break;
 		}
-
 	}
  
-	private void printCreationResult(boolean isCreated) {
-		if (isCreated) {
-			System.out.println("the computer was succesfully added to the database");
+	private void printResult(boolean isSuccess, String operation) {
+		if (isSuccess) {
+			System.out.println("the computer was succesfully "+operation);
 		} else {
-			System.out.println("the computer was not added to the database");
+			System.out.println("the computer was not succesfully "+operation);
 		}
 		
 	}
