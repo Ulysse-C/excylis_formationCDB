@@ -1,9 +1,9 @@
-package com.excilys.formation.main;
+package com.excilys.formationCDB.main;
 
-import com.excilys.formation.controller.CLIHandler;
-import com.excilys.formation.controller.CompanyController;
-import com.excilys.formation.controller.ComputerController;
-import com.excilys.formation.ui.CLI;
+import com.excilys.formationCDB.controller.CLIHandler;
+import com.excilys.formationCDB.controller.CompanyController;
+import com.excilys.formationCDB.controller.ComputerController;
+import com.excilys.formationCDB.ui.CLI;
 
 public class Main {
 
@@ -17,5 +17,4 @@ public class Main {
 		cli.addCliHandler(cliHandler);
 		cli.startReadingUserInput();
 	}
-
 }

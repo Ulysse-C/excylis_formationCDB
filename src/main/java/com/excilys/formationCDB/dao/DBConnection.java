@@ -1,4 +1,4 @@
-package com.excilys.formation.dao;
+package com.excilys.formationCDB.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DBConnection {
+public final class DBConnection {
 
-	private static DBConnection dbConnection;
+	private static final DBConnection INSTANCE = new DBConnection();
 	private Connection connection;
 	
 	private String URL = "jdbc:mysql://localhost/computer-database-db";
@@ -16,13 +16,10 @@ public class DBConnection {
 			private String password = "qwerty1234";
 
 	private DBConnection() {
-	} 
+	}  
 
-	public static DBConnection getDaoConnection() {
-		if (dbConnection == null) {
-			dbConnection = new DBConnection();
-		}
-		return dbConnection;
+	public static DBConnection getInstance() {
+		return INSTANCE;
 	}
 
 	protected Connection getconnection() {

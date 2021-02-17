@@ -1,4 +1,4 @@
-package com.excilys.formation.model;
+package com.excilys.formationCDB.model;
 
 public class Company {
 	
@@ -16,5 +16,12 @@ public class Company {
 
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(name).append(", id: ").append(id);
+		return stringBuilder.toString();
 	}
 }

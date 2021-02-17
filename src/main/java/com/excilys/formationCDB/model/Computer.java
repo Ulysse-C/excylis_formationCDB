@@ -1,7 +1,11 @@
-package com.excilys.formation.model;
+package com.excilys.formationCDB.model;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import com.excilys.formationCDB.exception.InvalidInputHandlerException;
 
 public class Computer {
 
@@ -11,27 +15,23 @@ public class Computer {
 	private LocalDate discontinued;
 	private Company company;
 	private Integer companyId;
-	
+
 	public Computer(String name, int id, int companyId) {
 		this.companyId = companyId;
 		this.name = name;
 		this.id = id;
 	}
-	
-	public Computer(String name, int id, Date introduced, int companyId, Date introduced3, Date discontinued) {
+
+	public Computer(String name, int id, int companyId, Date introduced, Date discontinued) {
 		this(name, id, companyId);
 		setIntroduced(introduced);
 		setDiscontinued(discontinued);
 	}
 
 	public Computer(String name, int id, Date introduced, Date discontinued, Company company, int companyId) {
-		this(name, id, introduced, companyId, introduced, discontinued);
-		
+		this(name, id, companyId, introduced, discontinued);
 		this.company = company;
-		
-		
 	}
-
 
 	private void setDiscontinued(Date discontinued) {
 		if (discontinued != null) {
@@ -40,7 +40,7 @@ public class Computer {
 	}
 
 	private void setIntroduced(Date introduced) {
-		if (introduced != null ) {
+		if (introduced != null) {
 			this.introduced = introduced.toLocalDate();
 		}
 	}
@@ -53,23 +53,14 @@ public class Computer {
 		return id;
 	}
 
-	public LocalDate getIntroduced() {
-		return introduced;
-	}
-
-	public LocalDate getDiscontinued() {
-		return discontinued;
-	}
-
 	public Company getConstructor() {
 		return company;
 	}
-	
 
 	public int getCompanyId() {
 		return companyId;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -90,6 +81,38 @@ public class Computer {
 			stringBuilder.append("///");
 		}
 		return stringBuilder.toString();
+	}
+
+	public LocalDate getDiscontinued() {
+		return discontinued;
+	}
+
+	public void setDiscontinued(LocalDate discontinued) {
+		this.discontinued = discontinued;
+	}
+
+	public void setDiscontinued(String discontinued) throws InvalidInputHandlerException {
+		if (!discontinued.equals("null")) {
+			try {
+				this.discontinued = LocalDate.parse(discontinued, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			} catch (DateTimeParseException dateTimeException) {
+				throw new InvalidInputHandlerException("Invalid date format");
+			}
+		}
+	}
+
+	public LocalDate getIntroduced() {
+		return introduced;
+	}
+
+	public void setIntroduced(String introduced) throws InvalidInputHandlerException {
+		if (!introduced.equals("null")) {
+			try {
+				this.introduced = LocalDate.parse(introduced, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+			} catch (DateTimeParseException dateTimeException) {
+				throw new InvalidInputHandlerException("Invalid date format");
+			}
+		}
 	}
 
 }
