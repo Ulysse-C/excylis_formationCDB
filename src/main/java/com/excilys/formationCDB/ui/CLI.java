@@ -8,8 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.excilys.formationCDB.controller.CLIHandler;
+import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputHandlerException;
+import com.excilys.formationCDB.exception.NoComputerSelectedException;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
@@ -25,18 +27,20 @@ public class CLI {
 		bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 	}
 
-	public CLI(PrintStream ps) {
-		if (ps == null) {
+	public CLI(PrintStream printStream) {
+		this();
+		if (printStream == null) {
 			throw new IllegalArgumentException();
 		}
-		output = ps;
+		output = printStream;
 	}
 
-	public void printResultSet(ResultSet rs) throws SQLException {
-		while (rs.next()) {
-			output.println(rs.getNString("name"));
-			// System.out.println(rs.getArray(1));
+	public CLI(BufferedReader bufferedReader) {
+		this();
+		if (bufferedReader == null) {
+			throw new IllegalArgumentException();
 		}
+		this.bufferedReader = bufferedReader;
 	}
 
 	public void startReadingUserInput() {
@@ -59,7 +63,7 @@ public class CLI {
 	}
 
 	private void handleGeneralRequest() throws IOException {
-		System.out.println("type a number, exit or \"help\"");
+		output.println("type a number, exit or \"help\"");
 		String[] inputList = parseInput();
 		try {
 			switch (inputList[0]) {
@@ -75,40 +79,49 @@ public class CLI {
 				break;
 			case "4":
 				cliHandler.createComputer(inputList);
-				System.out.println("Computer created");
+				output.println("Computer created");
 				handleGeneralRequest();
 				break;
 			case "5":
 				cliHandler.updateComputer(inputList);
-				System.out.println("Computer updated");
+				output.println("Computer updated");
 				handleGeneralRequest();
 				break;
 			case "6":
 				cliHandler.deleteComputer(inputList);
-				System.out.println("Computer deleted");
+				output.println("Computer deleted");
 				handleGeneralRequest();
 				break;
 			case "help":
 				printHelp();
 				handleGeneralRequest();
 				break;
+			default:
+				output.println("exiting");
+
 			}
 		} catch (InvalidInputHandlerException invalidInputException) {
-			System.out.println("Input not valid: " + invalidInputException.getMessage());
+			output.println("Input not valid: " + invalidInputException.getMessage());
 			handleGeneralRequest();
 		} catch (CustomSQLException customSqlException) {
-			System.out.println("Sql Error: " +customSqlException.getMessage());
+			output.println("Sql Error: " + customSqlException.getMessage());
+			handleGeneralRequest();
+		} catch (CompanyKeyInvalidException companyKeyInvalidException) {
+			output.println("Sql Error: The company id is not valid");
+			handleGeneralRequest();
+		} catch (NoComputerSelectedException e) {
+			output.println("Sql Error: No computer could be selected");
 			handleGeneralRequest();
 		}
 	}
 
 	private void printHelp() {
-		System.out.println("1 - Show the list of the computers");
-		System.out.println("2 - Show the list of the companies");
-		System.out.println("3 - Show a computer details / 3 [computer_id] or 3 [name]");
-		System.out.println("4 - Create a computer / 4 [name] [company_ID] [introduced] [discontinued] dd/mm/yyyy");
-		System.out.println("5 - Update a computer / 5 [computer_id] [name] ");
-		System.out.println("6 - Delete a computer / 6 [computer_id]");
+		output.println("1 - Show the list of the computers");
+		output.println("2 - Show the list of the companies");
+		output.println("3 - Show a computer details / 3 [computer_id] or 3 [name]");
+		output.println("4 - Create a computer / 4 [name] [company_ID] [[introduced] [discontinued]] dd/mm/yyyy");
+		output.println("5 - Update a computer / 5 [computer_id] [name] [[introduced] [discontinued]] dd/mm/yyyy\" ");
+		output.println("6 - Delete a computer / 6 [computer_id]");
 
 	}
 
@@ -118,7 +131,7 @@ public class CLI {
 	}
 
 	private void handlePageNavigationRequest(Page page) throws IOException {
-		System.out.println("previous p / next n / exit e");
+		output.println("previous p / next n / exit e");
 		String[] inputList = parseInput();
 		try {
 			switch (inputList[0]) {
@@ -132,23 +145,23 @@ public class CLI {
 				handleGeneralRequest();
 			}
 		} catch (CustomSQLException customSqlException) {
-			System.out.println("Sql Error:" +customSqlException.getMessage());
+			output.println("Sql Error:" + customSqlException.getMessage());
 			handleGeneralRequest();
 		}
 	}
 
 	private void printSingleComputer(Computer singleComputer) {
 		if (singleComputer != null) {
-			System.out.println(singleComputer.toString());
+			output.println(singleComputer.toString());
 		} else {
-			System.out.println("This computer is not available");
+			output.println("This computer is not available");
 		}
 	}
 
 	private void printPage(Page page) {
-		System.out.println("Page " + page.getNumber());
+		output.println("Page " + page.getNumber());
 		for (Object content : page.getContent()) {
-			System.out.println(content.toString());
+			output.println(content.toString());
 		}
 	}
 

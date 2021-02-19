@@ -7,10 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
+import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.exception.NoComputerSelectedException;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
@@ -20,13 +22,13 @@ public final class DAOComputer {
 	private DBConnection dbConnection;
 	private final static DAOComputer INSTANCE = new DAOComputer();
 
-	private String listComputerQuery = "SELECT computer.id, computer.name, company.name, computer.introduced, computer.discontinued, computer.company_id FROM computer INNER JOIN company ON company.id = computer.company_id ORDER BY computer.id;";
-	private String getComputerByIdQuery = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id = ?";
-	private String getComputerByNameQuery = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE name = ?";
+	private String getComputerByIdQuery = "SELECT computer.id, computer.name, company.name, computer.introduced, computer.discontinued, computer.company_id FROM computer INNER JOIN company ON company.id = computer.company_id WHERE computer.id = ?";
+	private String getComputerByNameQuery = "SELECT computer.id, computer.name, company.name, computer.introduced, computer.discontinued, computer.company_id FROM computer INNER JOIN company ON company.id = computer.company_id WHERE computer.name = ?";
 	private String createComputerQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String updateComputerNameQuery = "UPDATE computer SET name = ? WHERE id = ?";
 	private String deleteComputerByIdQuery = "DELETE FROM computer WHERE id = ?";
 	private String getPageQuery = "SELECT computer.id, computer.name, company.name, computer.introduced, computer.discontinued, computer.company_id FROM computer INNER JOIN company ON company.id = computer.company_id ORDER BY computer.id LIMIT ? OFFSET ?";
+	private String updateComputerNameAndDateQuery = "UPDATE computer SET name = ?, introduced = ?, discontinued = ? WHERE id = ?";
 
 	private DAOComputer() {
 		dbConnection = DBConnection.getInstance();
@@ -93,31 +95,16 @@ public final class DAOComputer {
 		return computer;
 	}
 
-	public void createComputer(Computer computer) throws CustomSQLException {
+	public void createComputer(Computer computer) throws CustomSQLException, CompanyKeyInvalidException {
 		if (computer != null) {
 			try (Connection connection = dbConnection.getconnection()) {
 				PreparedStatement preparedStatement = connection.prepareStatement(createComputerQuery,
 						Statement.RETURN_GENERATED_KEYS);
-				preparedStatement.setNString(1, computer.getName());
-				if (computer.getIntroduced() != null) {
-					preparedStatement.setDate(2, Date.valueOf(computer.getIntroduced()));
-				} else {
-					preparedStatement.setNull(2, Types.DATE);
-				}
-				if (computer.getDiscontinued() != null) {
-					preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinued()));
-				} else {
-					preparedStatement.setNull(3, Types.DATE);
-				}
-				preparedStatement.setInt(4, computer.getCompanyId());
+				prepareStatmentCreate(preparedStatement, computer);
 				preparedStatement.executeUpdate();
-				/*
-				 * if(returnLastInsertId) { ResultSet rs = preparedStatement.getGeneratedKeys();
-				 * rs.next(); int auto_id = rs.getInt(1); }
-				 */
 			} catch (SQLException sqlException) {
 				if (sqlException.getErrorCode() == 1452) {
-					throw new CustomSQLException("This company key is not valid");
+					throw new CompanyKeyInvalidException();
 				}
 				System.out.println(sqlException.getErrorCode());
 				throw new CustomSQLException(sqlException.getMessage());
@@ -125,7 +112,22 @@ public final class DAOComputer {
 		}
 	}
 
-	public void updateComputerName(Computer computer) throws CustomSQLException {
+	private void prepareStatmentCreate(PreparedStatement preparedStatement, Computer computer) throws SQLException {
+		preparedStatement.setNString(1, computer.getName());
+		prepareStatmentDate(preparedStatement, computer.getIntroduced(), 2);
+		prepareStatmentDate(preparedStatement, computer.getDiscontinued(), 3);
+		preparedStatement.setInt(4, computer.getCompanyId());
+	}
+
+	private void prepareStatmentDate(PreparedStatement preparedStatement, LocalDate localdate, int index) throws SQLException {
+		if (localdate != null) {
+			preparedStatement.setDate(index, Date.valueOf(localdate));
+		} else {
+			preparedStatement.setNull(index, Types.DATE);
+		}
+	}
+
+	public void updateComputerName(Computer computer) throws CustomSQLException, NoComputerSelectedException {
 		if (computer != null) {
 			try (Connection connection = dbConnection.getconnection()) {
 				PreparedStatement preparedStatement = connection.prepareStatement(updateComputerNameQuery);
@@ -133,7 +135,7 @@ public final class DAOComputer {
 				preparedStatement.setInt(2, computer.getId());
 				int row = preparedStatement.executeUpdate();
 				if (row == 0) {
-					throw new CustomSQLException("No computer selected");
+					throw new NoComputerSelectedException();
 				}
 			} catch (SQLException sqlException) {
 				throw new CustomSQLException(sqlException.getMessage());
@@ -141,14 +143,14 @@ public final class DAOComputer {
 		}
 	}
 
-	public void deleteComputerById(Computer computer) throws CustomSQLException {
+	public void deleteComputerById(Computer computer) throws CustomSQLException, NoComputerSelectedException {
 		if (computer != null) {
 			try (Connection connection = dbConnection.getconnection()) {
 				PreparedStatement preparedStatement = connection.prepareStatement(deleteComputerByIdQuery);
 				preparedStatement.setInt(1, computer.getId());
 				int row = preparedStatement.executeUpdate();
 				if (row == 0) {
-					throw new CustomSQLException("No computer selected");
+					throw new NoComputerSelectedException();
 				}
 			} catch (SQLException sqlException) {
 				throw new CustomSQLException(sqlException.getMessage());
@@ -169,6 +171,29 @@ public final class DAOComputer {
 			}
 		}
 		return page;
+	}
+
+	public void updateComputerNameAndDate(Computer computer) throws NoComputerSelectedException, CustomSQLException {
+		if (computer != null) {
+			try (Connection connection = dbConnection.getconnection()) {
+				PreparedStatement preparedStatement = connection.prepareStatement(updateComputerNameAndDateQuery );
+				prepareStatmentUpdateNameDate(preparedStatement, computer);
+				int row = preparedStatement.executeUpdate();
+				if (row == 0) {
+					throw new NoComputerSelectedException();
+				}
+			} catch (SQLException sqlException) {
+				throw new CustomSQLException(sqlException.getMessage());
+			}
+		}
+	}
+
+	private void prepareStatmentUpdateNameDate(PreparedStatement preparedStatement, Computer computer) throws SQLException {
+		preparedStatement.setNString(1, computer.getName());
+		prepareStatmentDate(preparedStatement, computer.getIntroduced(), 2);
+		prepareStatmentDate(preparedStatement, computer.getDiscontinued(), 3);
+		preparedStatement.setInt(4, computer.getId());
+
 	}
 
 }

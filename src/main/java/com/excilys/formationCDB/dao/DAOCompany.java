@@ -16,7 +16,6 @@ public final class DAOCompany {
 	private DBConnection dbConnection;
 	private final static DAOCompany INSTANCE = new DAOCompany();
 	
-	private String listCompanyQuery = "SELECT id,name FROM company";
 	private String getCompanyByIdQuery = "SELECT id,name FROM company WHERE id=?";
 	private String getPageQuery = "SELECT id,name FROM company ORDER BY id LIMIT ? OFFSET ?";
 	private DAOCompany() { 

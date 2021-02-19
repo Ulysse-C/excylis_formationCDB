@@ -1,12 +1,9 @@
 package com.excilys.formationCDB.controller;
 
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
+import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputHandlerException;
+import com.excilys.formationCDB.exception.NoComputerSelectedException;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
 
@@ -36,7 +33,7 @@ public class CLIHandler {
 		return computer;
 	}
 
-	public void createComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException {
+	public void createComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException, CompanyKeyInvalidException {
 		if (inputList.length != 3 && inputList.length != 5) {
 			throw new InvalidInputHandlerException("Wrong number of arguments");
 		}
@@ -50,24 +47,31 @@ public class CLIHandler {
 			computer.setIntroduced(inputList[3]);
 			computer.setDiscontinued(inputList[4]);
 		} else {
-			throw new InvalidInputHandlerException("bad argument type");
+			throw new InvalidInputHandlerException("Wrong argument type");
 		}
 		computerController.createComputer(computer);
 	}
 
-	public void updateComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException {
-		Computer computer = null;
-		if (inputList.length != 3) {
+	public void updateComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException, NoComputerSelectedException {
+		if (inputList.length != 3 && inputList.length != 5) {
 			throw new InvalidInputHandlerException("Wrong number of arguments");
-		} else if (!isInteger(inputList[1], 10)) {
+		}
+		if (inputList.length == 3 && isInteger(inputList[1], 10)) {
+			int computerID = Integer.parseInt(inputList[1]);
+			computerController.updateComputerName(new Computer(inputList[2], computerID, 0));
+		} else if (inputList.length == 5 && isInteger(inputList[1], 10)) {
+			int computerID = Integer.parseInt(inputList[1]);
+			Computer computer = new Computer(inputList[2], computerID, 0);
+			computer.setIntroduced(inputList[3]);
+			computer.setDiscontinued(inputList[4]);
+			computerController.updateComputerNameAndDate(computer);
+		} else {
 			throw new InvalidInputHandlerException("Wrong argument type");
 		}
-		int computerID = Integer.parseInt(inputList[1]);
-		computer = new Computer(inputList[2], computerID, 0);
-		computerController.updateComputerName(computer);
+		
 	}
 
-	public void deleteComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException {
+	public void deleteComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException, NoComputerSelectedException {
 		Computer computer = null;
 		if (inputList.length != 2) {
 			throw new InvalidInputHandlerException("Wrong number of arguments");

@@ -69,18 +69,18 @@ public class Computer {
 			stringBuilder.append("by ").append(company.getName()).append(",");
 		}
 		stringBuilder.append(" from ");
-		if (introduced != null) {
-			stringBuilder.append(introduced.toString());
-		} else {
-			stringBuilder.append("///");
-		}
+		stringBuilder.append(localDateToString(introduced));
 		stringBuilder.append(" to ");
-		if (discontinued != null) {
-			stringBuilder.append(discontinued.toString());
-		} else {
-			stringBuilder.append("///");
-		}
+		stringBuilder.append(localDateToString(discontinued));
 		return stringBuilder.toString();
+	}
+	
+	private String localDateToString(LocalDate localDate) {
+		if (localDate == null) {
+			return "///";
+		} else {
+			return localDate.toString();
+		}
 	}
 
 	public LocalDate getDiscontinued() {
