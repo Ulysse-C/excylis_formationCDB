@@ -1,5 +1,7 @@
-package com.excilys.formationCDB.controller;
+package com.excilys.formationCDB.controller.ui;
 
+import com.excilys.formationCDB.controller.CompanyController;
+import com.excilys.formationCDB.controller.ComputerController;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputHandlerException;
@@ -11,13 +13,10 @@ public class CLIHandler {
 
 	private CompanyController companyController;
 	private ComputerController computerController;
-
-	public void setCompanyController(CompanyController companyController) {
-		this.companyController = companyController;
-	}
-
-	public void setComputerController(ComputerController computerController) {
-		this.computerController = computerController;
+	
+	public CLIHandler() {
+		this.companyController = CompanyController.getInstance();
+		this.computerController = ComputerController.getInstance();
 	}
 
 	public Computer getSingleComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException {

@@ -50,4 +50,8 @@ public final class ComputerService {
 		
 	}
 
+	public int getComputerNumber() throws CustomSQLException {
+		return daoComputer.getComputerNumber();
+	}
+
 }

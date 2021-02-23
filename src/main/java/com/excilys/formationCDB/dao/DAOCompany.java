@@ -18,6 +18,8 @@ public final class DAOCompany {
 	
 	private String getCompanyByIdQuery = "SELECT id,name FROM company WHERE id=?";
 	private String getPageQuery = "SELECT id,name FROM company ORDER BY id LIMIT ? OFFSET ?";
+	private String getCompanyListQuery = "SELECT id,name FROM company ORDER BY id";
+
 	private DAOCompany() { 
 		dbConnection = DBConnection.getInstance();
 	}
@@ -71,5 +73,17 @@ public final class DAOCompany {
 			}
 		}
 		return page;
+	}
+
+	public List<Company> getCompanyList() throws CustomSQLException {
+		ArrayList<Company> companyList = new ArrayList<>();
+		try (Connection connection = dbConnection.getconnection()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(getCompanyListQuery);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			companyList = convertToListCompanyList(resultSet);
+		} catch (SQLException sqlException) {
+			throw new CustomSQLException(sqlException.getMessage());
+		}
+		return companyList;
 	}
 }

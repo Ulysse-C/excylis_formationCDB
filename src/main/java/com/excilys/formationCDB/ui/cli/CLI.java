@@ -1,4 +1,4 @@
-package com.excilys.formationCDB.ui;
+package com.excilys.formationCDB.ui.cli;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.excilys.formationCDB.controller.CLIHandler;
+import com.excilys.formationCDB.controller.ui.CLIHandler;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputHandlerException;

@@ -1,5 +1,7 @@
 package com.excilys.formationCDB.service;
 
+import java.util.List;
+
 import com.excilys.formationCDB.dao.DAOCompany;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.model.Company;
@@ -25,6 +27,10 @@ public final class CompanyService {
 
 	public Page getPage(Page page) throws CustomSQLException {
 		return daoCompany.getPage(page);
+	}
+
+	public List<Company> getCompanyList() throws CustomSQLException {
+		return daoCompany.getCompanyList();
 	}
 
 }

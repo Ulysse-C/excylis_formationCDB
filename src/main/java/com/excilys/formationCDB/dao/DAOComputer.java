@@ -27,8 +27,9 @@ public final class DAOComputer {
 	private String createComputerQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String updateComputerNameQuery = "UPDATE computer SET name = ? WHERE id = ?";
 	private String deleteComputerByIdQuery = "DELETE FROM computer WHERE id = ?";
-	private String getPageQuery = "SELECT computer.id, computer.name, company.name, computer.introduced, computer.discontinued, computer.company_id FROM computer INNER JOIN company ON company.id = computer.company_id ORDER BY computer.id LIMIT ? OFFSET ?";
+	private String getPageQuery = "SELECT computer.id, computer.name, company.name, computer.introduced, computer.discontinued, computer.company_id FROM computer LEFT JOIN company ON company.id = computer.company_id ORDER BY computer.id LIMIT ? OFFSET ?";
 	private String updateComputerNameAndDateQuery = "UPDATE computer SET name = ?, introduced = ?, discontinued = ? WHERE id = ?";
+	private String getComputerNumberQuery = "SELECT COUNT(*) AS nbComputer FROM computer";
 
 	private DAOComputer() {
 		dbConnection = DBConnection.getInstance();
@@ -90,7 +91,6 @@ public final class DAOComputer {
 				resultSet.next();
 				computer = convertToComputer(resultSet);
 			}
-
 		}
 		return computer;
 	}
@@ -194,6 +194,29 @@ public final class DAOComputer {
 		prepareStatmentDate(preparedStatement, computer.getDiscontinued(), 3);
 		preparedStatement.setInt(4, computer.getId());
 
+	}
+
+	public int getComputerNumber() throws CustomSQLException {
+		int number = 0;
+		try (Connection connection = dbConnection.getconnection()) {
+			PreparedStatement preparedStatement = connection.prepareStatement(getComputerNumberQuery);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			number = getComputerNumberFromResultSet(resultSet);
+		} catch (SQLException sqlException) {
+			throw new CustomSQLException(sqlException.getMessage());
+		}
+		return number;
+	}
+
+	private int getComputerNumberFromResultSet(ResultSet resultSet) throws SQLException {
+		int number = 0;
+		if (resultSet != null) {
+			if (resultSet.isBeforeFirst()) {
+				resultSet.next();
+				number = resultSet.getInt("nbComputer");
+			}
+		}
+		return number;
 	}
 
 }

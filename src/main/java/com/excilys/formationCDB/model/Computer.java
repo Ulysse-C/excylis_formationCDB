@@ -14,7 +14,11 @@ public class Computer {
 	private LocalDate introduced;
 	private LocalDate discontinued;
 	private Company company;
-	private Integer companyId;
+	private int companyId;
+
+	public Computer() {
+
+	}
 
 	public Computer(String name, int id, int companyId) {
 		this.companyId = companyId;
@@ -53,7 +57,7 @@ public class Computer {
 		return id;
 	}
 
-	public Company getConstructor() {
+	public Company getCompany() {
 		return company;
 	}
 
@@ -74,7 +78,7 @@ public class Computer {
 		stringBuilder.append(localDateToString(discontinued));
 		return stringBuilder.toString();
 	}
-	
+
 	private String localDateToString(LocalDate localDate) {
 		if (localDate == null) {
 			return "///";
@@ -113,6 +117,15 @@ public class Computer {
 				throw new InvalidInputHandlerException("Invalid date format");
 			}
 		}
+	}
+
+	public void setName(String name) {
+		this.name = name;
+
+	}
+
+	public void setCompanyID(String companyID) {
+		this.companyId = Integer.parseInt(companyID);
 	}
 
 }

@@ -22,13 +22,13 @@ public final class DBConnection {
 		return INSTANCE;
 	}
 
-	protected Connection getconnection() {
+	protected Connection getconnection() throws SQLException  {
 		try {
 			if (connection == null || connection.isClosed()) {
-				//Class.forName(java.sql.cj)
+				Class.forName("com.mysql.cj.jdbc.Driver");
 				connection = DriverManager.getConnection(URL, user,password);
 			}
-		} catch (SQLException e) {
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
