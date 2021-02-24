@@ -17,8 +17,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="dashboard"> Application - Computer
+				Database </a>
 		</div>
 	</header>
 
@@ -75,11 +75,12 @@
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody id="results">
-					<c:forEach items="${computerPage}" var="computer">
+					<c:forEach items="${computerList}" var="computer">
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="0"></td>
-							<td><a href="editComputer.html" onclick=""><c:out value="${computer.name}" /></a></td>
+							<td><a href="editComputer.html" onclick=""><c:out
+										value="${computer.name}" /></a></td>
 							<td><c:out value="${computer.introduced}" /></td>
 							<td><c:out value="${computer.discontinued}" /></td>
 							<td><c:out value="${computer.company.name}" /></td>
@@ -94,23 +95,26 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="?page=${pageNumber > 1 ? pageNumber - 1 : 1}" aria-label="Previous"> <span
-						aria-hidden="true">&laquo;</span>
+				<li><a href="?page=${pageNumber > 1 ? pageNumber - 1 : 1}"
+					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
-				
-				<c:forEach var="i" begin="0" end="5" step="1">
-					<li><a href="?page=${pageNumber + i}">${pageNumber + i}</a></li>
+
+				<c:forEach var="i" begin="${pageIndexFrom}" end="${pageIndexTo}"
+					step="1">
+					<li><a href="?page=${i}">${i}</a></li>
 				</c:forEach>
-				<li><a href="?page=${pageNumber + 1}" aria-label="Next"> <span
-						aria-hidden="true">&raquo;</span>
+				<li><a
+					href="?page=${pageNumber == pageIndexTo ? pageNumber : pageNumber + 1}"
+					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
+			<div class="btn-group btn-group-sm pull-right" role="group">
+				<button type="button" class="btn btn-default">10</button>
+				<button type="button" class="btn btn-default">50</button>
+				<button type="button" class="btn btn-default">100</button>
+			</div>
 		</div>
-		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
-			<button type="button" class="btn btn-default">100</button>
-		</div>
+
 	</footer>
 	<script src="../../formationCDB/js/jquery.min.js"></script>
 	<script src="../../formationCDB/js/bootstrap.min.js"></script>

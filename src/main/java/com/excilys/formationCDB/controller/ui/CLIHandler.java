@@ -4,7 +4,7 @@ import com.excilys.formationCDB.controller.CompanyController;
 import com.excilys.formationCDB.controller.ComputerController;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
-import com.excilys.formationCDB.exception.InvalidInputHandlerException;
+import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
 import com.excilys.formationCDB.exception.NoComputerSelectedException;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
@@ -19,22 +19,23 @@ public class CLIHandler {
 		this.computerController = ComputerController.getInstance();
 	}
 
-	public Computer getSingleComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException {
+	public Computer getSingleComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException {
 		Computer computer;
 		if (inputList.length != 2) {
-			throw new InvalidInputHandlerException("Wrong number of arguments");
+			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		}
 		if (isInteger(inputList[1], 10)) {
 			computer = computerController.getComputerById(Integer.parseInt(inputList[1]));
 		} else {
-			computer = computerController.getComputerByName(inputList[1]);
+			throw new InvalidInputCLIHandlerException("Wrong argument type");
+			//computer = computerController.getComputerByName(inputList[1]);
 		}
 		return computer;
 	}
 
-	public void createComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException, CompanyKeyInvalidException {
+	public void createComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, CompanyKeyInvalidException {
 		if (inputList.length != 3 && inputList.length != 5) {
-			throw new InvalidInputHandlerException("Wrong number of arguments");
+			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		}
 		Computer computer = null;
 		if (inputList.length == 3 && isInteger(inputList[2], 10)) {
@@ -46,14 +47,14 @@ public class CLIHandler {
 			computer.setIntroduced(inputList[3]);
 			computer.setDiscontinued(inputList[4]);
 		} else {
-			throw new InvalidInputHandlerException("Wrong argument type");
+			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
 		computerController.createComputer(computer);
 	}
 
-	public void updateComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException, NoComputerSelectedException {
+	public void updateComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, NoComputerSelectedException {
 		if (inputList.length != 3 && inputList.length != 5) {
-			throw new InvalidInputHandlerException("Wrong number of arguments");
+			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		}
 		if (inputList.length == 3 && isInteger(inputList[1], 10)) {
 			int computerID = Integer.parseInt(inputList[1]);
@@ -65,17 +66,17 @@ public class CLIHandler {
 			computer.setDiscontinued(inputList[4]);
 			computerController.updateComputerNameAndDate(computer);
 		} else {
-			throw new InvalidInputHandlerException("Wrong argument type");
+			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
 		
 	}
 
-	public void deleteComputer(String[] inputList) throws InvalidInputHandlerException, CustomSQLException, NoComputerSelectedException {
+	public void deleteComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, NoComputerSelectedException {
 		Computer computer = null;
 		if (inputList.length != 2) {
-			throw new InvalidInputHandlerException("Wrong number of arguments");
+			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		} else if (!isInteger(inputList[1], 10)) {
-			throw new InvalidInputHandlerException("Wrong argument type");
+			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
 		int computerID = Integer.parseInt(inputList[1]);
 		computer = new Computer("", computerID, 0);

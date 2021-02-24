@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import com.excilys.formationCDB.controller.ui.CLIHandler;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
-import com.excilys.formationCDB.exception.InvalidInputHandlerException;
+import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
 import com.excilys.formationCDB.exception.NoComputerSelectedException;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
@@ -100,7 +100,7 @@ public class CLI {
 				output.println("exiting");
 
 			}
-		} catch (InvalidInputHandlerException invalidInputException) {
+		} catch (InvalidInputCLIHandlerException invalidInputException) {
 			output.println("Input not valid: " + invalidInputException.getMessage());
 			handleGeneralRequest();
 		} catch (CustomSQLException customSqlException) {
@@ -136,10 +136,10 @@ public class CLI {
 		try {
 			switch (inputList[0]) {
 			case "p":
-				pageNavigagtion(page.previousPage());
+				pageNavigagtion(page.getPreviousPage());
 				break;
 			case "n":
-				pageNavigagtion(page.nextPage());
+				pageNavigagtion(page.getNextPage());
 				break;
 			default:
 				handleGeneralRequest();

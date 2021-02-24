@@ -1,5 +1,7 @@
 package com.excilys.formationCDB.controller.servlet;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +11,8 @@ import com.excilys.formationCDB.controller.ComputerController;
 import com.excilys.formationCDB.controller.servlet.validator.addComputerValidator;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
+import com.excilys.formationCDB.exception.InvalidWebInputException;
 import com.excilys.formationCDB.model.Computer;
 
 public class AddComputerForm {
@@ -19,8 +23,7 @@ public class AddComputerForm {
 	public static final String INPUT_INTRODUCED = "introduced";
 	public static final String INPUT_DISCONTINUED = "discontinued";
 	public static final String INPUT_COMPANYID = "companyId";
-	public static final String ATT_ERREURS = "errors";
-	public static final String ATT_RESULTAT = "result";
+	public static final String SQL_ERRORS = "sqlErrors";
 
 	private String result;
 	private Map<String, String> errors;
@@ -30,11 +33,11 @@ public class AddComputerForm {
 		errors = new HashMap<String, String>();
 	}
 	
-	public String getResultat() {
+	public String getResult() {
 		return result;
 	}
 
-	public Map<String, String> getErreurs() {
+	public Map<String, String> getErrors() {
 		return errors;
 	}
 
@@ -46,43 +49,51 @@ public class AddComputerForm {
 
 		addComputerValidator validator = new addComputerValidator();
 		Computer computer = new Computer();
-		try {
-			validator.validateName(name);
-			computer.setName(name);
-		} catch (Exception e) {
-			errors.put(INPUT_NAME, e.getMessage());
-		}
-
-		try {
-			validator.validateDates(introduced, discontinued);
-			computer.setDiscontinued(discontinued);
-			computer.setIntroduced(introduced);
-		} catch (Exception e) {
-			// erreurs.put( CHAMP_PASS, e.getMessage() );
-		}
-
-		try {
-			validator.validateCompanyID(companyID);
-			computer.setCompanyID(companyID);
-		} catch (Exception e) {
-			//errors.put(INPUT_COMPANYID, e.getMessage());
-		}
-		
+		validateName(name, validator, computer);
+		validateDates(introduced, discontinued, validator, computer);
+		validateCompanyId(companyID, validator, computer);
 		if (errors.isEmpty()) {
 			try {
 				computerController.createComputer(computer);
-			} catch (CustomSQLException | CompanyKeyInvalidException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (CustomSQLException | CompanyKeyInvalidException sqlError) {
+				errors.put(INPUT_COMPANYID, sqlError.getMessage());
 			}
 			result = "Computer added";
 		} else {
 			result = "Computer not added";
 		}
-
-		/* Stockage du résultat et des messages d'erreur dans l'objet request */
-		request.setAttribute(ATT_ERREURS, errors);
-		request.setAttribute(ATT_RESULTAT, result);
 		return computer;
+	}
+
+	private void validateCompanyId(String companyID, addComputerValidator validator, Computer computer) {
+		try {
+			validator.validateCompanyID(companyID);
+			computer.setCompanyID(companyID);
+		} catch (InvalidWebInputException invalidInput) {
+			errors.put(INPUT_COMPANYID, invalidInput.getMessage());
+		}
+	}
+
+	private void validateDates(String introduced, String discontinued, addComputerValidator validator,
+			Computer computer) {
+		try {
+			validator.validateDates(introduced, discontinued);
+			computer.setIntroduced(introduced, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			computer.setDiscontinued(discontinued, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		} catch (InvalidWebInputException invalidInput) {
+			errors.put( INPUT_INTRODUCED, invalidInput.getMessage() );
+		} catch (InvalidInputCLIHandlerException e) {
+		} catch (DateTimeParseException dateParseException) {
+			
+		}
+	}
+
+	private void validateName(String name, addComputerValidator validator, Computer computer) {
+		try {
+			validator.validateName(name);
+			computer.setName(name);
+		} catch (InvalidWebInputException invalidInput) {
+			errors.put(INPUT_NAME, invalidInput.getMessage());
+		}
 	}
 }

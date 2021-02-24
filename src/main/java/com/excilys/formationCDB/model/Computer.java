@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import com.excilys.formationCDB.exception.InvalidInputHandlerException;
+import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
 
 public class Computer {
 
@@ -95,12 +95,16 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public void setDiscontinued(String discontinued) throws InvalidInputHandlerException {
+	public void setDiscontinued(String discontinued) throws InvalidInputCLIHandlerException {
+		setDiscontinued(discontinued, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+	}
+	
+	public void setDiscontinued(String discontinued, DateTimeFormatter formatter) throws InvalidInputCLIHandlerException {
 		if (!discontinued.equals("null")) {
 			try {
-				this.discontinued = LocalDate.parse(discontinued, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+				this.discontinued = LocalDate.parse(discontinued, formatter);
 			} catch (DateTimeParseException dateTimeException) {
-				throw new InvalidInputHandlerException("Invalid date format");
+				throw new InvalidInputCLIHandlerException("Invalid date format");
 			}
 		}
 	}
@@ -109,12 +113,17 @@ public class Computer {
 		return introduced;
 	}
 
-	public void setIntroduced(String introduced) throws InvalidInputHandlerException {
+	public void setIntroduced(String introduced) throws InvalidInputCLIHandlerException {
+		setIntroduced(introduced, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+	}
+	
+	public void setIntroduced(String introduced, DateTimeFormatter formatter) throws InvalidInputCLIHandlerException {
 		if (!introduced.equals("null")) {
 			try {
-				this.introduced = LocalDate.parse(introduced, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+				this.introduced = LocalDate.parse(introduced, formatter);
 			} catch (DateTimeParseException dateTimeException) {
-				throw new InvalidInputHandlerException("Invalid date format");
+				throw new InvalidInputCLIHandlerException("Invalid date format");
 			}
 		}
 	}

@@ -8,6 +8,8 @@ public class Page<E> {
 	private int number;
 	private String table;
 	private List<E> content;
+	private Page nextPage;
+	private Page previousPage;
 
 	public Page(int size, int number, String table) {
 		content = new ArrayList<>();
@@ -27,7 +29,7 @@ public class Page<E> {
 	public void setContent(List<E> content) {
 		this.content = content;
 	}
-	
+
 	public String getTable() {
 		return table;
 	}
@@ -36,19 +38,35 @@ public class Page<E> {
 		return content;
 	}
 
-	public Page previousPage() {
-		Page page = this;
-		if (number > 1) {
-			page = new Page(this.size, this.getNumber()-1, this.table);
+	public Page getPreviousPage() {
+		Page previousPage = this;
+		if (this.previousPage == null) {
+			if (number > 0) {
+				previousPage = new Page(this.size, this.getNumber() + 1, this.table);
+			}
+		} else {
+			previousPage = this.previousPage;
 		}
-		return page;
+		return previousPage;
 	}
 
-	public Page nextPage() {
-		Page page = this;
-		if (number > 0) {
-			page = new Page(this.size, this.getNumber()+1, this.table);
+	public Page getNextPage() {
+		Page nextPage = this;
+		if (this.nextPage == null) {
+			if (number > 0) {
+				nextPage = new Page(this.size, this.getNumber() + 1, this.table);
+			}
+		} else {
+			nextPage = this.nextPage;
 		}
-		return page;
+		return nextPage;
+	}
+	
+	public void setNextPage(Page nextPage) {
+		this.nextPage = nextPage;
+	}
+
+	public void setPreviousPage(Page previousPage) {
+		this.previousPage = previousPage;
 	}
 }

@@ -4,18 +4,17 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 
-public class CustomSQLException extends Exception {
+public class InvalidInputCLIHandlerException extends Exception {
 	
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(CompanyKeyInvalidException.class);
 
-	public CustomSQLException() {
-		logger.error("SQL Error:");
-
+	public InvalidInputCLIHandlerException() {
+		logger.error("Invalid input:");
 	}
 
-	public CustomSQLException(String message) {
+	public InvalidInputCLIHandlerException(String message) {
 		super(message);
-		logger.error("SQL Error:" + message);
+		logger.error("Invalid input: " + message);
 
 	}
 }

@@ -1,13 +1,13 @@
 package com.excilys.formationCDB.controller.servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formationCDB.controller.CompanyController;
 import com.excilys.formationCDB.controller.ComputerController;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.model.Computer;
@@ -20,9 +20,13 @@ import com.excilys.formationCDB.model.Page;
 public class DashBoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public static final String VIEW         = "/WEB-INF/views/dashboard.jsp";
+	public static final String VIEW = "/WEB-INF/views/dashboard.jsp";
+	public static final String ATT_PAGE_NB = "pageNumber";
+	public static final String ATT_COMPUTER_NB = "numberComputers";
+	public static final String ATT_COMPUTER_LIST = "computerList";
+	public static final String ATT_PAGEINDEX_FROM = "pageIndexFrom";
+	public static final String ATT_PAGEINDEX_TO = "pageIndexTo";
 
-	private CompanyController companyController;
 	private ComputerController computerController;
 
 	/**
@@ -30,7 +34,6 @@ public class DashBoardServlet extends HttpServlet {
 	 */
 	public DashBoardServlet() {
 		super();
-		this.companyController = CompanyController.getInstance();
 		this.computerController = ComputerController.getInstance();
 	}
 
@@ -40,22 +43,48 @@ public class DashBoardServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
 		try {
-			int pageNumber;
-			try  {
-			pageNumber  = Integer.parseInt(request.getParameter("page"));
-			} catch (NumberFormatException numberFormatExceptoin) {
-				pageNumber = 1;
+			int pageNumber = 1;
+			if (request.getParameter("page") != null) {
+				try {
+					pageNumber = Integer.parseInt(request.getParameter("page"));
+				} catch (NumberFormatException numberFormatExceptoin) {
+				}
 			}
-			request.setAttribute("pageNumber", pageNumber);
-			request.setAttribute("numberComputers", computerController.getComputerNumber() );
-			request.setAttribute("computerPage", computerController.getPage(new Page<Computer>(10, pageNumber, "computer")).getContent());
+			setGeneralAttributes(request, response, pageNumber);
 		} catch (CustomSQLException e) {
 			e.printStackTrace();
 		}
 		this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
 
+	}
+
+	private void setGeneralAttributes(HttpServletRequest request, HttpServletResponse response, int pageNumber)
+			throws CustomSQLException {
+		request.setAttribute(VIEW, response);
+		request.setAttribute(ATT_PAGE_NB, pageNumber);
+		int computerNb;
+		computerNb = setComputerList(request, pageNumber);
+		request.setAttribute(ATT_COMPUTER_NB, computerNb);
+		request.setAttribute(ATT_PAGEINDEX_FROM, computerController.getPageIndexFrom(pageNumber));
+		request.setAttribute(ATT_PAGEINDEX_TO, computerController.getPageIndexTo(pageNumber, computerNb));
+	}
+
+	private int setComputerList(HttpServletRequest request, int pageNumber) throws CustomSQLException {
+		int computerNb;
+		if (request.getParameter("search") != null) {
+			request.setAttribute(ATT_COMPUTER_LIST,
+					computerController
+							.getPageByName(new Page<Computer>(ComputerController.PAGE_SIZE, pageNumber, "computer"),
+									request.getParameter("search"))
+							.getContent());
+			computerNb = computerController.getComputerNumberbyName(request.getParameter("search"));
+		} else {
+			request.setAttribute(ATT_COMPUTER_LIST, computerController
+					.getPage(new Page<Computer>(ComputerController.PAGE_SIZE, pageNumber, "computer")).getContent());
+			computerNb = computerController.getComputerNumber();
+		}
+		return computerNb;
 	}
 
 	/**

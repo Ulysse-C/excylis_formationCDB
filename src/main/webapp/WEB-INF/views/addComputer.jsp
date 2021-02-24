@@ -27,17 +27,19 @@
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
 					<form action="addComputer" method="POST">
+					<span class="error">${form.errors['sqlErrors']}</span>
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" required="required" name="computerName">
-
+									placeholder="Computer name" required="required"
+									name="computerName"> <span class="error">${form.errors['computerName']}</span>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
-									placeholder="Introduced date" name="introduced">
+									placeholder="Introduced date" name="introduced"> <span
+									class="error">${form.errors['introduced']}</span>
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
@@ -47,12 +49,12 @@
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control" id="companyId" name="companyId">
-									<option value="0">--</option>
+									<option selected="selected" disabled="disabled">--</option>
 									<c:forEach items="${companyList}" var="company">
 										<option value="${company.id }"><c:out
 												value="${company.name}" /></option>
 									</c:forEach>
-								</select>
+								</select> <span class="error">${form.errors['companyId']}</span>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
