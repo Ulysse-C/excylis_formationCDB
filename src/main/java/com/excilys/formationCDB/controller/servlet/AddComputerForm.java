@@ -25,17 +25,13 @@ public class AddComputerForm {
 	public static final String INPUT_COMPANYID = "companyId";
 	public static final String SQL_ERRORS = "sqlErrors";
 
-	private String result;
 	private Map<String, String> errors;
 
 	public AddComputerForm() {
 		computerController = ComputerController.getInstance();
 		errors = new HashMap<String, String>();
 	}
-	
-	public String getResult() {
-		return result;
-	}
+
 
 	public Map<String, String> getErrors() {
 		return errors;
@@ -49,49 +45,51 @@ public class AddComputerForm {
 
 		addComputerValidator validator = new addComputerValidator();
 		Computer computer = new Computer();
-		validateName(name, validator, computer);
-		validateDates(introduced, discontinued, validator, computer);
-		validateCompanyId(companyID, validator, computer);
+		validate(name, introduced, discontinued, companyID, validator);
 		if (errors.isEmpty()) {
 			try {
+				//dtoComputer = newDtocomputer(params)
+				// computer = mapper.getComputer(dtoComputer);
+				computer.setCompanyID(companyID);
+				computer.setIntroduced(introduced, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+				computer.setDiscontinued(discontinued, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+				computer.setName(name);
 				computerController.createComputer(computer);
 			} catch (CustomSQLException | CompanyKeyInvalidException sqlError) {
 				errors.put(INPUT_COMPANYID, sqlError.getMessage());
 			}
-			result = "Computer added";
-		} else {
-			result = "Computer not added";
 		}
 		return computer;
 	}
 
-	private void validateCompanyId(String companyID, addComputerValidator validator, Computer computer) {
+	private void validate(String name, String introduced, String discontinued, String companyID,
+			addComputerValidator validator) {
+		validateName(name, validator);
+		validateDates(introduced, discontinued, validator);
+		validateCompanyId(companyID, validator);
+	}
+
+	private void validateCompanyId(String companyID, addComputerValidator validator) {
 		try {
 			validator.validateCompanyID(companyID);
-			computer.setCompanyID(companyID);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(INPUT_COMPANYID, invalidInput.getMessage());
 		}
 	}
 
-	private void validateDates(String introduced, String discontinued, addComputerValidator validator,
-			Computer computer) {
+	private void validateDates(String introduced, String discontinued, addComputerValidator validator) {
 		try {
 			validator.validateDates(introduced, discontinued);
-			computer.setIntroduced(introduced, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-			computer.setDiscontinued(discontinued, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put( INPUT_INTRODUCED, invalidInput.getMessage() );
-		} catch (InvalidInputCLIHandlerException e) {
 		} catch (DateTimeParseException dateParseException) {
-			
+			errors.put( INPUT_INTRODUCED, "bad input format");
 		}
 	}
 
-	private void validateName(String name, addComputerValidator validator, Computer computer) {
+	private void validateName(String name, addComputerValidator validator) {
 		try {
 			validator.validateName(name);
-			computer.setName(name);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(INPUT_NAME, invalidInput.getMessage());
 		}

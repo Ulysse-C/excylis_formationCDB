@@ -95,16 +95,34 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="?page=${pageNumber > 1 ? pageNumber - 1 : 1}"
+				<li><a
+					href="<c:url value="/dashboard">
+			  		<c:param name="page" value="${pageNumber > 1 ? pageNumber - 1 : 1}"/>
+			  		<c:if test="${not empty computerSearch}">
+			   			<c:param name="search" value="${computerSearch}"/>
+					</c:if>
+					</c:url>"
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
 
 				<c:forEach var="i" begin="${pageIndexFrom}" end="${pageIndexTo}"
 					step="1">
-					<li><a href="?page=${i}">${i}</a></li>
+					<li><a
+						href="<c:url value="/dashboard">
+				  		<c:param name="page" value="${i}"/>
+				  		<c:if test="${not empty computerSearch}">
+				   			<c:param name="search" value="${computerSearch}"/>
+						</c:if>
+						</c:url>">
+					${i}</a></li>
 				</c:forEach>
 				<li><a
-					href="?page=${pageNumber == pageIndexTo ? pageNumber : pageNumber + 1}"
+					href="<c:url value="/dashboard">
+			  		<c:param name="page" value="${pageNumber == pageIndexTo ? pageNumber : pageNumber + 1}"/>
+			  		<c:if test="${not empty computerSearch}">
+			   			<c:param name="search" value="${computerSearch}"/>
+					</c:if>
+					</c:url>"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>

@@ -95,17 +95,13 @@ public class Computer {
 		this.discontinued = discontinued;
 	}
 
-	public void setDiscontinued(String discontinued) throws InvalidInputCLIHandlerException {
+	public void setDiscontinued(String discontinued) {
 		setDiscontinued(discontinued, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 	}
-	
-	public void setDiscontinued(String discontinued, DateTimeFormatter formatter) throws InvalidInputCLIHandlerException {
+
+	public void setDiscontinued(String discontinued, DateTimeFormatter formatter) {
 		if (!discontinued.equals("null")) {
-			try {
-				this.discontinued = LocalDate.parse(discontinued, formatter);
-			} catch (DateTimeParseException dateTimeException) {
-				throw new InvalidInputCLIHandlerException("Invalid date format");
-			}
+			this.discontinued = LocalDate.parse(discontinued, formatter);
 		}
 	}
 
@@ -113,18 +109,14 @@ public class Computer {
 		return introduced;
 	}
 
-	public void setIntroduced(String introduced) throws InvalidInputCLIHandlerException {
+	public void setIntroduced(String introduced) {
 		setIntroduced(introduced, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
 	}
-	
-	public void setIntroduced(String introduced, DateTimeFormatter formatter) throws InvalidInputCLIHandlerException {
+
+	public void setIntroduced(String introduced, DateTimeFormatter formatter)  {
 		if (!introduced.equals("null")) {
-			try {
-				this.introduced = LocalDate.parse(introduced, formatter);
-			} catch (DateTimeParseException dateTimeException) {
-				throw new InvalidInputCLIHandlerException("Invalid date format");
-			}
+			this.introduced = LocalDate.parse(introduced, formatter);
 		}
 	}
 

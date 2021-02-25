@@ -41,8 +41,8 @@ public class Page<E> {
 	public Page getPreviousPage() {
 		Page previousPage = this;
 		if (this.previousPage == null) {
-			if (number > 0) {
-				previousPage = new Page(this.size, this.getNumber() + 1, this.table);
+			if (number > 1) {
+				previousPage = new Page(this.size, this.number - 1, this.table);
 			}
 		} else {
 			previousPage = this.previousPage;
@@ -51,11 +51,9 @@ public class Page<E> {
 	}
 
 	public Page getNextPage() {
-		Page nextPage = this;
+		Page nextPage;
 		if (this.nextPage == null) {
-			if (number > 0) {
-				nextPage = new Page(this.size, this.getNumber() + 1, this.table);
-			}
+				nextPage = new Page(this.size, this.number + 1, this.table);
 		} else {
 			nextPage = this.nextPage;
 		}

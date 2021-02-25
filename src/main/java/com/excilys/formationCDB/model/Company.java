@@ -5,10 +5,6 @@ public class Company {
 	private int id;
 	private String name;
 	
-	public Company() {
-		
-	}
-	
 	public Company(String name, int id) {
 		this.id = id;
 		this.name = name;
@@ -20,10 +16,6 @@ public class Company {
 
 	public String getName() {
 		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	@Override

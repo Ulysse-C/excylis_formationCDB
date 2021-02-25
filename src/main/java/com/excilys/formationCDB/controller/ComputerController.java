@@ -11,10 +11,12 @@ import com.excilys.formationCDB.service.ComputerService;
 
 public final class ComputerController {
 	private final static ComputerController INSTANCE = new ComputerController();
+	
 	public final static int PAGE_SIZE = 10;
+	public final static String COMPUTER_TABLE_NAME = "computer";
+
 	private final static int PAGEINDEX_SIZE = 7;
 	private final static int PAGEINDEX_BEFORE_CURRENT_PAGE = 4;
-
 	private ComputerService computerService;
 
 	private ComputerController() {

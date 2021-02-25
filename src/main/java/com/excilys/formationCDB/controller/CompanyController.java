@@ -9,6 +9,8 @@ import com.excilys.formationCDB.service.CompanyService;
 
 public final class CompanyController {
 	
+	public final static String COMPANY_TABLE_NAME = "company";
+	
 	private final static CompanyController INSTANCE = new CompanyController();
 	private CompanyService companyService;
 	

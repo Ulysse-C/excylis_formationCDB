@@ -21,14 +21,18 @@ public class addComputerValidator {
 	}
 
 	public void validateDates(String introduced, String discontinued) throws InvalidWebInputException {
-		LocalDate dateDiscontinued = LocalDate.parse(discontinued, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		LocalDate dateIntroduced = LocalDate.parse(introduced, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		if (dateDiscontinued != null && dateIntroduced != null) {
-			if (dateIntroduced.isAfter(dateDiscontinued)) {
-				throw new InvalidWebInputException("the computer may not be introduced after being discontined");
-			}
+		if (introduced != null && discontinued != null) {
+			LocalDate dateDiscontinued = LocalDate.parse(discontinued, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			LocalDate dateIntroduced = LocalDate.parse(introduced, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			if (dateDiscontinued != null && dateIntroduced != null) {
+				if (dateIntroduced.isAfter(dateDiscontinued)) {
+					throw new InvalidWebInputException("the computer may not be introduced after being discontined");
+				}
+			} else if (introduced != null) {
+				LocalDate.parse(introduced, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			} else if (discontinued != null)
+				LocalDate.parse(discontinued, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		}
-
 	}
 
 	public void validateCompanyID(String companyID) throws InvalidWebInputException {
