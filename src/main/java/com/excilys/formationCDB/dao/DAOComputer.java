@@ -34,6 +34,7 @@ public final class DAOComputer {
 	private String getComputerNumberQuery = "SELECT COUNT(*) AS nbComputer FROM computer";
 	private String getComputerNumberByNameQuery = "SELECT COUNT(name) AS nbComputer FROM computer WHERE computer.name LIKE ?";
 
+	private final int ERROR_CODE_INVALID_EXTERN_KEY_SQL = 1452;
 	private DAOComputer() {
 		dbConnection = DBConnection.getInstance();
 	}
@@ -55,7 +56,6 @@ public final class DAOComputer {
 		return computer;
 	}
 
-
 	private ArrayList<Computer> convertToListComputerList(ResultSet resultSetComputerList) throws SQLException {
 		ArrayList<Computer> computerList = new ArrayList<>();
 		while (resultSetComputerList.next()) {
@@ -66,13 +66,21 @@ public final class DAOComputer {
 	}
 
 	private Computer convertToComputer(ResultSet resultSetComputer) throws SQLException {
-		Computer computer = null;
-		Company company = new Company(resultSetComputer.getNString("company.name"),
-				resultSetComputer.getInt("computer.company_id"));
-		computer = new Computer(resultSetComputer.getNString("computer.name"), resultSetComputer.getInt("computer.id"),
-				resultSetComputer.getDate("computer.introduced"), resultSetComputer.getDate("computer.discontinued"),
-				company, resultSetComputer.getInt("computer.company_id"));
+		Company company = new Company.CompanyBuilder(resultSetComputer.getInt("computer.company_id"))
+				.setName(resultSetComputer.getNString("company.name")).build();
+		Computer computer = new Computer.ComputerBuilder().setName(resultSetComputer.getString("computer.name"))
+				.setId(resultSetComputer.getInt("computer.id")).setCompany(company)
+				.setDiscontinued(toLocalDate(resultSetComputer.getDate("computer.discontinued")))
+				.setIntroduced(toLocalDate(resultSetComputer.getDate("computer.introduced"))).build();
 		return computer;
+	}
+
+	private LocalDate toLocalDate(Date date) {
+		LocalDate localDate = null;
+		if (date != null) {
+			localDate = date.toLocalDate();
+		}
+		return localDate;
 	}
 
 	public Computer getSingleComputerFromResultSet(ResultSet resultSet) throws SQLException {
@@ -94,10 +102,9 @@ public final class DAOComputer {
 				prepareStatmentCreate(preparedStatement, computer);
 				preparedStatement.executeUpdate();
 			} catch (SQLException sqlException) {
-				if (sqlException.getErrorCode() == 1452) {
+				if (sqlException.getErrorCode() == ERROR_CODE_INVALID_EXTERN_KEY_SQL) {
 					throw new CompanyKeyInvalidException();
 				}
-				System.out.println(sqlException.getErrorCode());
 				throw new CustomSQLException(sqlException.getMessage());
 			}
 		}
@@ -107,10 +114,11 @@ public final class DAOComputer {
 		preparedStatement.setNString(1, computer.getName());
 		prepareStatmentDate(preparedStatement, computer.getIntroduced(), 2);
 		prepareStatmentDate(preparedStatement, computer.getDiscontinued(), 3);
-		preparedStatement.setInt(4, computer.getCompanyId());
+		preparedStatement.setInt(4, computer.getCompany().getId());
 	}
 
-	private void prepareStatmentDate(PreparedStatement preparedStatement, LocalDate localdate, int index) throws SQLException {
+	private void prepareStatmentDate(PreparedStatement preparedStatement, LocalDate localdate, int index)
+			throws SQLException {
 		if (localdate != null) {
 			preparedStatement.setDate(index, Date.valueOf(localdate));
 		} else {
@@ -149,12 +157,10 @@ public final class DAOComputer {
 		}
 	}
 
-	
-
 	public void updateComputerNameAndDate(Computer computer) throws NoComputerSelectedException, CustomSQLException {
 		if (computer != null) {
 			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(updateComputerNameAndDateQuery );
+				PreparedStatement preparedStatement = connection.prepareStatement(updateComputerNameAndDateQuery);
 				prepareStatmentUpdateNameDate(preparedStatement, computer);
 				int row = preparedStatement.executeUpdate();
 				if (row == 0) {
@@ -166,14 +172,14 @@ public final class DAOComputer {
 		}
 	}
 
-	private void prepareStatmentUpdateNameDate(PreparedStatement preparedStatement, Computer computer) throws SQLException {
+	private void prepareStatmentUpdateNameDate(PreparedStatement preparedStatement, Computer computer)
+			throws SQLException {
 		preparedStatement.setNString(1, computer.getName());
 		prepareStatmentDate(preparedStatement, computer.getIntroduced(), 2);
 		prepareStatmentDate(preparedStatement, computer.getDiscontinued(), 3);
 		preparedStatement.setInt(4, computer.getId());
 
 	}
-
 
 	private int getComputerNumberFromResultSet(ResultSet resultSet) throws SQLException {
 		int number = 0;
@@ -198,7 +204,7 @@ public final class DAOComputer {
 		}
 		return computerList;
 	}
-	
+
 	public int getComputerNumber() throws CustomSQLException {
 		int number = 0;
 		try (Connection connection = dbConnection.getconnection()) {
@@ -210,7 +216,6 @@ public final class DAOComputer {
 		}
 		return number;
 	}
-
 
 	public int getComputerNumberbyName(String search) throws CustomSQLException {
 		int number = 0;
@@ -224,7 +229,7 @@ public final class DAOComputer {
 		}
 		return number;
 	}
-	
+
 	public Page<Computer> getPage(Page<Computer> page) throws CustomSQLException {
 		if (page != null) {
 			try (Connection connection = dbConnection.getconnection()) {
@@ -255,6 +260,5 @@ public final class DAOComputer {
 		}
 		return page;
 	}
-
 
 }

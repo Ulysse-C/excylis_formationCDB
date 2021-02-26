@@ -12,15 +12,15 @@ import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Page;
 
 public final class DAOCompany {
-	
+
 	private DBConnection dbConnection;
 	private final static DAOCompany INSTANCE = new DAOCompany();
-	
+
 	private String getCompanyByIdQuery = "SELECT id,name FROM company WHERE id=?";
 	private String getPageQuery = "SELECT id,name FROM company ORDER BY id LIMIT ? OFFSET ?";
 	private String getCompanyListQuery = "SELECT id,name FROM company ORDER BY id";
 
-	private DAOCompany() { 
+	private DAOCompany() {
 		dbConnection = DBConnection.getInstance();
 	}
 
@@ -43,20 +43,20 @@ public final class DAOCompany {
 		}
 		return company;
 	}
-	
-	private ArrayList<Company> convertToListCompanyList(ResultSet resultSetCompanyList) throws CustomSQLException, SQLException {
+
+	private ArrayList<Company> convertToListCompanyList(ResultSet resultSetCompanyList)
+			throws CustomSQLException, SQLException {
 		ArrayList<Company> companyList = new ArrayList<>();
-			while (resultSetCompanyList.next()) {
-				companyList.add(convertToCompany(resultSetCompanyList));
-			}
+		while (resultSetCompanyList.next()) {
+			companyList.add(convertToCompany(resultSetCompanyList));
+		}
 		return companyList;
 	}
-	
+
 	private Company convertToCompany(ResultSet resultSetCompany) throws CustomSQLException, SQLException {
 		Company company = null;
-			company = new Company(resultSetCompany.getNString("name"),resultSetCompany.getInt("id"));
-
-
+		company = new Company.CompanyBuilder(resultSetCompany.getInt("id"))
+				.setName(resultSetCompany.getNString("name")).build();
 		return company;
 	}
 
@@ -65,7 +65,7 @@ public final class DAOCompany {
 			try (Connection connection = dbConnection.getconnection()) {
 				PreparedStatement preparedStatement = connection.prepareStatement(getPageQuery);
 				preparedStatement.setInt(1, page.getSize());
-				preparedStatement.setInt(2, (page.getNumber()-1)*page.getSize());
+				preparedStatement.setInt(2, (page.getNumber() - 1) * page.getSize());
 				ResultSet resultSet = preparedStatement.executeQuery();
 				page.setContent(convertToListCompanyList(resultSet));
 			} catch (SQLException sqlException) {

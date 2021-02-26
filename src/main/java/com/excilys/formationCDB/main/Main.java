@@ -1,6 +1,6 @@
 package com.excilys.formationCDB.main;
 
-import com.excilys.formationCDB.controller.ui.CLIHandler;
+import com.excilys.formationCDB.controller.cli.CLIHandler;
 import com.excilys.formationCDB.ui.cli.CLI;
 
 public class Main {

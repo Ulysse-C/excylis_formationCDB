@@ -1,4 +1,4 @@
-package com.excilys.formationCDB.controller;
+package com.excilys.formationCDB.controller.cli;
 
 import java.util.List;
 
@@ -7,18 +7,18 @@ import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Page;
 import com.excilys.formationCDB.service.CompanyService;
 
-public final class CompanyController {
+public final class CliCompanyController {
 	
 	public final static String COMPANY_TABLE_NAME = "company";
 	
-	private final static CompanyController INSTANCE = new CompanyController();
+	private final static CliCompanyController INSTANCE = new CliCompanyController();
 	private CompanyService companyService;
 	
-	private CompanyController() {
+	private CliCompanyController() {
 		companyService = CompanyService.getInstance();
 	}
 	
-	public static CompanyController getInstance() {
+	public static CliCompanyController getInstance() {
 		return INSTANCE;
 	}
 	

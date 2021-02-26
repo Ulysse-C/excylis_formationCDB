@@ -1,22 +1,23 @@
-package com.excilys.formationCDB.controller.ui;
+package com.excilys.formationCDB.controller.cli;
 
-import com.excilys.formationCDB.controller.CompanyController;
-import com.excilys.formationCDB.controller.ComputerController;
+import com.excilys.formationCDB.dto.AddComputerDTO;
+import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
 import com.excilys.formationCDB.exception.NoComputerSelectedException;
+import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
 
 public class CLIHandler {
 
-	private CompanyController companyController;
-	private ComputerController computerController;
+	private CliCompanyController companyController;
+	private CliComputerController computerController;
 	
 	public CLIHandler() {
-		this.companyController = CompanyController.getInstance();
-		this.computerController = ComputerController.getInstance();
+		this.companyController = CliCompanyController.getInstance();
+		this.computerController = CliComputerController.getInstance();
 	}
 
 	public Computer getSingleComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException {
@@ -39,27 +40,40 @@ public class CLIHandler {
 		}
 		Computer computer = null;
 		if (inputList.length == 3 && isInteger(inputList[2], 10)) {
-			int companyID = Integer.parseInt(inputList[2]);
-			computer = new Computer(inputList[1], 0, companyID);
+			AddComputerDTO computerDTO = createComputerDTO(inputList);
+			//the mapper will not parse the date with this format yet
+			computer = ComputerMapper.createComputer(computerDTO);
 		} else if (inputList.length == 5 && isInteger(inputList[2], 10)) {
-			int companyID = Integer.parseInt(inputList[2]);
-			computer = new Computer(inputList[1], 0, companyID);
-			computer.setIntroduced(inputList[3]);
-			computer.setDiscontinued(inputList[4]);
+			AddComputerDTO computerDTO = createComputerDTO(inputList);
+			computer = ComputerMapper.createComputer(computerDTO);
 		} else {
 			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
 		computerController.createComputer(computer);
 	}
 
+	private AddComputerDTO createComputerDTO(String[] inputList) {
+		AddComputerDTO computerDTO = new AddComputerDTO();
+		computerDTO.companyId = inputList[2];
+		computerDTO.computerName = inputList[1];
+		if (inputList.length == 5) {
+			computerDTO.introducedDate = inputList[3];
+			computerDTO.discontinuedDate = inputList[4];
+		}
+		return computerDTO;
+	}
+
+	
 	public void updateComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, NoComputerSelectedException {
+		/*
 		if (inputList.length != 3 && inputList.length != 5) {
 			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		}
 		if (inputList.length == 3 && isInteger(inputList[1], 10)) {
-			int computerID = Integer.parseInt(inputList[1]);
-			computerController.updateComputerName(new Computer(inputList[2], computerID, 0));
+			Computer computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1])).build();
+			computerController.updateComputerName(computer);
 		} else if (inputList.length == 5 && isInteger(inputList[1], 10)) {
+			Computer computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1])).set.build();
 			int computerID = Integer.parseInt(inputList[1]);
 			Computer computer = new Computer(inputList[2], computerID, 0);
 			computer.setIntroduced(inputList[3]);
@@ -68,7 +82,7 @@ public class CLIHandler {
 		} else {
 			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
-		
+		*/
 	}
 
 	public void deleteComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, NoComputerSelectedException {
@@ -78,8 +92,7 @@ public class CLIHandler {
 		} else if (!isInteger(inputList[1], 10)) {
 			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
-		int computerID = Integer.parseInt(inputList[1]);
-		computer = new Computer("", computerID, 0);
+		computer = new Computer.ComputerBuilder().setId(Integer.parseInt(inputList[1])).build();
 		computerController.deleteComputerById(computer);
 	}
 

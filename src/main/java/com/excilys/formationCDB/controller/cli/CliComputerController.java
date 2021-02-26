@@ -1,4 +1,4 @@
-package com.excilys.formationCDB.controller;
+package com.excilys.formationCDB.controller.cli;
 
 import java.util.List;
 
@@ -9,21 +9,20 @@ import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
 import com.excilys.formationCDB.service.ComputerService;
 
-public final class ComputerController {
-	private final static ComputerController INSTANCE = new ComputerController();
+public final class CliComputerController {
+	private final static CliComputerController INSTANCE = new CliComputerController();
 	
 	public final static int PAGE_SIZE = 10;
 	public final static String COMPUTER_TABLE_NAME = "computer";
 
-	private final static int PAGEINDEX_SIZE = 7;
-	private final static int PAGEINDEX_BEFORE_CURRENT_PAGE = 4;
+
 	private ComputerService computerService;
 
-	private ComputerController() {
+	private CliComputerController() {
 		computerService = ComputerService.getInstance();
 	}
 
-	public static ComputerController getInstance() {
+	public static CliComputerController getInstance() {
 		return INSTANCE;
 	}
 
@@ -61,32 +60,14 @@ public final class ComputerController {
 		return computerService.getComputerListByName(search);
 	}
 
-	public int getPageIndexFrom(int pageNumber) {
-		int indexFrom = 0;
-		while (indexFrom + pageNumber > 1 && indexFrom + PAGEINDEX_BEFORE_CURRENT_PAGE > 0) {
-			indexFrom--;
-		}
-		return indexFrom + pageNumber;
-	}
-
-	public int getPageIndexTo(int pageNumber, int computerNB) {
-		int indexTo = 0;
-		int compensation = 0;
-		if (pageNumber <= PAGEINDEX_BEFORE_CURRENT_PAGE) {
-			compensation = PAGEINDEX_BEFORE_CURRENT_PAGE - pageNumber +1;
-		}
-		while (computerNB / PAGE_SIZE >= indexTo + pageNumber && indexTo + 1 + PAGEINDEX_BEFORE_CURRENT_PAGE - compensation < PAGEINDEX_SIZE) {
-			indexTo++;
-		}
-		return indexTo + pageNumber;
-	}
-
-	public int getComputerNumberbyName(String search) throws CustomSQLException {
-		return computerService.getComputerNumberbyName(search);
-	}
+	
 
 	public Page<Computer> getPageByName(Page<Computer> page, String search) throws CustomSQLException {
 		return computerService.getPageByName(page, search);
+	}
+	
+	public int getComputerNumberbyName(String search) throws CustomSQLException {
+		return computerService.getComputerNumberbyName(search);
 	}
 
 }

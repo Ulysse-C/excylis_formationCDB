@@ -14,39 +14,50 @@ public class Computer {
 	private LocalDate introduced;
 	private LocalDate discontinued;
 	private Company company;
-	private int companyId;
 
-	public Computer() {
-
+	public static class ComputerBuilder {
+		private String name;
+		private int id;
+		private LocalDate introduced;
+		private LocalDate discontinued;
+		private Company company;
+		
+		public ComputerBuilder setId(int id) {
+			this.id = id;
+			return this;
+		}
+		
+		public ComputerBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		public ComputerBuilder setIntroduced(LocalDate introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+		
+		public ComputerBuilder setDiscontinued(LocalDate discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+		
+		public ComputerBuilder setCompany(Company company) {
+			this.company = company;
+			return this;
+		}
+		
+		public Computer build() {
+			return new Computer(name, id, introduced, discontinued, company);
+		}
 	}
-
-	public Computer(String name, int id, int companyId) {
-		this.companyId = companyId;
+	
+	private Computer(String name, int id, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.name = name;
 		this.id = id;
-	}
-
-	public Computer(String name, int id, int companyId, Date introduced, Date discontinued) {
-		this(name, id, companyId);
-		setIntroduced(introduced);
-		setDiscontinued(discontinued);
-	}
-
-	public Computer(String name, int id, Date introduced, Date discontinued, Company company, int companyId) {
-		this(name, id, companyId, introduced, discontinued);
+		this.introduced = introduced;
+		this.discontinued = discontinued;
 		this.company = company;
-	}
-
-	private void setDiscontinued(Date discontinued) {
-		if (discontinued != null) {
-			this.discontinued = discontinued.toLocalDate();
-		}
-	}
-
-	private void setIntroduced(Date introduced) {
-		if (introduced != null) {
-			this.introduced = introduced.toLocalDate();
-		}
 	}
 
 	public String getName() {
@@ -61,10 +72,27 @@ public class Computer {
 		return company;
 	}
 
-	public int getCompanyId() {
-		return companyId;
+	public LocalDate getDiscontinued() {
+		return discontinued;
 	}
 
+	public void setDiscontinued(LocalDate discontinued) {
+		this.discontinued = discontinued;
+	}
+
+	public LocalDate getIntroduced() {
+		return introduced;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -86,47 +114,4 @@ public class Computer {
 			return localDate.toString();
 		}
 	}
-
-	public LocalDate getDiscontinued() {
-		return discontinued;
-	}
-
-	public void setDiscontinued(LocalDate discontinued) {
-		this.discontinued = discontinued;
-	}
-
-	public void setDiscontinued(String discontinued) {
-		setDiscontinued(discontinued, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-	}
-
-	public void setDiscontinued(String discontinued, DateTimeFormatter formatter) {
-		if (!discontinued.equals("null")) {
-			this.discontinued = LocalDate.parse(discontinued, formatter);
-		}
-	}
-
-	public LocalDate getIntroduced() {
-		return introduced;
-	}
-
-	public void setIntroduced(String introduced) {
-		setIntroduced(introduced, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
-	}
-
-	public void setIntroduced(String introduced, DateTimeFormatter formatter)  {
-		if (!introduced.equals("null")) {
-			this.introduced = LocalDate.parse(introduced, formatter);
-		}
-	}
-
-	public void setName(String name) {
-		this.name = name;
-
-	}
-
-	public void setCompanyID(String companyID) {
-		this.companyId = Integer.parseInt(companyID);
-	}
-
 }

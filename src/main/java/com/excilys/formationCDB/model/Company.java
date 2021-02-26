@@ -5,7 +5,25 @@ public class Company {
 	private int id;
 	private String name;
 	
-	public Company(String name, int id) {
+	public static class CompanyBuilder{
+		private int id;
+		private String name;
+		
+		public CompanyBuilder(int id) {
+			this.id = id;
+		}
+		
+		public CompanyBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		public Company build() {
+			return new Company(id, name);
+		}
+	}
+	
+	private Company(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}

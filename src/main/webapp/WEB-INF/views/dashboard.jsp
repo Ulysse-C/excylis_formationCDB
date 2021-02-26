@@ -75,15 +75,15 @@
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody id="results">
-					<c:forEach items="${computerList}" var="computer">
+					<c:forEach items="${computerList}" var="computerDTO">
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="0"></td>
 							<td><a href="editComputer.html" onclick=""><c:out
-										value="${computer.name}" /></a></td>
-							<td><c:out value="${computer.introduced}" /></td>
-							<td><c:out value="${computer.discontinued}" /></td>
-							<td><c:out value="${computer.company.name}" /></td>
+										value="${computerDTO.computerName}" /></a></td>
+							<td><c:out value="${computerDTO.introducedDate}" /></td>
+							<td><c:out value="${computerDTO.discontinuedDate}" /></td>
+							<td><c:out value="${computerDTO.companyName}" /></td>
 
 						</tr>
 					</c:forEach>
@@ -101,6 +101,9 @@
 			  		<c:if test="${not empty computerSearch}">
 			   			<c:param name="search" value="${computerSearch}"/>
 					</c:if>
+					<c:if test="${not empty pageSize}">
+				   			<c:param name="pageSize" value="${pageSize}"/>
+						</c:if>
 					</c:url>"
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
@@ -113,8 +116,11 @@
 				  		<c:if test="${not empty computerSearch}">
 				   			<c:param name="search" value="${computerSearch}"/>
 						</c:if>
+						<c:if test="${not empty pageSize}">
+				   			<c:param name="pageSize" value="${pageSize}"/>
+						</c:if>
 						</c:url>">
-					${i}</a></li>
+							${i}</a></li>
 				</c:forEach>
 				<li><a
 					href="<c:url value="/dashboard">
@@ -122,6 +128,9 @@
 			  		<c:if test="${not empty computerSearch}">
 			   			<c:param name="search" value="${computerSearch}"/>
 					</c:if>
+					<c:if test="${not empty pageSize}">
+				   			<c:param name="pageSize" value="${pageSize}"/>
+						</c:if>
 					</c:url>"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>

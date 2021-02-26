@@ -7,11 +7,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formationCDB.controller.ComputerController;
+import com.excilys.formationCDB.controller.cli.CliComputerController;
+import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
-
+import com.excilys.formationCDB.service.ComputerService;
 
 /**
  * Servlet implementation class DashBoardServlet
@@ -27,16 +28,9 @@ public class DashBoardServlet extends HttpServlet {
 	public static final String ATT_PAGEINDEX_FROM = "pageIndexFrom";
 	public static final String ATT_PAGEINDEX_TO = "pageIndexTo";
 	public static final String ATT_COMPUTER_NAME = "computerSearch";
+	private static final String ATT_PAGE_SIZE = "pageSize";
 
-	private ComputerController computerController;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public DashBoardServlet() {
-		super();
-		this.computerController = ComputerController.getInstance();
-	}
+	private ComputerService serviceController = ComputerService.getInstance();
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -71,7 +65,6 @@ public class DashBoardServlet extends HttpServlet {
 		this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
 	}
 
-
 	private void setGeneralAttributes(HttpServletRequest request, HttpServletResponse response, int pageNumber)
 			throws CustomSQLException {
 		request.setAttribute(VIEW, response);
@@ -79,28 +72,44 @@ public class DashBoardServlet extends HttpServlet {
 		int computerNb;
 		computerNb = setComputerList(request, pageNumber);
 		request.setAttribute(ATT_COMPUTER_NB, computerNb);
-		request.setAttribute(ATT_PAGEINDEX_FROM, computerController.getPageIndexFrom(pageNumber));
-		request.setAttribute(ATT_PAGEINDEX_TO, computerController.getPageIndexTo(pageNumber, computerNb));
 	}
-	
-	
+
+	private void setIndexAttributes(HttpServletRequest request, Page page, int computerNb) {
+		request.setAttribute(ATT_PAGEINDEX_FROM, page.getPageIndexFrom());
+		request.setAttribute(ATT_PAGEINDEX_TO, page.getPageIndexTo(computerNb));
+	}
 
 	private int setComputerList(HttpServletRequest request, int pageNumber) throws CustomSQLException {
 		int computerNb;
+		int pageSize = getPageSize(request);
+		Page<Computer> page;
 		if (request.getParameter("search") != null) {
-			request.setAttribute(ATT_COMPUTERDTO_LIST,
-					computerController
-							.getPageByName(new Page<Computer>(ComputerController.PAGE_SIZE, pageNumber, ComputerController.COMPUTER_TABLE_NAME),
-									request.getParameter("search"))
-							.getContent());
-			computerNb = computerController.getComputerNumberbyName(request.getParameter("search"));
+			page = serviceController 
+					.getPageByName(new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME),
+							request.getParameter("search"));
+			request.setAttribute(ATT_COMPUTERDTO_LIST, ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
+			computerNb = serviceController.getComputerNumberbyName(request.getParameter("search"));
+			request.setAttribute(ATT_COMPUTER_NAME, request.getParameter("search"));
 		} else {
-			request.setAttribute(ATT_COMPUTERDTO_LIST, computerController
-					.getPage(new Page<Computer>(ComputerController.PAGE_SIZE, pageNumber, ComputerController.COMPUTER_TABLE_NAME)).getContent());
-			computerNb = computerController.getComputerNumber();
+			page = serviceController 
+					.getPage(new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME));
+					request.setAttribute(ATT_COMPUTERDTO_LIST, ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
+			computerNb = serviceController.getComputerNumber();
 		}
-		request.setAttribute(ATT_COMPUTER_NAME, request.getParameter("search"));
+		setIndexAttributes(request, page, computerNb);
 		return computerNb;
+	}
+
+	private int getPageSize(HttpServletRequest request) {
+		int pageSize = -1;
+		if (request.getParameter("pageSize") != null) {
+			try {
+				pageSize = Integer.parseInt(request.getParameter("pageSize"));
+				request.setAttribute(ATT_PAGE_SIZE, pageSize);
+			} catch (NumberFormatException numberFormatExceptoin) {
+			}
+		}
+		return pageSize;
 	}
 
 	/**

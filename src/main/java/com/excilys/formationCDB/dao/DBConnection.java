@@ -35,17 +35,4 @@ public final class DBConnection {
 		return connection;
 	}
 
-	protected ResultSet executeQuery(String request) {
-		ResultSet resultSet = null;
-		Statement statement;
-		try {
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery(request);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return resultSet;
-	}
-
 }

@@ -28,21 +28,21 @@
 					<h1>Add Computer</h1>
 					<form action="addComputer" method="POST">
 						<span class="error"><c:out
-								value="${form.errors['sqlErrors']}" /></span>
+								value="${errors['sqlErrors']}" /></span>
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
 									placeholder="Computer name" required="required"
 									name="computerName"> <span class="error"><c:out
-								value="${form.errors['computerName']}" /></span>
+								value="${errors['computerName']}" /></span>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
 									placeholder="Introduced date" name="introduced"> <span
 									class="error"><c:out
-								value="${form.errors['introduced']}" /></span>
+								value="${errors['introduced']}" /></span>
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
@@ -58,7 +58,7 @@
 												value="${company.name}" /></option>
 									</c:forEach>
 								</select> <span class="error"><c:out
-								value="${form.errors['companyId']}" /></span>
+								value="${errors['companyId']}" /></span>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">

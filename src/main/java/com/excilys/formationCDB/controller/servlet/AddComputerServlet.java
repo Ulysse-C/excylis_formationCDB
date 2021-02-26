@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formationCDB.controller.CompanyController;
+import com.excilys.formationCDB.controller.cli.CliCompanyController;
+import com.excilys.formationCDB.dto.AddComputerDTO;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.model.Computer;
+import com.excilys.formationCDB.service.CompanyService;
 
 /**
  * Servlet implementation class addComputerServlet
@@ -18,21 +20,13 @@ import com.excilys.formationCDB.model.Computer;
 public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public static final String ATT_COMPUTER = "computer";
-	public static final String ATT_FORM = "form";
+	public static final String ATT_COMPUTERDTO = "computer";
+	public static final String ATT_ERRORS = "errors";
 	public static final String ATT_COMPANYLIST = "companyList";
 
 	public static final String VIEW = "/WEB-INF/views/addComputer.jsp";
 
-	private CompanyController companyController;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public AddComputerServlet() {
-		super();
-		companyController = CompanyController.getInstance();
-	}
+	private CompanyService serviceController = CompanyService.getInstance();
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -61,16 +55,16 @@ public class AddComputerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 		AddComputerForm form = new AddComputerForm();
-		Computer computer = form.addComputer(request);
+		AddComputerDTO computerDTO = form.addComputer(request);
 
-		request.setAttribute(ATT_FORM, form);
-		request.setAttribute(ATT_COMPUTER, computer);
+		request.setAttribute(ATT_ERRORS, form.getErrors());
+		request.setAttribute(ATT_COMPUTERDTO, computerDTO);
 		handleRequest(request, response);
 	}
 
 	private void addCompanyList(HttpServletRequest request) {
 		try {
-			request.setAttribute(ATT_COMPANYLIST, companyController.getCompanyList());
+			request.setAttribute(ATT_COMPANYLIST, serviceController.getCompanyList());
 		} catch (CustomSQLException e) {
 			e.printStackTrace();
 		}
