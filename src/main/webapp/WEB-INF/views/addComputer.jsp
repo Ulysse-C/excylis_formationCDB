@@ -26,7 +26,7 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="addComputer" method="POST">
+					<form action="addComputer" method="POST" onsubmit="return validateDates(introduced.value, discontinued.value)">
 						<span class="error"><c:out
 								value="${errors['sqlErrors']}" /></span>
 						<fieldset>
@@ -62,7 +62,7 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
+							<input type="submit" value="Add" class="btn btn-primary" on>
 							or <a href="dashboard" class="btn btn-default">Cancel</a>
 						</div>
 
@@ -71,5 +71,6 @@
 			</div>
 		</div>
 	</section>
+	<script src="../../formationCDB/js/dateValidator.js"></script>
 </body>
 </html>
