@@ -53,7 +53,9 @@ public class AddComputerForm {
 			try {
 				Computer computer = ComputerMapper.createComputer(computerDTO);
 				computerService.createComputer(computer);
-			} catch (CustomSQLException | CompanyKeyInvalidException sqlError) {
+			} catch (CustomSQLException sqlError) {
+				errors.put(SQL_ERRORS, sqlError.getMessage());
+			} catch(CompanyKeyInvalidException sqlError) {
 				errors.put(SQL_ERRORS, sqlError.getMessage());
 			}
 		}

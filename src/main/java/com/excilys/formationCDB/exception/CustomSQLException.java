@@ -6,7 +6,7 @@ import ch.qos.logback.classic.Logger;
 
 public class CustomSQLException extends Exception {
 	
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(CompanyKeyInvalidException.class);
+	private static final Logger logger = (Logger) LoggerFactory.getLogger(CustomSQLException.class);
 
 	public CustomSQLException() {
 		logger.error("SQL Error:");
