@@ -26,23 +26,23 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>Add Computer</h1>
-					<form action="addComputer" method="POST" onsubmit="return validateDates(introduced.value, discontinued.value)">
-						<span class="error"><c:out
-								value="${errors['sqlErrors']}" /></span>
+					<form action="addComputer" method="POST"
+						onsubmit="return validateDates(introduced.value, discontinued.value)">
+						<span class="error"><c:out value="${errors['sqlErrors']}" /></span>
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
 									placeholder="Computer name" required="required"
-									name="computerName"> <span class="error"><c:out
-								value="${errors['computerName']}" /></span>
+									name="computerName"> <span class="error">${computer.computerName }<c:out
+										value="${errors['computerName']}" /></span>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
 									placeholder="Introduced date" name="introduced"> <span
-									class="error"><c:out
-								value="${errors['introduced']}" /></span>
+									class="error" id="dateError"><c:out
+										value="${errors['introduced']}" /></span>
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
@@ -58,7 +58,7 @@
 												value="${company.name}" /></option>
 									</c:forEach>
 								</select> <span class="error"><c:out
-								value="${errors['companyId']}" /></span>
+										value="${errors['companyId']}" /></span>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">

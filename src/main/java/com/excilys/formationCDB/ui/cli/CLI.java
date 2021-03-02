@@ -6,15 +6,18 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import com.excilys.formationCDB.controller.cli.CLIHandler;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
 import com.excilys.formationCDB.exception.NoComputerSelectedException;
+import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
+import com.mysql.cj.log.Log;
 
 public class CLI {
 
@@ -48,8 +51,8 @@ public class CLI {
 			if (cliHandler != null) {
 				handleGeneralRequest();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException exception) {
+		CDBLogger.logError(exception);
 		}
 	}
 
@@ -101,15 +104,19 @@ public class CLI {
 
 			}
 		} catch (InvalidInputCLIHandlerException invalidInputException) {
+			CDBLogger.logInfo(invalidInputException);
 			output.println("Input not valid: " + invalidInputException.getMessage());
 			handleGeneralRequest();
 		} catch (CustomSQLException customSqlException) {
+			CDBLogger.logError(customSqlException);
 			output.println("Sql Error: " + customSqlException.getMessage());
 			handleGeneralRequest();
 		} catch (CompanyKeyInvalidException companyKeyInvalidException) {
+			CDBLogger.logInfo(companyKeyInvalidException);
 			output.println("Sql Error: The company id is not valid");
 			handleGeneralRequest();
-		} catch (NoComputerSelectedException e) {
+		} catch (NoComputerSelectedException noComputerException) {
+			CDBLogger.logError(noComputerException);
 			output.println("Sql Error: No computer could be selected");
 			handleGeneralRequest();
 		}
@@ -145,14 +152,15 @@ public class CLI {
 				handleGeneralRequest();
 			}
 		} catch (CustomSQLException customSqlException) {
+			CDBLogger.logInfo(customSqlException);
 			output.println("Sql Error:" + customSqlException.getMessage());
 			handleGeneralRequest();
 		}
 	}
 
-	private void printSingleComputer(Computer singleComputer) {
-		if (singleComputer != null) {
-			output.println(singleComputer.toString());
+	private void printSingleComputer(Optional<Computer> optional) {
+		if (optional.isPresent()) {
+			output.println(optional.get());
 		} else {
 			output.println("This computer is not available");
 		}

@@ -1,6 +1,5 @@
 package com.excilys.formationCDB.dao;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +9,7 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
@@ -43,10 +43,9 @@ public final class DAOComputer {
 		return INSTANCE;
 	}
 
-	public Computer getComputerById(int id) throws CustomSQLException {
-		Computer computer = null;
-		try (Connection connection = dbConnection.getconnection()) {
-			PreparedStatement preparedStatement = connection.prepareStatement(getComputerByIdQuery);
+	public Optional<Computer> getComputerById(int id) throws CustomSQLException {
+		Optional<Computer> computer = Optional.empty();
+		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerByIdQuery)) {
 			preparedStatement.setInt(1, id);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			computer = getSingleComputerFromResultSet(resultSet);
@@ -56,8 +55,8 @@ public final class DAOComputer {
 		return computer;
 	}
 
-	private ArrayList<Computer> convertToListComputerList(ResultSet resultSetComputerList) throws SQLException {
-		ArrayList<Computer> computerList = new ArrayList<>();
+	private ArrayList<Optional<Computer>> convertToListComputerList(ResultSet resultSetComputerList) throws SQLException {
+		ArrayList<Optional<Computer>> computerList = new ArrayList<>();
 		while (resultSetComputerList.next()) {
 			computerList.add(convertToComputer(resultSetComputerList));
 		}
@@ -65,14 +64,14 @@ public final class DAOComputer {
 		return computerList;
 	}
 
-	private Computer convertToComputer(ResultSet resultSetComputer) throws SQLException {
-		Company company = new Company.CompanyBuilder(resultSetComputer.getInt("computer.company_id"))
+	private Optional<Computer> convertToComputer(ResultSet resultSetComputer) throws SQLException {
+		Company company = new Company.CompanyBuilder().setId(resultSetComputer.getInt("computer.company_id"))
 				.setName(resultSetComputer.getNString("company.name")).build();
 		Computer computer = new Computer.ComputerBuilder().setName(resultSetComputer.getString("computer.name"))
 				.setId(resultSetComputer.getInt("computer.id")).setCompany(company)
 				.setDiscontinued(toLocalDate(resultSetComputer.getDate("computer.discontinued")))
 				.setIntroduced(toLocalDate(resultSetComputer.getDate("computer.introduced"))).build();
-		return computer;
+		return Optional.ofNullable(computer);
 	}
 
 	private LocalDate toLocalDate(Date date) {
@@ -83,8 +82,8 @@ public final class DAOComputer {
 		return localDate;
 	}
 
-	public Computer getSingleComputerFromResultSet(ResultSet resultSet) throws SQLException {
-		Computer computer = null;
+	public Optional<Computer> getSingleComputerFromResultSet(ResultSet resultSet) throws SQLException {
+		Optional<Computer> computer = Optional.empty();
 		if (resultSet != null) {
 			if (resultSet.isBeforeFirst()) {
 				resultSet.next();
@@ -96,9 +95,8 @@ public final class DAOComputer {
 
 	public void createComputer(Computer computer) throws CustomSQLException, CompanyKeyInvalidException {
 		if (computer != null) {
-			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(createComputerQuery,
-						Statement.RETURN_GENERATED_KEYS);
+			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(createComputerQuery,
+					Statement.RETURN_GENERATED_KEYS)) {
 				prepareStatmentCreate(preparedStatement, computer);
 				preparedStatement.executeUpdate();
 			} catch (SQLException sqlException) {
@@ -128,8 +126,7 @@ public final class DAOComputer {
 
 	public void updateComputerName(Computer computer) throws CustomSQLException, NoComputerSelectedException {
 		if (computer != null) {
-			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(updateComputerNameQuery);
+			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(updateComputerNameQuery)) {
 				preparedStatement.setNString(1, computer.getName());
 				preparedStatement.setInt(2, computer.getId());
 				int row = preparedStatement.executeUpdate();
@@ -144,8 +141,7 @@ public final class DAOComputer {
 
 	public void deleteComputerById(Computer computer) throws CustomSQLException, NoComputerSelectedException {
 		if (computer != null) {
-			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(deleteComputerByIdQuery);
+			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(deleteComputerByIdQuery)) {
 				preparedStatement.setInt(1, computer.getId());
 				int row = preparedStatement.executeUpdate();
 				if (row == 0) {
@@ -159,8 +155,7 @@ public final class DAOComputer {
 
 	public void updateComputerNameAndDate(Computer computer) throws NoComputerSelectedException, CustomSQLException {
 		if (computer != null) {
-			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(updateComputerNameAndDateQuery);
+			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(updateComputerNameAndDateQuery)) {
 				prepareStatmentUpdateNameDate(preparedStatement, computer);
 				int row = preparedStatement.executeUpdate();
 				if (row == 0) {
@@ -192,10 +187,9 @@ public final class DAOComputer {
 		return number;
 	}
 
-	public List<Computer> getComputerListByName(String computerName) throws CustomSQLException {
-		List<Computer> computerList = new ArrayList<Computer>();
-		try (Connection connection = dbConnection.getconnection()) {
-			PreparedStatement preparedStatement = connection.prepareStatement(getComputerListByNameQuery);
+	public List<Optional<Computer>> getComputerListByName(String computerName) throws CustomSQLException {
+		List<Optional<Computer>> computerList = new ArrayList<Optional<Computer>>();
+		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerListByNameQuery)) {
 			preparedStatement.setString(1, "%" + computerName + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
 			computerList = convertToListComputerList(resultSet);
@@ -207,8 +201,7 @@ public final class DAOComputer {
 
 	public int getComputerNumber() throws CustomSQLException {
 		int number = 0;
-		try (Connection connection = dbConnection.getconnection()) {
-			PreparedStatement preparedStatement = connection.prepareStatement(getComputerNumberQuery);
+		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerNumberQuery)) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			number = getComputerNumberFromResultSet(resultSet);
 		} catch (SQLException sqlException) {
@@ -219,8 +212,7 @@ public final class DAOComputer {
 
 	public int getComputerNumberbyName(String search) throws CustomSQLException {
 		int number = 0;
-		try (Connection connection = dbConnection.getconnection()) {
-			PreparedStatement preparedStatement = connection.prepareStatement(getComputerNumberByNameQuery);
+		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerNumberByNameQuery)) {
 			preparedStatement.setString(1, "%" + search + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
 			number = getComputerNumberFromResultSet(resultSet);
@@ -232,8 +224,7 @@ public final class DAOComputer {
 
 	public Page<Computer> getPage(Page<Computer> page) throws CustomSQLException {
 		if (page != null) {
-			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(getPageQuery);
+			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getPageQuery)) {
 				preparedStatement.setInt(1, page.getSize());
 				preparedStatement.setInt(2, (page.getNumber() - 1) * page.getSize());
 				ResultSet resultSet = preparedStatement.executeQuery();
@@ -247,8 +238,7 @@ public final class DAOComputer {
 
 	public Page<Computer> getPageByName(Page<Computer> page, String search) throws CustomSQLException {
 		if (page != null) {
-			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(getPageByNameQuery);
+			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getPageByNameQuery)) {
 				preparedStatement.setString(1, "%" + search + "%");
 				preparedStatement.setInt(2, page.getSize());
 				preparedStatement.setInt(3, (page.getNumber() - 1) * page.getSize());

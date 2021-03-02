@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.excilys.formationCDB.controller.servlet.AddComputerForm;
-import com.excilys.formationCDB.controller.servlet.AddComputerServlet;
 import com.excilys.formationCDB.dto.AddComputerDTO;
 import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.InvalidWebInputException;
+import com.excilys.formationCDB.logger.CDBLogger;
 
 public class AddComputerValidator {
 	private static final AddComputerValidator INSTANCE = new AddComputerValidator();
@@ -31,25 +31,29 @@ public class AddComputerValidator {
 			validateName(computerDTO.computerName);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(AddComputerForm.INPUT_NAME, invalidInput.getMessage());
+			CDBLogger.logInfo(invalidInput);
 		}
 		try {
 			validateCompanyID(computerDTO.companyId);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(AddComputerForm.INPUT_COMPANYID, invalidInput.getMessage());
+			CDBLogger.logInfo(invalidInput);
 		}
 		try {
 			validateDates(computerDTO.introducedDate, computerDTO.discontinuedDate);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(AddComputerForm.INPUT_INTRODUCED, invalidInput.getMessage());
+			CDBLogger.logInfo(invalidInput);
 		} catch (DateTimeParseException invalidInput) {
-			errors.put(AddComputerForm.INPUT_INTRODUCED, "invalid date format");
+			errors.put(AddComputerForm.INPUT_INTRODUCED, "invalid dates");
+			CDBLogger.logInfo(invalidInput);
 		}
 		
 		return errors;
 	}
 
 	private void validateName(String name) throws InvalidWebInputException {
-		if (name != null) {
+		if (name != "") {
 			if (!name.matches(nameRegex)) {
 				throw new InvalidWebInputException("the name format is not valid");
 			}
@@ -76,7 +80,7 @@ public class AddComputerValidator {
 	}
 
 	private void validateCompanyID(String companyID) throws InvalidWebInputException {
-		if (companyID != null) {
+		if (companyID != "") {
 			int companyId = Integer.parseInt(companyID);
 			if (companyId <= 0 || companyId > MAX_COMPANYID) {
 				throw new InvalidWebInputException("invalid company");

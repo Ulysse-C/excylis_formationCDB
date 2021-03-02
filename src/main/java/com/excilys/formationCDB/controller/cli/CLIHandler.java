@@ -1,5 +1,7 @@
 package com.excilys.formationCDB.controller.cli;
 
+import java.util.Optional;
+
 import com.excilys.formationCDB.dto.AddComputerDTO;
 import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
@@ -20,8 +22,8 @@ public class CLIHandler {
 		this.computerController = CliComputerController.getInstance();
 	}
 
-	public Computer getSingleComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException {
-		Computer computer;
+	public Optional<Computer> getSingleComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException {
+		Optional<Computer> computer;
 		if (inputList.length != 2) {
 			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		}

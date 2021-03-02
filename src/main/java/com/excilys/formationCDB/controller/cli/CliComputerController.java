@@ -1,6 +1,7 @@
 package com.excilys.formationCDB.controller.cli;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
@@ -26,7 +27,7 @@ public final class CliComputerController {
 		return INSTANCE;
 	}
 
-	public Computer getComputerById(int id) throws CustomSQLException {
+	public Optional<Computer> getComputerById(int id) throws CustomSQLException {
 		return computerService.getComputerById(id);
 	}
 
@@ -56,7 +57,7 @@ public final class CliComputerController {
 		return computerService.getComputerNumber();
 	}
 
-	public List<Computer> getComputerListByName(String search) throws CustomSQLException {
+	public List<Optional<Computer>> getComputerListByName(String search) throws CustomSQLException {
 		return computerService.getComputerListByName(search);
 	}
 

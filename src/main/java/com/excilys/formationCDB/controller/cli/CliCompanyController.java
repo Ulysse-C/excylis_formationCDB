@@ -1,6 +1,7 @@
 package com.excilys.formationCDB.controller.cli;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.model.Company;
@@ -27,7 +28,7 @@ public final class CliCompanyController {
 		return companyService.getPage(page);
 	}
 
-	public List<Company> getCompanyList() throws CustomSQLException {
+	public List<Optional<Company>> getCompanyList() throws CustomSQLException {
 		return companyService.getCompanyList();
 	}
 

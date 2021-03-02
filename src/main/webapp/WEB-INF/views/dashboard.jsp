@@ -136,9 +136,11 @@
 				</a></li>
 			</ul>
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<button type="button" class="btn btn-default">10</button>
-				<button type="button" class="btn btn-default">50</button>
-				<button type="button" class="btn btn-default">100</button>
+				<form method=GET action=dashboard>
+					<input type="submit" class="btn btn-default" name="pageSize" value="10"/>
+					<input type="submit" class="btn btn-default" name="pageSize" value="50"/>
+					<input type="submit" class="btn btn-default" name="pageSize" value="100"/>
+				</form>
 			</div>
 		</div>
 

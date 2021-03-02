@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.excilys.formationCDB.controller.cli.CliComputerController;
 import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
 import com.excilys.formationCDB.service.ComputerService;
@@ -30,7 +31,7 @@ public class DashBoardServlet extends HttpServlet {
 	public static final String ATT_COMPUTER_NAME = "computerSearch";
 	private static final String ATT_PAGE_SIZE = "pageSize";
 
-	private ComputerService serviceController = ComputerService.getInstance();
+	private ComputerService serviceComputer = ComputerService.getInstance();
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -39,12 +40,10 @@ public class DashBoardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			handleRequest(request, response);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ServletException exception) {
+			CDBLogger.logError(exception);
+		} catch (IOException exception) {
+			CDBLogger.logError(exception);
 		}
 	}
 
@@ -56,11 +55,12 @@ public class DashBoardServlet extends HttpServlet {
 				try {
 					pageNumber = Integer.parseInt(request.getParameter("page"));
 				} catch (NumberFormatException numberFormatExceptoin) {
+					CDBLogger.logInfo(numberFormatExceptoin);
 				}
 			}
 			setGeneralAttributes(request, response, pageNumber);
-		} catch (CustomSQLException e) {
-			e.printStackTrace();
+		} catch (CustomSQLException exception) {
+			CDBLogger.logError(exception);
 		}
 		this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
 	}
@@ -84,17 +84,17 @@ public class DashBoardServlet extends HttpServlet {
 		int pageSize = getPageSize(request);
 		Page<Computer> page;
 		if (request.getParameter("search") != null) {
-			page = serviceController 
+			page = serviceComputer 
 					.getPageByName(new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME),
 							request.getParameter("search"));
 			request.setAttribute(ATT_COMPUTERDTO_LIST, ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
-			computerNb = serviceController.getComputerNumberbyName(request.getParameter("search"));
+			computerNb = serviceComputer.getComputerNumberbyName(request.getParameter("search"));
 			request.setAttribute(ATT_COMPUTER_NAME, request.getParameter("search"));
 		} else {
-			page = serviceController 
+			page = serviceComputer 
 					.getPage(new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME));
 					request.setAttribute(ATT_COMPUTERDTO_LIST, ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
-			computerNb = serviceController.getComputerNumber();
+			computerNb = serviceComputer.getComputerNumber();
 		}
 		setIndexAttributes(request, page, computerNb);
 		return computerNb;
@@ -107,6 +107,7 @@ public class DashBoardServlet extends HttpServlet {
 				pageSize = Integer.parseInt(request.getParameter("pageSize"));
 				request.setAttribute(ATT_PAGE_SIZE, pageSize);
 			} catch (NumberFormatException numberFormatExceptoin) {
+				CDBLogger.logInfo(numberFormatExceptoin);
 			}
 		}
 		return pageSize;

@@ -14,14 +14,14 @@ import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidWebInputException;
+import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.service.ComputerService;
 
 public class AddComputerForm {
-	private ComputerService computerService = ComputerService.getInstance(); 
+	private ComputerService computerService = ComputerService.getInstance();
 
-	
 	public static final String INPUT_NAME = "computerName";
 	public static final String INPUT_INTRODUCED = "introduced";
 	public static final String INPUT_DISCONTINUED = "discontinued";
@@ -34,7 +34,6 @@ public class AddComputerForm {
 		errors = new HashMap<String, String>();
 	}
 
-
 	public Map<String, String> getErrors() {
 		return errors;
 	}
@@ -45,18 +44,20 @@ public class AddComputerForm {
 		computerDTO.companyId = request.getParameter(INPUT_COMPANYID);
 		computerDTO.introducedDate = request.getParameter(INPUT_INTRODUCED);
 		computerDTO.discontinuedDate = request.getParameter(INPUT_DISCONTINUED);
-		
-		
+
 		AddComputerValidator validator = AddComputerValidator.getInstance();
 		errors = validator.validate(computerDTO);
 		if (errors.isEmpty()) {
 			try {
 				Computer computer = ComputerMapper.createComputer(computerDTO);
 				computerService.createComputer(computer);
+				computerDTO = null;
 			} catch (CustomSQLException sqlError) {
+				CDBLogger.logInfo(sqlError);
 				errors.put(SQL_ERRORS, sqlError.getMessage());
-			} catch(CompanyKeyInvalidException sqlError) {
-				errors.put(SQL_ERRORS, sqlError.getMessage());
+			} catch (CompanyKeyInvalidException companyKeyException) {
+				CDBLogger.logInfo(companyKeyException);
+				errors.put(SQL_ERRORS, companyKeyException.getMessage());
 			}
 		}
 		return computerDTO;

@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.formationCDB.controller.cli.CliCompanyController;
 import com.excilys.formationCDB.dto.AddComputerDTO;
+import com.excilys.formationCDB.dto.mapper.CompanyMapper;
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.service.CompanyService;
 
@@ -40,12 +42,10 @@ public class AddComputerServlet extends HttpServlet {
 		addCompanyList(request);
 		try {
 			this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ServletException exception) {
+			CDBLogger.logError(exception);
+		} catch (IOException exception) {
+			CDBLogger.logError(exception);
 		}
 	}
 
@@ -64,9 +64,9 @@ public class AddComputerServlet extends HttpServlet {
 
 	private void addCompanyList(HttpServletRequest request) {
 		try {
-			request.setAttribute(ATT_COMPANYLIST, serviceController.getCompanyList());
-		} catch (CustomSQLException e) {
-			e.printStackTrace();
+			request.setAttribute(ATT_COMPANYLIST,CompanyMapper.createAddCompanyDTOList(serviceController.getCompanyList()) );
+		} catch (CustomSQLException exception) {
+			CDBLogger.logError(exception);
 		}
 	}
 }

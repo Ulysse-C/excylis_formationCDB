@@ -2,21 +2,23 @@ package com.excilys.formationCDB.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formationCDB.exception.CustomSQLException;
 
 public class Page<E> {
 	
 	public static final int DEFAULT_PAGE_SIZE = 10;
-	private final static int PAGEINDEX_SIZE = 7;
-	private final static int PAGEINDEX_BEFORE_CURRENT_PAGE = 4;
+	public final static int PAGEINDEX_SIZE = 7;
+	public final static int PAGEINDEX_BEFORE_CURRENT_PAGE = 4;
 	
 	private int size;
 	private int number;
 	private String table;
-	private List<E> content;
+	private List<Optional<E>> content;
 	private Page nextPage;
 	private Page previousPage;
+
 
 	public Page(int size, int number, String table) {
 		content = new ArrayList<>();
@@ -37,15 +39,15 @@ public class Page<E> {
 		return number;
 	}
 
-	public void setContent(List<E> content) {
-		this.content = content;
+	public void setContent(List<Optional<E>> list) {
+		this.content = list;
 	}
 
 	public String getTable() {
 		return table;
 	}
 
-	public List<E> getContent() {
+	public List<Optional<E>> getContent() {
 		return content;
 	}
 

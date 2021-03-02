@@ -1,11 +1,11 @@
 package com.excilys.formationCDB.dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.model.Company;
@@ -28,10 +28,9 @@ public final class DAOCompany {
 		return INSTANCE;
 	}
 
-	public Company getCompanyById(int id) throws CustomSQLException {
-		Company company = null;
-		try (Connection connection = dbConnection.getconnection()) {
-			PreparedStatement preparedStatement = connection.prepareStatement(getCompanyByIdQuery);
+	public Optional<Company> getCompanyById(int id) throws CustomSQLException {
+		Optional<Company> company = Optional.empty();
+		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getCompanyByIdQuery)) {
 			preparedStatement.setInt(1, id);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			if (resultSet.isBeforeFirst()) {
@@ -44,26 +43,23 @@ public final class DAOCompany {
 		return company;
 	}
 
-	private ArrayList<Company> convertToListCompanyList(ResultSet resultSetCompanyList)
+	private List<Optional<Company>> convertToListCompanyList(ResultSet resultSetCompanyList)
 			throws CustomSQLException, SQLException {
-		ArrayList<Company> companyList = new ArrayList<>();
+		ArrayList<Optional<Company>> companyList = new ArrayList<>();
 		while (resultSetCompanyList.next()) {
 			companyList.add(convertToCompany(resultSetCompanyList));
 		}
 		return companyList;
 	}
 
-	private Company convertToCompany(ResultSet resultSetCompany) throws CustomSQLException, SQLException {
-		Company company = null;
-		company = new Company.CompanyBuilder(resultSetCompany.getInt("id"))
-				.setName(resultSetCompany.getNString("name")).build();
-		return company;
+	private Optional<Company> convertToCompany(ResultSet resultSetCompany) throws CustomSQLException, SQLException {
+		return Optional.ofNullable(new Company.CompanyBuilder().setId(resultSetCompany.getInt("id"))
+				.setName(resultSetCompany.getNString("name")).build());
 	}
 
 	public Page<Company> getPage(Page<Company> page) throws CustomSQLException {
 		if (page != null) {
-			try (Connection connection = dbConnection.getconnection()) {
-				PreparedStatement preparedStatement = connection.prepareStatement(getPageQuery);
+			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getPageQuery)) {
 				preparedStatement.setInt(1, page.getSize());
 				preparedStatement.setInt(2, (page.getNumber() - 1) * page.getSize());
 				ResultSet resultSet = preparedStatement.executeQuery();
@@ -75,10 +71,9 @@ public final class DAOCompany {
 		return page;
 	}
 
-	public List<Company> getCompanyList() throws CustomSQLException {
-		ArrayList<Company> companyList = new ArrayList<>();
-		try (Connection connection = dbConnection.getconnection()) {
-			PreparedStatement preparedStatement = connection.prepareStatement(getCompanyListQuery);
+	public List<Optional<Company>> getCompanyList() throws CustomSQLException {
+		List<Optional<Company>> companyList = new ArrayList<>();
+		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getCompanyListQuery)) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			companyList = convertToListCompanyList(resultSet);
 		} catch (SQLException sqlException) {

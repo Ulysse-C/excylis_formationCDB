@@ -2,10 +2,11 @@ package com.excilys.formationCDB.dto;
 
 public class DashBoardComputerDTO {
 
-	public String companyName;
-	public String introducedDate;
-	public String discontinuedDate;
-	public String computerName;
+	public String companyName = "";
+	public String introducedDate = "";
+	public String discontinuedDate = "";
+	public String computerName = "";
+	
 	public String getCompanyName() {
 		return companyName;
 	}

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formationCDB.dto.AddComputerDTO;
 import com.excilys.formationCDB.dto.DashBoardComputerDTO;
@@ -16,31 +17,32 @@ public class ComputerMapper {
 	public static String DATE_FORMAT = "yyyy-MM-dd";
 
 	public static Computer createComputer(AddComputerDTO computerDTO) {
-		Company company = new Company.CompanyBuilder(Integer.parseInt(computerDTO.companyId)).build();
+		Company company = new Company.CompanyBuilder().setId(Integer.parseInt(computerDTO.companyId)).build();
 		ComputerBuilder computerBuilder = new Computer.ComputerBuilder().setCompany(company).setName(computerDTO.computerName);
 		if (computerDTO.introducedDate != "") {
 			computerBuilder.setIntroduced(
 					LocalDate.parse(computerDTO.introducedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
 		}
 		if (computerDTO.discontinuedDate != "") {
-			computerBuilder.setIntroduced(
+			computerBuilder.setDiscontinued(
 					LocalDate.parse(computerDTO.discontinuedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
 		}
-		System.out.println(computerBuilder.build().toString());
 		return computerBuilder.build();
 	}
 
-	public static List<DashBoardComputerDTO> createDashBoardComputerDTOList(List<Computer> content) {
+	public static List<DashBoardComputerDTO> createDashBoardComputerDTOList(List<Optional<Computer>> list) {
 		List<DashBoardComputerDTO> result = new ArrayList<>();
-		for (Computer computer : content) {
-			result.add(createDashBoardComputerDTO(computer));
+		for (Optional<Computer> computer : list) {
+			result.add(createDashBoardComputerDTO(computer.get()));
 		}
 		return result;
 	}
 
-	private static DashBoardComputerDTO createDashBoardComputerDTO(Computer computer) {
+	public static DashBoardComputerDTO createDashBoardComputerDTO(Computer computer) {
 		DashBoardComputerDTO computerDTO = new DashBoardComputerDTO();
-		computerDTO.companyName = computer.getCompany().getName();
+		if (computer.getCompany() != null) {
+			computerDTO.companyName = computer.getCompany().getName();
+		}
 		computerDTO.computerName = computer.getName();
 		if (computer.getDiscontinued() != null) {
 			computerDTO.discontinuedDate = computer.getDiscontinued().toString();

@@ -1,6 +1,7 @@
 package com.excilys.formationCDB.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formationCDB.dao.DAOComputer;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
@@ -22,7 +23,7 @@ public final class ComputerService {
 		return INSTANCE;
 	}
 
-	public Computer getComputerById(int id) throws CustomSQLException {
+	public Optional<Computer> getComputerById(int id) throws CustomSQLException {
 		return daoComputer.getComputerById(id);
 	}
 
@@ -52,7 +53,7 @@ public final class ComputerService {
 		return daoComputer.getComputerNumber();
 	}
 
-	public List<Computer> getComputerListByName(String search) throws CustomSQLException {
+	public List<Optional<Computer>> getComputerListByName(String search) throws CustomSQLException {
 		return daoComputer.getComputerListByName(search);
 	}
 

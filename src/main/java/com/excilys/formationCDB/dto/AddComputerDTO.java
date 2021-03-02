@@ -2,10 +2,11 @@ package com.excilys.formationCDB.dto;
 
 public class AddComputerDTO {
 	
-	public String companyId;
-	public String introducedDate;
-	public String discontinuedDate;
-	public String computerName;
+	public String companyId = "";
+	public String introducedDate = "";
+	public String discontinuedDate = "";
+	public String computerName = "";
+	
 	public String getCompanyId() {
 		return companyId;
 	}

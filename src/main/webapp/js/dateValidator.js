@@ -1,7 +1,8 @@
 function validateDates(introduced, discontinued) {
-	var result = isValidDate(introduced);
-	result = result && isValidDate(discontinued);
-	result = result && (new Date(introduced) < new Date(discontinued));
+	var result = isValidDate(introduced) && isValidDate(discontinued)&& (new Date(introduced) < new Date(discontinued));
+	if (!result) {
+		document.getElementById("dateError").innerHTML="invalid dates";
+	}
 	return result;
 }
 
@@ -11,7 +12,6 @@ function isValidDate(dateString)
     // First check for the pattern
     var datePattern = new RegExp("^\\d{4}-\\d{1,2}-\\d{1,2}")
     if(!datePattern.test(dateString)) {
-    			console.log("format pas ok " + datePattern + " " + dateString)
         return false;
     }
 
