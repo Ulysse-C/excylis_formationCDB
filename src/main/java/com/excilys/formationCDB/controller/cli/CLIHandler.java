@@ -94,8 +94,7 @@ public class CLIHandler {
 		} else if (!isInteger(inputList[1], 10)) {
 			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
-		computer = new Computer.ComputerBuilder().setId(Integer.parseInt(inputList[1])).build();
-		computerController.deleteComputerById(computer);
+		computerController.deleteComputerById(Integer.parseInt(inputList[1]));
 	}
 
 	// https://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java

@@ -6,6 +6,7 @@ public class DashBoardComputerDTO {
 	public String introducedDate = "";
 	public String discontinuedDate = "";
 	public String computerName = "";
+	public String computerId = "";
 	
 	public String getCompanyName() {
 		return companyName;
@@ -18,6 +19,9 @@ public class DashBoardComputerDTO {
 	}
 	public String getComputerName() {
 		return computerName;
+	}
+	public String getComputerId() {
+		return computerId;
 	}
 
 }

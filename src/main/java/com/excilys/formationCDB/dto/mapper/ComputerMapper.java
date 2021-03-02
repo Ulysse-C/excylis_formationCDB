@@ -40,13 +40,13 @@ public class ComputerMapper {
 
 	public static DashBoardComputerDTO createDashBoardComputerDTO(Computer computer) {
 		DashBoardComputerDTO computerDTO = new DashBoardComputerDTO();
+		computerDTO.computerName = computer.getName();
+		computerDTO.computerId = String.valueOf(computer.getId());
 		if (computer.getCompany() != null) {
 			computerDTO.companyName = computer.getCompany().getName();
 		}
-		computerDTO.computerName = computer.getName();
 		if (computer.getDiscontinued() != null) {
 			computerDTO.discontinuedDate = computer.getDiscontinued().toString();
-
 		}
 		if (computer.getIntroduced() != null) {
 			computerDTO.introducedDate = computer.getIntroduced().toString();

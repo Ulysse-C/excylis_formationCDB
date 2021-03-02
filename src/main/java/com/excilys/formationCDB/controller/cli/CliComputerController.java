@@ -40,8 +40,8 @@ public final class CliComputerController {
 		computerService.updateComputerName(computer);
 	}
 
-	public void deleteComputerById(Computer computer) throws CustomSQLException, NoComputerSelectedException {
-		computerService.deleteComputerById(computer);
+	public void deleteComputerById(int id) throws CustomSQLException, NoComputerSelectedException {
+		computerService.deleteComputerById(id);
 	}
 
 	public Page getPage(Page page) throws CustomSQLException {

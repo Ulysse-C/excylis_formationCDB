@@ -17,7 +17,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
+			<a class="navbar-brand" href="/dashboard"> Application - Computer
 				Database </a>
 		</div>
 	</header>
@@ -77,10 +77,12 @@
 				<tbody id="results">
 					<c:forEach items="${computerList}" var="computerDTO">
 						<tr>
-							<td class="editMode"><input type="checkbox" name="cb"
-								class="cb" value="0"></td>
-							<td><a href="editComputer.html" onclick=""><c:out
-										value="${computerDTO.computerName}" /></a></td>
+							<td class="editMode"><input type="checkbox" name="delete"
+								class="cb" value="${computerDTO.computerId}"></td>
+							<td><a
+								href="<c:url value="/editComputer"><c:param name="computerId" 
+								value="${computerDTO.computerId}"/></c:url>">
+								<c:out	value="${computerDTO.computerName}" /></a></td>
 							<td><c:out value="${computerDTO.introducedDate}" /></td>
 							<td><c:out value="${computerDTO.discontinuedDate}" /></td>
 							<td><c:out value="${computerDTO.companyName}" /></td>

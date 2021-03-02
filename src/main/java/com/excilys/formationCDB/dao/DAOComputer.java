@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.NoComputerSelectedException;
+import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
@@ -34,7 +34,6 @@ public final class DAOComputer {
 	private String getComputerNumberQuery = "SELECT COUNT(*) AS nbComputer FROM computer";
 	private String getComputerNumberByNameQuery = "SELECT COUNT(name) AS nbComputer FROM computer WHERE computer.name LIKE ?";
 
-	private final int ERROR_CODE_INVALID_EXTERN_KEY_SQL = 1452;
 	private DAOComputer() {
 		dbConnection = DBConnection.getInstance();
 	}
@@ -45,17 +44,19 @@ public final class DAOComputer {
 
 	public Optional<Computer> getComputerById(int id) throws CustomSQLException {
 		Optional<Computer> computer = Optional.empty();
-		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerByIdQuery)) {
+		try (PreparedStatement preparedStatement = dbConnection.getconnection()
+				.prepareStatement(getComputerByIdQuery)) {
 			preparedStatement.setInt(1, id);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			computer = getSingleComputerFromResultSet(resultSet);
 		} catch (SQLException sqlException) {
-			throw new CustomSQLException(sqlException.getMessage());
+			CDBLogger.logError(sqlException);
 		}
 		return computer;
 	}
 
-	private ArrayList<Optional<Computer>> convertToListComputerList(ResultSet resultSetComputerList) throws SQLException {
+	private ArrayList<Optional<Computer>> convertToListComputerList(ResultSet resultSetComputerList)
+			throws SQLException {
 		ArrayList<Optional<Computer>> computerList = new ArrayList<>();
 		while (resultSetComputerList.next()) {
 			computerList.add(convertToComputer(resultSetComputerList));
@@ -93,17 +94,15 @@ public final class DAOComputer {
 		return computer;
 	}
 
-	public void createComputer(Computer computer) throws CustomSQLException, CompanyKeyInvalidException {
+	public void createComputer(Computer computer) {
 		if (computer != null) {
-			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(createComputerQuery,
-					Statement.RETURN_GENERATED_KEYS)) {
+			try (PreparedStatement preparedStatement = dbConnection.getconnection()
+					.prepareStatement(createComputerQuery, Statement.RETURN_GENERATED_KEYS)) {
 				prepareStatmentCreate(preparedStatement, computer);
 				preparedStatement.executeUpdate();
 			} catch (SQLException sqlException) {
-				if (sqlException.getErrorCode() == ERROR_CODE_INVALID_EXTERN_KEY_SQL) {
-					throw new CompanyKeyInvalidException();
-				}
-				throw new CustomSQLException(sqlException.getMessage());
+				CDBLogger.logError(sqlException);
+
 			}
 		}
 	}
@@ -124,9 +123,10 @@ public final class DAOComputer {
 		}
 	}
 
-	public void updateComputerName(Computer computer) throws CustomSQLException, NoComputerSelectedException {
+	public void updateComputerName(Computer computer) throws NoComputerSelectedException {
 		if (computer != null) {
-			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(updateComputerNameQuery)) {
+			try (PreparedStatement preparedStatement = dbConnection.getconnection()
+					.prepareStatement(updateComputerNameQuery)) {
 				preparedStatement.setNString(1, computer.getName());
 				preparedStatement.setInt(2, computer.getId());
 				int row = preparedStatement.executeUpdate();
@@ -134,35 +134,35 @@ public final class DAOComputer {
 					throw new NoComputerSelectedException("Update Name");
 				}
 			} catch (SQLException sqlException) {
-				throw new CustomSQLException(sqlException.getMessage());
+				CDBLogger.logError(sqlException);
 			}
 		}
 	}
 
-	public void deleteComputerById(Computer computer) throws CustomSQLException, NoComputerSelectedException {
-		if (computer != null) {
-			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(deleteComputerByIdQuery)) {
-				preparedStatement.setInt(1, computer.getId());
-				int row = preparedStatement.executeUpdate();
-				if (row == 0) {
-					throw new NoComputerSelectedException("Delete");
-				}
-			} catch (SQLException sqlException) {
-				throw new CustomSQLException(sqlException.getMessage());
+	public void deleteComputerById(int id) throws NoComputerSelectedException {
+		try (PreparedStatement preparedStatement = dbConnection.getconnection()
+				.prepareStatement(deleteComputerByIdQuery)) {
+			preparedStatement.setInt(1, id);
+			int row = preparedStatement.executeUpdate();
+			if (row == 0) {
+				throw new NoComputerSelectedException("Delete");
 			}
+		} catch (SQLException sqlException) {
+			CDBLogger.logError(sqlException);
 		}
 	}
 
-	public void updateComputerNameAndDate(Computer computer) throws NoComputerSelectedException, CustomSQLException {
+	public void updateComputerNameAndDate(Computer computer) throws NoComputerSelectedException {
 		if (computer != null) {
-			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(updateComputerNameAndDateQuery)) {
+			try (PreparedStatement preparedStatement = dbConnection.getconnection()
+					.prepareStatement(updateComputerNameAndDateQuery)) {
 				prepareStatmentUpdateNameDate(preparedStatement, computer);
 				int row = preparedStatement.executeUpdate();
 				if (row == 0) {
 					throw new NoComputerSelectedException("Update name and date");
 				}
 			} catch (SQLException sqlException) {
-				throw new CustomSQLException(sqlException.getMessage());
+				CDBLogger.logError(sqlException);
 			}
 		}
 	}
@@ -187,42 +187,45 @@ public final class DAOComputer {
 		return number;
 	}
 
-	public List<Optional<Computer>> getComputerListByName(String computerName) throws CustomSQLException {
+	public List<Optional<Computer>> getComputerListByName(String computerName) {
 		List<Optional<Computer>> computerList = new ArrayList<Optional<Computer>>();
-		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerListByNameQuery)) {
+		try (PreparedStatement preparedStatement = dbConnection.getconnection()
+				.prepareStatement(getComputerListByNameQuery)) {
 			preparedStatement.setString(1, "%" + computerName + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
 			computerList = convertToListComputerList(resultSet);
 		} catch (SQLException sqlException) {
-			throw new CustomSQLException(sqlException.getMessage());
+			CDBLogger.logError(sqlException);
 		}
 		return computerList;
 	}
 
-	public int getComputerNumber() throws CustomSQLException {
+	public int getComputerNumber() {
 		int number = 0;
-		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerNumberQuery)) {
+		try (PreparedStatement preparedStatement = dbConnection.getconnection()
+				.prepareStatement(getComputerNumberQuery)) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			number = getComputerNumberFromResultSet(resultSet);
 		} catch (SQLException sqlException) {
-			throw new CustomSQLException(sqlException.getMessage());
+			CDBLogger.logError(sqlException);
 		}
 		return number;
 	}
 
-	public int getComputerNumberbyName(String search) throws CustomSQLException {
+	public int getComputerNumberbyName(String search) {
 		int number = 0;
-		try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getComputerNumberByNameQuery)) {
+		try (PreparedStatement preparedStatement = dbConnection.getconnection()
+				.prepareStatement(getComputerNumberByNameQuery)) {
 			preparedStatement.setString(1, "%" + search + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
 			number = getComputerNumberFromResultSet(resultSet);
 		} catch (SQLException sqlException) {
-			throw new CustomSQLException(sqlException.getMessage());
+			CDBLogger.logError(sqlException);
 		}
 		return number;
 	}
 
-	public Page<Computer> getPage(Page<Computer> page) throws CustomSQLException {
+	public Page<Computer> getPage(Page<Computer> page) {
 		if (page != null) {
 			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getPageQuery)) {
 				preparedStatement.setInt(1, page.getSize());
@@ -230,22 +233,23 @@ public final class DAOComputer {
 				ResultSet resultSet = preparedStatement.executeQuery();
 				page.setContent(convertToListComputerList(resultSet));
 			} catch (SQLException sqlException) {
-				throw new CustomSQLException(sqlException.getMessage());
+				CDBLogger.logError(sqlException);
 			}
 		}
 		return page;
 	}
 
-	public Page<Computer> getPageByName(Page<Computer> page, String search) throws CustomSQLException {
+	public Page<Computer> getPageByName(Page<Computer> page, String search) {
 		if (page != null) {
-			try (PreparedStatement preparedStatement = dbConnection.getconnection().prepareStatement(getPageByNameQuery)) {
+			try (PreparedStatement preparedStatement = dbConnection.getconnection()
+					.prepareStatement(getPageByNameQuery)) {
 				preparedStatement.setString(1, "%" + search + "%");
 				preparedStatement.setInt(2, page.getSize());
 				preparedStatement.setInt(3, (page.getNumber() - 1) * page.getSize());
 				ResultSet resultSet = preparedStatement.executeQuery();
 				page.setContent(convertToListComputerList(resultSet));
 			} catch (SQLException sqlException) {
-				throw new CustomSQLException(sqlException.getMessage());
+				CDBLogger.logError(sqlException);
 			}
 		}
 		return page;

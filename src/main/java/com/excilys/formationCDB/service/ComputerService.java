@@ -36,8 +36,8 @@ public final class ComputerService {
 		daoComputer.updateComputerName(computer);
 	}
 
-	public void deleteComputerById(Computer computer) throws CustomSQLException, NoComputerSelectedException {
-		daoComputer.deleteComputerById(computer);
+	public void deleteComputerById(int i) throws CustomSQLException, NoComputerSelectedException {
+		daoComputer.deleteComputerById(i);
 	}
 
 	public Page getPage(Page page) throws CustomSQLException {

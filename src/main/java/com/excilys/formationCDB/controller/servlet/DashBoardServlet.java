@@ -1,6 +1,8 @@
 package com.excilys.formationCDB.controller.servlet;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.excilys.formationCDB.controller.cli.CliComputerController;
 import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.exception.NoComputerSelectedException;
 import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
@@ -29,6 +32,10 @@ public class DashBoardServlet extends HttpServlet {
 	public static final String ATT_PAGEINDEX_FROM = "pageIndexFrom";
 	public static final String ATT_PAGEINDEX_TO = "pageIndexTo";
 	public static final String ATT_COMPUTER_NAME = "computerSearch";
+	public static final String INPUT_PAGE = "page";
+	public static final String INPUT_SEARCH = "search";
+	public static final String INPUT_PAGE_SIZE = "pageSize";
+
 	private static final String ATT_PAGE_SIZE = "pageSize";
 
 	private ComputerService serviceComputer = ComputerService.getInstance();
@@ -51,9 +58,9 @@ public class DashBoardServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			int pageNumber = 1;
-			if (request.getParameter("page") != null) {
+			if (request.getParameter(INPUT_PAGE) != null) {
 				try {
-					pageNumber = Integer.parseInt(request.getParameter("page"));
+					pageNumber = Integer.parseInt(request.getParameter(INPUT_PAGE));
 				} catch (NumberFormatException numberFormatExceptoin) {
 					CDBLogger.logInfo(numberFormatExceptoin);
 				}
@@ -83,17 +90,19 @@ public class DashBoardServlet extends HttpServlet {
 		int computerNb;
 		int pageSize = getPageSize(request);
 		Page<Computer> page;
-		if (request.getParameter("search") != null) {
-			page = serviceComputer 
-					.getPageByName(new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME),
-							request.getParameter("search"));
-			request.setAttribute(ATT_COMPUTERDTO_LIST, ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
-			computerNb = serviceComputer.getComputerNumberbyName(request.getParameter("search"));
-			request.setAttribute(ATT_COMPUTER_NAME, request.getParameter("search"));
+		if (request.getParameter(INPUT_SEARCH) != null) {
+			page = serviceComputer.getPageByName(
+					new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME),
+					request.getParameter(INPUT_SEARCH));
+			request.setAttribute(ATT_COMPUTERDTO_LIST,
+					ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
+			computerNb = serviceComputer.getComputerNumberbyName(request.getParameter(INPUT_SEARCH));
+			request.setAttribute(ATT_COMPUTER_NAME, request.getParameter(INPUT_SEARCH));
 		} else {
-			page = serviceComputer 
+			page = serviceComputer
 					.getPage(new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME));
-					request.setAttribute(ATT_COMPUTERDTO_LIST, ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
+			request.setAttribute(ATT_COMPUTERDTO_LIST,
+					ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
 			computerNb = serviceComputer.getComputerNumber();
 		}
 		setIndexAttributes(request, page, computerNb);
@@ -102,9 +111,9 @@ public class DashBoardServlet extends HttpServlet {
 
 	private int getPageSize(HttpServletRequest request) {
 		int pageSize = -1;
-		if (request.getParameter("pageSize") != null) {
+		if (request.getParameter(INPUT_PAGE_SIZE) != null) {
 			try {
-				pageSize = Integer.parseInt(request.getParameter("pageSize"));
+				pageSize = Integer.parseInt(request.getParameter(INPUT_PAGE_SIZE));
 				request.setAttribute(ATT_PAGE_SIZE, pageSize);
 			} catch (NumberFormatException numberFormatExceptoin) {
 				CDBLogger.logInfo(numberFormatExceptoin);
@@ -119,7 +128,27 @@ public class DashBoardServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		deleteSelected(request);
+
 		handleRequest(request, response);
+	}
+
+	private void deleteSelected(HttpServletRequest request) {
+		if (request.getParameter("selection") != null) {
+			List<String> idToDelete = Arrays.asList(request.getParameter("selection").split(","));
+			for (String id : idToDelete) {
+				try {
+					serviceComputer.deleteComputerById(Integer.parseInt(id));
+				} catch (NumberFormatException numFormat) {
+						CDBLogger.logError(numFormat);
+				} catch (CustomSQLException sqlException) {
+					CDBLogger.logError(sqlException);
+				} catch (NoComputerSelectedException noComputerException) {
+					CDBLogger.logError(noComputerException);
+
+				}
+			}
+		}
 	}
 
 }
