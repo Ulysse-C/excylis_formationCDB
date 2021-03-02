@@ -35,7 +35,6 @@ public class DashBoardServlet extends HttpServlet {
 	public static final String INPUT_PAGE = "page";
 	public static final String INPUT_SEARCH = "search";
 	public static final String INPUT_PAGE_SIZE = "pageSize";
-
 	private static final String ATT_PAGE_SIZE = "pageSize";
 
 	private ComputerService serviceComputer = ComputerService.getInstance();

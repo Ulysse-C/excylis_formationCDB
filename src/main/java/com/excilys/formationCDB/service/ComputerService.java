@@ -23,11 +23,11 @@ public final class ComputerService {
 		return INSTANCE;
 	}
 
-	public Optional<Computer> getComputerById(int id) throws CustomSQLException {
+	public Optional<Computer> getComputerById(int id) {
 		return daoComputer.getComputerById(id);
 	}
 
-	public void createComputer(Computer computer) throws CustomSQLException, CompanyKeyInvalidException {
+	public void createComputer(Computer computer) {
 		daoComputer.createComputer(computer);
 
 	}

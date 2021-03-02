@@ -1,59 +1,50 @@
 package com.excilys.formationCDB.controller.servlet;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.excilys.formationCDB.controller.cli.CliComputerController;
-import com.excilys.formationCDB.controller.servlet.validator.AddComputerValidator;
-import com.excilys.formationCDB.dto.AddComputerDTO;
+import com.excilys.formationCDB.controller.servlet.validator.EditComputerValidator;
+import com.excilys.formationCDB.dto.EditComputerDTO;
 import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
-import com.excilys.formationCDB.exception.InvalidWebInputException;
 import com.excilys.formationCDB.logger.CDBLogger;
-import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.service.ComputerService;
 
-public class AddComputerForm {
+public class EditComputerForm {
 
 	public static final String INPUT_NAME = "computerName";
 	public static final String INPUT_INTRODUCED = "introduced";
 	public static final String INPUT_DISCONTINUED = "discontinued";
 	public static final String INPUT_COMPANYID = "companyId";
-	public static final String SQL_ERRORS = "sqlErrors";
-
+	public static final String ATTR_COMPUTERID = "computerId";
+	
 	private ComputerService computerService = ComputerService.getInstance();
+	private Map<String, String> errors = new HashMap<>();
 
-	private Map<String, String> errors;
+	public EditComputerDTO editComputer(HttpServletRequest request) {
+		EditComputerDTO computerDTO = new EditComputerDTO();
+		computerDTO.computerName = request.getParameter(INPUT_NAME);
+		computerDTO.companyId = request.getParameter(INPUT_COMPANYID);
+		computerDTO.introducedDate = request.getParameter(INPUT_INTRODUCED);
+		computerDTO.discontinuedDate = request.getParameter(INPUT_DISCONTINUED);
+		computerDTO.computerId = request.getParameter(ATTR_COMPUTERID);
 
-	public AddComputerForm() {
-		errors = new HashMap<String, String>();
+		EditComputerValidator validator = new EditComputerValidator();
+		errors = validator.validate(computerDTO);
+		if (errors.isEmpty()) {
+			Computer computer = ComputerMapper.createComputer(computerDTO);
+			computerService.createComputer(computer);
+			computerDTO = null;
+		}
+		return computerDTO;
 	}
 
 	public Map<String, String> getErrors() {
 		return errors;
 	}
 
-	public AddComputerDTO addComputer(HttpServletRequest request) {
-		AddComputerDTO computerDTO = new AddComputerDTO();
-		computerDTO.computerName = request.getParameter(INPUT_NAME);
-		computerDTO.companyId = request.getParameter(INPUT_COMPANYID);
-		computerDTO.introducedDate = request.getParameter(INPUT_INTRODUCED);
-		computerDTO.discontinuedDate = request.getParameter(INPUT_DISCONTINUED);
-
-		AddComputerValidator validator = AddComputerValidator.getInstance();
-		errors = validator.validate(computerDTO);
-		if (errors.isEmpty()) {
-			Computer computer = ComputerMapper.createComputer(computerDTO);
-			computerService.createComputer(computer);
-			computerDTO = null;
-
-		}
-		return computerDTO;
-	}
 }

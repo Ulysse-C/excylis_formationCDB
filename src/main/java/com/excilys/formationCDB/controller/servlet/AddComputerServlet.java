@@ -28,7 +28,7 @@ public class AddComputerServlet extends HttpServlet {
 
 	public static final String VIEW = "/WEB-INF/views/addComputer.jsp";
 
-	private CompanyService serviceController = CompanyService.getInstance();
+	private CompanyService serviceCompany = CompanyService.getInstance();
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -64,7 +64,7 @@ public class AddComputerServlet extends HttpServlet {
 
 	private void addCompanyList(HttpServletRequest request) {
 		try {
-			request.setAttribute(ATT_COMPANYLIST,CompanyMapper.createAddCompanyDTOList(serviceController.getCompanyList()) );
+			request.setAttribute(ATT_COMPANYLIST,CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()) );
 		} catch (CustomSQLException exception) {
 			CDBLogger.logError(exception);
 		}

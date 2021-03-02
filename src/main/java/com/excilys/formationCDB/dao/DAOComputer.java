@@ -42,7 +42,7 @@ public final class DAOComputer {
 		return INSTANCE;
 	}
 
-	public Optional<Computer> getComputerById(int id) throws CustomSQLException {
+	public Optional<Computer> getComputerById(int id) {
 		Optional<Computer> computer = Optional.empty();
 		try (PreparedStatement preparedStatement = dbConnection.getconnection()
 				.prepareStatement(getComputerByIdQuery)) {
