@@ -135,4 +135,29 @@ public class Page<E> {
 	public void setSortOrder(SortOrder sortOrder) {
 		this.sortOrder = sortOrder;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + number;
+		result = prime * result + size;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Page other = (Page) obj;
+		if (number != other.number)
+			return false;
+		if (size != other.size)
+			return false;
+		return true;
+	}
 }

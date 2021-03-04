@@ -101,7 +101,6 @@ public class DashBoardServlet extends HttpServlet {
 			page = new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME);
 			setSortAttributes(request, page);
 			page = serviceComputer.getPageByName(page, request.getParameter(INPUT_SEARCH));
-			setSortAttributes(request, page);
 			request.setAttribute(ATT_COMPUTERDTO_LIST,
 					ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
 			computerNb = serviceComputer.getComputerNumberbyName(request.getParameter(INPUT_SEARCH));
@@ -125,12 +124,11 @@ public class DashBoardServlet extends HttpServlet {
 
 	private void setSortAttribute(HttpServletRequest request, Page<Computer> page) {
 		Page.SortAttribute sortAttribute = Page.SortAttribute.COMPUTER_ID;
+		HttpSession session = request.getSession();
 		if (request.getParameter(ATT_SORT_NAME) != null && request.getParameter(ATT_SORT_NAME) != "") {
-			if (!request.getParameter(ATT_SORT_NAME)
-					.equals(request.getSession().getAttribute(ATT_SORT_PREVIOUS_NAME))) {
+			if (!request.getParameter(ATT_SORT_NAME).equals(session.getAttribute(ATT_SORT_PREVIOUS_NAME))) {
 				request.setAttribute(ATT_SORT_PREVIOUS_ORDER, null);
 			}
-			request.getSession().setAttribute(ATT_SORT_PREVIOUS_NAME, request.getParameter(ATT_SORT_NAME));
 			try {
 				sortAttribute = Page.SortAttribute.valueOf(request.getParameter(ATT_SORT_NAME));
 				request.getSession().setAttribute(ATT_SORT_NAME, sortAttribute);
@@ -140,19 +138,24 @@ public class DashBoardServlet extends HttpServlet {
 				CDBLogger.logInfo(illegal);
 			}
 		} else if (request.getSession().getAttribute(ATT_SORT_NAME) != null) {
-			sortAttribute = (SortAttribute) request.getSession().getAttribute(ATT_SORT_NAME);
+			sortAttribute = (SortAttribute) session.getAttribute(ATT_SORT_NAME);
 		}
 		page.setSortName(sortAttribute);
 	}
 
 	private void setSortOrder(Page<Computer> page, HttpServletRequest request) {
 		Page.SortOrder sortOrder = Page.SortOrder.ASC;
-		if (request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER).equals(Page.SortOrder.ASC)) {
-			sortOrder = Page.SortOrder.DESC;
-			request.getSession().setAttribute(ATT_SORT_PREVIOUS_ORDER, sortOrder);
-		} else {
-			sortOrder = Page.SortOrder.ASC;
-			request.getSession().setAttribute(ATT_SORT_PREVIOUS_ORDER, sortOrder);
+		if (request.getParameter(ATT_SORT_NAME) != null && request.getParameter(ATT_SORT_NAME) != "") {
+			if (Page.SortOrder.ASC
+					.equals((Page.SortOrder) request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER))) {
+				sortOrder = Page.SortOrder.DESC;
+				request.getSession().setAttribute(ATT_SORT_PREVIOUS_ORDER, sortOrder);
+			} else {
+				sortOrder = Page.SortOrder.ASC;
+				request.getSession().setAttribute(ATT_SORT_PREVIOUS_ORDER, sortOrder);
+			}
+		} else if (request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER) != null) {
+			sortOrder = (SortOrder) request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER);
 		}
 		page.setSortOrder(sortOrder);
 	}

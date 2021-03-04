@@ -51,10 +51,7 @@
 		</form>
 
 		<form id="orderForm" action="#" method="POST">
-			<input type="hidden" name="orderAttribute" value=""> <input
-				type="hidden" name="previousOrderSort"
-				value="${previousOrderAttribute}"> <input type="hidden"
-				name="previousOrderAttribute" value="${previousOrderAttribute}">
+			<input type="hidden" name="orderAttribute" value=""> </input>
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
