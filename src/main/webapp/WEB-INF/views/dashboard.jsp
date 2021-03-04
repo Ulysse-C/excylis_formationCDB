@@ -17,7 +17,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="/dashboard"> Application - Computer
+			<a class="navbar-brand" href="dashboard"> Application - Computer
 				Database </a>
 		</div>
 	</header>
@@ -41,13 +41,20 @@
 				<div class="pull-right">
 					<a class="btn btn-success" id="addComputer" href="addComputer">Add
 						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+						onclick="$.fn.toggleEditMode();">Delete</a>
 				</div>
 			</div>
 		</div>
 
 		<form id="deleteForm" action="#" method="POST">
 			<input type="hidden" name="selection" value="">
+		</form>
+
+		<form id="orderForm" action="#" method="POST">
+			<input type="hidden" name="orderAttribute" value=""> <input
+				type="hidden" name="previousOrderSort"
+				value="${previousOrderAttribute}"> <input type="hidden"
+				name="previousOrderAttribute" value="${previousOrderAttribute}">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -64,13 +71,24 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
+						<th>Computer name <a href="#"
+							id="orderAttributesComputerName"
+							onclick="$.fn.orderBy('COMPUTER_NAME');"><i
+								class="fa fa-fw fa-sort"></i></a></input>
+						</th>
+						<th>Introduced date <a href="#"
+							id="orderAttributesIntroduced"
+							onclick="$.fn.orderBy('COMPUTER_INTRODUCED');"><i
+								class="fa fa-fw fa-sort"></i></a></input></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
+						<th>Discontinued date <a href="#"
+							id="orderAttributesDiscontinued"
+							onclick="$.fn.orderBy('COMPUTER_DISCONTINUED');"><i
+								class="fa fa-fw fa-sort"></i></a></input></th>
 						<!-- Table header for Company -->
-						<th>Company</th>
-
+						<th>Company <a href="#" id="orderAttributesCompanyName"
+							onclick="$.fn.orderBy('COMPANY_NAME');"><i
+								class="fa fa-fw fa-sort"></i></a></input></th>
 					</tr>
 				</thead>
 				<!-- Browse attribute computers -->
@@ -82,7 +100,8 @@
 							<td><a
 								href="<c:url value="/editComputer"><c:param name="computerId" 
 								value="${computerDTO.computerId}"/></c:url>">
-								<c:out	value="${computerDTO.computerName}" /></a></td>
+									<c:out value="${computerDTO.computerName}" />
+							</a></td>
 							<td><c:out value="${computerDTO.introducedDate}" /></td>
 							<td><c:out value="${computerDTO.discontinuedDate}" /></td>
 							<td><c:out value="${computerDTO.companyName}" /></td>
@@ -103,9 +122,6 @@
 			  		<c:if test="${not empty computerSearch}">
 			   			<c:param name="search" value="${computerSearch}"/>
 					</c:if>
-					<c:if test="${not empty pageSize}">
-				   			<c:param name="pageSize" value="${pageSize}"/>
-						</c:if>
 					</c:url>"
 					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 				</a></li>
@@ -118,9 +134,6 @@
 				  		<c:if test="${not empty computerSearch}">
 				   			<c:param name="search" value="${computerSearch}"/>
 						</c:if>
-						<c:if test="${not empty pageSize}">
-				   			<c:param name="pageSize" value="${pageSize}"/>
-						</c:if>
 						</c:url>">
 							${i}</a></li>
 				</c:forEach>
@@ -130,18 +143,16 @@
 			  		<c:if test="${not empty computerSearch}">
 			   			<c:param name="search" value="${computerSearch}"/>
 					</c:if>
-					<c:if test="${not empty pageSize}">
-				   			<c:param name="pageSize" value="${pageSize}"/>
-						</c:if>
 					</c:url>"
 					aria-label="Next"> <span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<form method=GET action=dashboard>
-					<input type="submit" class="btn btn-default" name="pageSize" value="10"/>
-					<input type="submit" class="btn btn-default" name="pageSize" value="50"/>
-					<input type="submit" class="btn btn-default" name="pageSize" value="100"/>
+				<form method=POST action=dashboard>
+					<input type="submit" class="btn btn-default" name="pageSize"
+						value="10" /> <input type="submit" class="btn btn-default"
+						name="pageSize" value="50" /> <input type="submit"
+						class="btn btn-default" name="pageSize" value="100" />
 				</form>
 			</div>
 		</div>

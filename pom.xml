@@ -22,9 +22,17 @@
 		<servlet-api-version>2.5</servlet-api-version>
 		<jacoco-maven-plugin-version>0.8.2</jacoco-maven-plugin-version>
 		<h2-version>1.4.200</h2-version>
+		<Hikari-version>4.0.2</Hikari-version>
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${Hikari-version}</version>
+		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>

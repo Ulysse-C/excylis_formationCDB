@@ -69,6 +69,14 @@ $(function() {
     };
 }( jQuery ));
 
+// Function order
+(function ( $ ) {
+    $.fn.orderBy = function(attr) {
+        $('#orderForm input[name="orderAttribute"]').attr('value',attr);
+        $('#orderForm').submit();
+    };
+}( jQuery ));
+
 
 
 //Event handling

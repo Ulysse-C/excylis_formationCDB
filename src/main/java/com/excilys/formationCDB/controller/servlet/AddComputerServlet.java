@@ -3,22 +3,21 @@ package com.excilys.formationCDB.controller.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formationCDB.controller.cli.CliCompanyController;
 import com.excilys.formationCDB.dto.AddComputerDTO;
 import com.excilys.formationCDB.dto.mapper.CompanyMapper;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.logger.CDBLogger;
-import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.service.CompanyService;
 
 /**
  * Servlet implementation class addComputerServlet
  */
-//@WebServlet("/addComputerServlet")
+@WebServlet("/addComputer")
 public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -63,10 +62,7 @@ public class AddComputerServlet extends HttpServlet {
 	}
 
 	private void addCompanyList(HttpServletRequest request) {
-		try {
 			request.setAttribute(ATT_COMPANYLIST,CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()) );
-		} catch (CustomSQLException exception) {
-			CDBLogger.logError(exception);
-		}
+
 	}
 }

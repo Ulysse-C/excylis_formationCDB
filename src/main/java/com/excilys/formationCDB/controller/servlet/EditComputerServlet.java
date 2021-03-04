@@ -19,10 +19,10 @@ import com.excilys.formationCDB.service.ComputerService;
 /**
  * Servlet implementation class EditComputerServlet
  */
-@WebServlet("/EditComputerServlet")
+@WebServlet("/editComputer")
 public class EditComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String ATT_ERRORS = "errors";
 	public static final String ATT_COMPANYLIST = "companyList";
 	public static final String INPUT_ID = "computerId";
@@ -37,7 +37,7 @@ public class EditComputerServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {		
+			throws ServletException, IOException {
 		handleRequest(request, response);
 
 	}
@@ -61,9 +61,9 @@ public class EditComputerServlet extends HttpServlet {
 		if (request.getParameter(INPUT_ID) != null) {
 			try {
 				int computerId = Integer.parseInt(request.getParameter(INPUT_ID));
-				EditComputerDTO computerDTO = ComputerMapper.createEditComputerDTO(serviceComputer.getComputerById(computerId)); 
+				EditComputerDTO computerDTO = ComputerMapper
+						.createEditComputerDTO(serviceComputer.getComputerById(computerId));
 				request.setAttribute(ATT_COMPUTER_DTO, computerDTO);
-				System.out.println(computerDTO);
 			} catch (NumberFormatException numberFormatExceptoin) {
 				CDBLogger.logInfo(numberFormatExceptoin);
 			}
@@ -74,14 +74,10 @@ public class EditComputerServlet extends HttpServlet {
 			CDBLogger.logError(exception);
 		}
 	}
-	
+
 	private void addCompanyList(HttpServletRequest request) {
-		try {
-			request.setAttribute(ATT_COMPANYLIST,CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()) );
-		} catch (CustomSQLException exception) {
-			CDBLogger.logError(exception);
-		}
+		request.setAttribute(ATT_COMPANYLIST, CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()));
+
 	}
-	
 
 }

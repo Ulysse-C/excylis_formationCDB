@@ -1,5 +1,6 @@
 package com.excilys.formationCDB.controller.cli;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import com.excilys.formationCDB.dto.AddComputerDTO;
@@ -7,7 +8,8 @@ import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
-import com.excilys.formationCDB.exception.NoComputerSelectedException;
+import com.excilys.formationCDB.exception.NothingSelectedException;
+import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
@@ -16,13 +18,14 @@ public class CLIHandler {
 
 	private CliCompanyController companyController;
 	private CliComputerController computerController;
-	
+
 	public CLIHandler() {
 		this.companyController = CliCompanyController.getInstance();
 		this.computerController = CliComputerController.getInstance();
 	}
 
-	public Optional<Computer> getSingleComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException {
+	public Optional<Computer> getSingleComputer(String[] inputList)
+			throws InvalidInputCLIHandlerException, CustomSQLException {
 		Optional<Computer> computer;
 		if (inputList.length != 2) {
 			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
@@ -31,19 +34,20 @@ public class CLIHandler {
 			computer = computerController.getComputerById(Integer.parseInt(inputList[1]));
 		} else {
 			throw new InvalidInputCLIHandlerException("Wrong argument type");
-			//computer = computerController.getComputerByName(inputList[1]);
+			// computer = computerController.getComputerByName(inputList[1]);
 		}
 		return computer;
 	}
 
-	public void createComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, CompanyKeyInvalidException {
+	public void createComputer(String[] inputList)
+			throws InvalidInputCLIHandlerException, CustomSQLException, CompanyKeyInvalidException {
 		if (inputList.length != 3 && inputList.length != 5) {
 			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		}
 		Computer computer = null;
 		if (inputList.length == 3 && isInteger(inputList[2], 10)) {
 			AddComputerDTO computerDTO = createComputerDTO(inputList);
-			//the mapper will not parse the date with this format yet
+			// the mapper will not parse the date with this format yet
 			computer = ComputerMapper.createComputer(computerDTO);
 		} else if (inputList.length == 5 && isInteger(inputList[2], 10)) {
 			AddComputerDTO computerDTO = createComputerDTO(inputList);
@@ -65,29 +69,30 @@ public class CLIHandler {
 		return computerDTO;
 	}
 
-	
-	public void updateComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, NoComputerSelectedException {
-		/*
+	public void updateComputer(String[] inputList)
+			throws InvalidInputCLIHandlerException, CustomSQLException, NothingSelectedException {
+		Computer computer;
 		if (inputList.length != 3 && inputList.length != 5) {
 			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
 		}
 		if (inputList.length == 3 && isInteger(inputList[1], 10)) {
-			Computer computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1])).build();
-			computerController.updateComputerName(computer);
+			computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1]))
+					.build();
+			computerController.updateComputer(computer);
 		} else if (inputList.length == 5 && isInteger(inputList[1], 10)) {
-			Computer computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1])).set.build();
-			int computerID = Integer.parseInt(inputList[1]);
-			Computer computer = new Computer(inputList[2], computerID, 0);
-			computer.setIntroduced(inputList[3]);
-			computer.setDiscontinued(inputList[4]);
-			computerController.updateComputerNameAndDate(computer);
+			computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1]))
+					.build();
+			computer.setIntroduced(LocalDate.parse(inputList[3]));
+			computer.setDiscontinued(LocalDate.parse(inputList[4]));
+			computerController.updateComputer(computer);
 		} else {
 			throw new InvalidInputCLIHandlerException("Wrong argument type");
 		}
-		*/
+
 	}
 
-	public void deleteComputer(String[] inputList) throws InvalidInputCLIHandlerException, CustomSQLException, NoComputerSelectedException {
+	public void deleteComputer(String[] inputList)
+			throws InvalidInputCLIHandlerException, CustomSQLException, NothingSelectedException {
 		Computer computer = null;
 		if (inputList.length != 2) {
 			throw new InvalidInputCLIHandlerException("Wrong number of arguments");
@@ -122,6 +127,20 @@ public class CLIHandler {
 			pageResult = companyController.getPage(page);
 		}
 		return pageResult;
+	}
+
+	public void deleteCompany(String[] inputList) throws InvalidInputCLIHandlerException {
+		if (inputList.length == 2) {
+			try {
+				companyController.deleteCompanyById(Integer.parseInt(inputList[1]));
+			} catch (NumberFormatException e) {
+				CDBLogger.logError(e);
+			} catch (NothingSelectedException e) {
+				CDBLogger.logError(e);
+			}
+		} else {
+			throw new InvalidInputCLIHandlerException("To many arguments");
+		}
 	}
 
 }

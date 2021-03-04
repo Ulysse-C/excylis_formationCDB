@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.excilys.formationCDB.dao.DAOComputer;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
-import com.excilys.formationCDB.exception.NoComputerSelectedException;
+import com.excilys.formationCDB.exception.NothingSelectedException;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
 
@@ -32,37 +32,32 @@ public final class ComputerService {
 
 	}
 
-	public void updateComputerName(Computer computer) throws CustomSQLException, NoComputerSelectedException {
-		daoComputer.updateComputerName(computer);
+	public void updateComputer(Computer computer) throws  NothingSelectedException {
+		daoComputer.updateComputer(computer);
 	}
 
-	public void deleteComputerById(int i) throws CustomSQLException, NoComputerSelectedException {
+	public void deleteComputerById(int i) throws NothingSelectedException {
 		daoComputer.deleteComputerById(i);
 	}
 
-	public Page getPage(Page page) throws CustomSQLException {
+	public Page getPage(Page page)  {
 		return daoComputer.getPage(page);
 	}
 
-	public void updateComputerNameAndDate(Computer computer) throws CustomSQLException, NoComputerSelectedException  {
-		daoComputer.updateComputerNameAndDate(computer);
-		
-	}
-
-	public int getComputerNumber() throws CustomSQLException {
+	public int getComputerNumber() {
 		return daoComputer.getComputerNumber();
 	}
 
-	public List<Optional<Computer>> getComputerListByName(String search) throws CustomSQLException {
-		return daoComputer.getComputerListByName(search);
-	}
 
-	public int getComputerNumberbyName(String search) throws CustomSQLException {
+
+	public int getComputerNumberbyName(String search) {
 		return daoComputer.getComputerNumberbyName(search);
 	}
 
-	public Page<Computer> getPageByName(Page<Computer> page, String search) throws CustomSQLException {
+	public Page<Computer> getPageByName(Page<Computer> page, String search)  {
 		return daoComputer.getPageByName(page, search);
 	}
+
+
 
 }

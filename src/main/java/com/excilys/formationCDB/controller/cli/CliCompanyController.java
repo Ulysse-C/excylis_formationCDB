@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.exception.NothingSelectedException;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Page;
 import com.excilys.formationCDB.service.CompanyService;
@@ -30,6 +31,11 @@ public final class CliCompanyController {
 
 	public List<Optional<Company>> getCompanyList() throws CustomSQLException {
 		return companyService.getCompanyList();
+	}
+
+	public void deleteCompanyById(int id) throws NothingSelectedException {
+		companyService.deleteCompanyById(id);
+		
 	}
 
 }

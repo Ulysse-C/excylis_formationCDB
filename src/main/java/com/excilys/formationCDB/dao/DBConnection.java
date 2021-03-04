@@ -3,30 +3,31 @@ package com.excilys.formationCDB.dao;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import com.excilys.formationCDB.logger.CDBLogger;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public final class DBConnection {
 
 	private static final DBConnection INSTANCE = new DBConnection();
-	private Connection connection;
-
-	private String url = "";
-	private String username = "";
-	private String password = "";
-	private String driver = "";
+	private HikariDataSource dataSource;
 
 	private DBConnection() {
 		try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("config/dataBase.properties")) {
-			Properties prop = new Properties();
-			prop.load(input);
-			this.url = prop.getProperty("url");
-			this.username = prop.getProperty("username");
-			this.password = prop.getProperty("password");
-			this.driver = prop.getProperty("driver");
+			Properties properties = new Properties();
+			properties.load(input);
+			HikariConfig config = new HikariConfig();
+			config.setJdbcUrl(properties.getProperty("url"));
+			config.setUsername(properties.getProperty("username"));
+			config.setPassword(properties.getProperty("password"));
+			config.setDriverClassName(properties.getProperty("driver"));
+			config.addDataSourceProperty("cachePrepStmts", "true");
+			config.addDataSourceProperty("prepStmtCacheSize", "250");
+			config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+			dataSource = new HikariDataSource(config);
 		} catch (IOException exception) {
 			CDBLogger.logError(exception);
 		}
@@ -37,15 +38,7 @@ public final class DBConnection {
 	}
 
 	protected Connection getconnection() throws SQLException {
-		try {
-			if (connection == null || connection.isClosed()) {
-				Class.forName(driver);
-				connection = DriverManager.getConnection(url, username, password);
-			}
-		} catch (ClassNotFoundException exception) {
-			CDBLogger.logError(exception);
-		}
-		return connection;
+		return dataSource.getConnection();
 	}
 
 }

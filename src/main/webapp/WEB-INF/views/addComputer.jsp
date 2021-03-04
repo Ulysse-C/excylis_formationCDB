@@ -34,20 +34,20 @@
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
 									placeholder="Computer name" required="required"
-									name="computerName"> <span class="error">${computer.computerName }<c:out
+									name="computerName" value="${computer.computerName }"> <span class="error"><c:out
 										value="${errors['computerName']}" /></span>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" id="introduced"
-									placeholder="Introduced date" name="introduced"> <span
+									placeholder="Introduced date" name="introduced"  value="${computer.introducedDate }"> <span
 									class="error" id="dateError"><c:out
 										value="${errors['introduced']}" /></span>
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" id="discontinued"
-									placeholder="Discontinued date" name="discontinued">
+									placeholder="Discontinued date" name="discontinued"  value="${computer.discontinuedDate }">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select

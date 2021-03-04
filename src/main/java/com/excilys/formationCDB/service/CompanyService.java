@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.excilys.formationCDB.dao.DAOCompany;
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.exception.NothingSelectedException;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Page;
 
@@ -22,7 +23,7 @@ public final class CompanyService {
 	}
 
 
-	public Optional<Company> getCompanyById(int id) throws CustomSQLException {
+	public Optional<Company> getCompanyById(int id) {
 		return daoCompany.getCompanyById(id);
 	}
 
@@ -30,8 +31,13 @@ public final class CompanyService {
 		return daoCompany.getPage(page);
 	}
 
-	public List<Optional<Company>> getCompanyList() throws CustomSQLException {
+	public List<Optional<Company>> getCompanyList(){
 		return daoCompany.getCompanyList();
+	}
+
+	public void deleteCompanyById(int id) throws NothingSelectedException {
+		daoCompany.deleteCompanyById(id);
+		
 	}
 
 }

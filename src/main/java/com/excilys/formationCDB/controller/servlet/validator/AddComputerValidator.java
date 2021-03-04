@@ -80,7 +80,7 @@ public class AddComputerValidator {
 	}
 
 	private void validateCompanyID(String companyID) throws InvalidWebInputException {
-		if (companyID != "") {
+		if (companyID != "" && companyID != null) {
 			int companyId = Integer.parseInt(companyID);
 			if (companyId <= 0 || companyId > MAX_COMPANYID) {
 				throw new InvalidWebInputException("invalid company");

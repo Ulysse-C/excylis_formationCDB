@@ -79,6 +79,11 @@ public class Computer {
 	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
+	
+	public void setIntroduced(LocalDate parse) {
+		this.introduced = introduced;
+		
+	}
 
 	public LocalDate getIntroduced() {
 		return introduced;
@@ -154,5 +159,7 @@ public class Computer {
 			return false;
 		return true;
 	}
+
+
 
 }

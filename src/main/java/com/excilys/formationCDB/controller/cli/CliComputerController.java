@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
-import com.excilys.formationCDB.exception.NoComputerSelectedException;
+import com.excilys.formationCDB.exception.NothingSelectedException;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.model.Page;
 import com.excilys.formationCDB.service.ComputerService;
@@ -35,12 +35,8 @@ public final class CliComputerController {
 		computerService.createComputer(computer);
 
 	}
-
-	public void updateComputerName(Computer computer) throws CustomSQLException, NoComputerSelectedException {
-		computerService.updateComputerName(computer);
-	}
-
-	public void deleteComputerById(int id) throws CustomSQLException, NoComputerSelectedException {
+	
+	public void deleteComputerById(int id) throws CustomSQLException, NothingSelectedException {
 		computerService.deleteComputerById(id);
 	}
 
@@ -48,19 +44,9 @@ public final class CliComputerController {
 		return computerService.getPage(page);
 	}
 
-	public void updateComputerNameAndDate(Computer computer) throws CustomSQLException, NoComputerSelectedException {
-		computerService.updateComputerNameAndDate(computer);
-
-	}
-
-	public int getComputerNumber() throws CustomSQLException {
+	public int getComputerNumber() {
 		return computerService.getComputerNumber();
 	}
-
-	public List<Optional<Computer>> getComputerListByName(String search) throws CustomSQLException {
-		return computerService.getComputerListByName(search);
-	}
-
 	
 
 	public Page<Computer> getPageByName(Page<Computer> page, String search) throws CustomSQLException {
@@ -69,6 +55,11 @@ public final class CliComputerController {
 	
 	public int getComputerNumberbyName(String search) throws CustomSQLException {
 		return computerService.getComputerNumberbyName(search);
+	}
+
+	public void updateComputer(Computer computer) throws NothingSelectedException {
+		computerService.updateComputer(computer);
+		
 	}
 
 }

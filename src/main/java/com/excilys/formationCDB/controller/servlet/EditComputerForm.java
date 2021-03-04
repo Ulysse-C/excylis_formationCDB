@@ -10,6 +10,7 @@ import com.excilys.formationCDB.dto.EditComputerDTO;
 import com.excilys.formationCDB.dto.mapper.ComputerMapper;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
+import com.excilys.formationCDB.exception.NothingSelectedException;
 import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Computer;
 import com.excilys.formationCDB.service.ComputerService;
@@ -32,12 +33,16 @@ public class EditComputerForm {
 		computerDTO.introducedDate = request.getParameter(INPUT_INTRODUCED);
 		computerDTO.discontinuedDate = request.getParameter(INPUT_DISCONTINUED);
 		computerDTO.computerId = request.getParameter(ATTR_COMPUTERID);
-
-		EditComputerValidator validator = new EditComputerValidator();
+		EditComputerValidator validator = EditComputerValidator.getInstance();
 		errors = validator.validate(computerDTO);
 		if (errors.isEmpty()) {
 			Computer computer = ComputerMapper.createComputer(computerDTO);
-			computerService.createComputer(computer);
+			try {
+				computerService.updateComputer(computer);
+			} catch (NothingSelectedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			computerDTO = null;
 		}
 		return computerDTO;

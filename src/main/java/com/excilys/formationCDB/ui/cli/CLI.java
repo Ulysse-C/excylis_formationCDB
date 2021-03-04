@@ -12,7 +12,7 @@ import com.excilys.formationCDB.controller.cli.CLIHandler;
 import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
 import com.excilys.formationCDB.exception.CustomSQLException;
 import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
-import com.excilys.formationCDB.exception.NoComputerSelectedException;
+import com.excilys.formationCDB.exception.NothingSelectedException;
 import com.excilys.formationCDB.logger.CDBLogger;
 import com.excilys.formationCDB.model.Company;
 import com.excilys.formationCDB.model.Computer;
@@ -95,6 +95,11 @@ public class CLI {
 				output.println("Computer deleted");
 				handleGeneralRequest();
 				break;
+			case "7":
+				cliHandler.deleteCompany(inputList);
+				output.println("Company deleted");
+				handleGeneralRequest();
+				break;
 			case "help":
 				printHelp();
 				handleGeneralRequest();
@@ -115,7 +120,7 @@ public class CLI {
 			CDBLogger.logInfo(companyKeyInvalidException);
 			output.println("Sql Error: The company id is not valid");
 			handleGeneralRequest();
-		} catch (NoComputerSelectedException noComputerException) {
+		} catch (NothingSelectedException noComputerException) {
 			CDBLogger.logError(noComputerException);
 			output.println("Sql Error: No computer could be selected");
 			handleGeneralRequest();
@@ -126,10 +131,10 @@ public class CLI {
 		output.println("1 - Show the list of the computers");
 		output.println("2 - Show the list of the companies");
 		output.println("3 - Show a computer details / 3 [computer_id] or 3 [name]");
-		output.println("4 - Create a computer / 4 [name] [company_ID] [[introduced] [discontinued]] dd/mm/yyyy");
-		output.println("5 - Update a computer / 5 [computer_id] [name] [[introduced] [discontinued]] dd/mm/yyyy\" ");
+		output.println("4 - Create a computer / 4 [name] [company_ID] [[introduced] [discontinued]] yyyy-MM-dd");
+		output.println("5 - Update a computer / 5 [computer_id] [name] [[introduced] [discontinued]] yyyy-MM-dd");
 		output.println("6 - Delete a computer / 6 [computer_id]");
-
+		output.println("7 - Delete a company / 7 [computer_id]");
 	}
 
 	private void pageNavigagtion(Page page) throws IOException, CustomSQLException {

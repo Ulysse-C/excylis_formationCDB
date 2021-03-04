@@ -2,12 +2,6 @@ package com.excilys.formationCDB.logger;
 
 import org.slf4j.LoggerFactory;
 
-import com.excilys.formationCDB.exception.CompanyKeyInvalidException;
-import com.excilys.formationCDB.exception.CustomSQLException;
-import com.excilys.formationCDB.exception.InvalidInputCLIHandlerException;
-import com.excilys.formationCDB.exception.InvalidWebInputException;
-import com.excilys.formationCDB.exception.NoComputerSelectedException;
-
 import ch.qos.logback.classic.Logger;
 
 public class CDBLogger {
