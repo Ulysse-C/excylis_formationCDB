@@ -2,23 +2,22 @@ package com.excilys.formationcdb.service;
 
 import java.util.Optional;
 
-import com.excilys.formationcdb.dao.DAOComputer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import com.excilys.formationcdb.dao.DaoComputer;
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Page;
 
-public final class ComputerService {
-
-	private final static ComputerService INSTANCE = new ComputerService();
-	private DAOComputer daoComputer;
-
-	private ComputerService() {
-		daoComputer = DAOComputer.getInstance();
-	}
-
-	public static ComputerService getInstance() {
-		return INSTANCE;
-	}
+@Component
+@Scope("singleton")
+public class ComputerService {
+	
+	@Autowired
+	private DaoComputer daoComputer;
 
 	public Optional<Computer> getComputerById(int id) {
 		return daoComputer.getComputerById(id);
@@ -26,7 +25,6 @@ public final class ComputerService {
 
 	public void createComputer(Computer computer) {
 		daoComputer.createComputer(computer);
-
 	}
 
 	public void updateComputer(Computer computer) throws  NothingSelectedException {
@@ -44,8 +42,6 @@ public final class ComputerService {
 	public int getComputerNumber() {
 		return daoComputer.getComputerNumber();
 	}
-
-
 
 	public int getComputerNumberbyName(String search) {
 		return daoComputer.getComputerNumberbyName(search);

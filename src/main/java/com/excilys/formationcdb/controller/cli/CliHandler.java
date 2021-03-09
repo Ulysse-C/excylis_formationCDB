@@ -3,6 +3,12 @@ package com.excilys.formationcdb.controller.cli;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.apache.naming.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.formationcdb.dto.AddComputerDTO;
 import com.excilys.formationcdb.dto.mapper.ComputerMapper;
 import com.excilys.formationcdb.exception.CompanyKeyInvalidException;
@@ -13,15 +19,14 @@ import com.excilys.formationcdb.logger.CDBLogger;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Page;
 
-public class CLIHandler {
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+public class CliHandler {
 
-	private CliCompanyController companyController;
-	private CliComputerController computerController;
-
-	public CLIHandler() {
-		this.companyController = CliCompanyController.getInstance();
-		this.computerController = CliComputerController.getInstance();
-	}
+	@Autowired
+	private CliCompanyController cliCompanyController;
+	@Autowired
+	private CliComputerController cliComputerController;
 
 	public Optional<Computer> getSingleComputer(String[] inputList)
 			throws InvalidInputCLIHandlerException, CustomSQLException {
@@ -30,7 +35,7 @@ public class CLIHandler {
 			throw new InvalidInputCLIHandlerException(InvalidInputCLIHandlerException.WRONG_NUMBER_OF_ARGS);
 		}
 		if (isInteger(inputList[1], 10)) {
-			computer = computerController.getComputerById(Integer.parseInt(inputList[1]));
+			computer = cliComputerController.getComputerById(Integer.parseInt(inputList[1]));
 		} else {
 			throw new InvalidInputCLIHandlerException(InvalidInputCLIHandlerException.WRONG_ARGUMENT_TYPE);
 		}
@@ -53,7 +58,7 @@ public class CLIHandler {
 		} else {
 			throw new InvalidInputCLIHandlerException(InvalidInputCLIHandlerException.WRONG_ARGUMENT_TYPE);
 		}
-		computerController.createComputer(computer);
+		cliComputerController.createComputer(computer);
 	}
 
 	private AddComputerDTO createComputerDTO(String[] inputList) {
@@ -76,13 +81,13 @@ public class CLIHandler {
 		if (inputList.length == 3 && isInteger(inputList[1], 10)) {
 			computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1]))
 					.build();
-			computerController.updateComputer(computer);
+			cliComputerController.updateComputer(computer);
 		} else if (inputList.length == 5 && isInteger(inputList[1], 10)) {
 			computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1]))
 					.build();
 			computer.setIntroduced(LocalDate.parse(inputList[3]));
 			computer.setDiscontinued(LocalDate.parse(inputList[4]));
-			computerController.updateComputer(computer);
+			cliComputerController.updateComputer(computer);
 		} else {
 			throw new InvalidInputCLIHandlerException(InvalidInputCLIHandlerException.WRONG_ARGUMENT_TYPE);
 		}
@@ -96,7 +101,7 @@ public class CLIHandler {
 		} else if (!isInteger(inputList[1], 10)) {
 			throw new InvalidInputCLIHandlerException(InvalidInputCLIHandlerException.WRONG_ARGUMENT_TYPE);
 		}
-		computerController.deleteComputerById(Integer.parseInt(inputList[1]));
+		cliComputerController.deleteComputerById(Integer.parseInt(inputList[1]));
 	}
 
 	private boolean isInteger(String s, int radix) {
@@ -118,9 +123,9 @@ public class CLIHandler {
 	public Page getPage(Page page) throws CustomSQLException {
 		Page pageResult = null;
 		if (page.getTable().equals("computer")) {
-			pageResult = computerController.getPage(page);
+			pageResult = cliComputerController.getPage(page);
 		} else if (page.getTable().equals("company")) {
-			pageResult = companyController.getPage(page);
+			pageResult = cliCompanyController.getPage(page);
 		}
 		return pageResult;
 	}
@@ -128,7 +133,7 @@ public class CLIHandler {
 	public void deleteCompany(String[] inputList) throws InvalidInputCLIHandlerException {
 		if (inputList.length == 2) {
 			try {
-				companyController.deleteCompanyById(Integer.parseInt(inputList[1]));
+				cliCompanyController.deleteCompanyById(Integer.parseInt(inputList[1]));
 			} catch (NumberFormatException e) {
 				CDBLogger.logError(e);
 			} catch (NothingSelectedException e) {

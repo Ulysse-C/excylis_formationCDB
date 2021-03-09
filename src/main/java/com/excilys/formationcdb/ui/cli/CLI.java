@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.Optional;
 
-import com.excilys.formationcdb.controller.cli.CLIHandler;
+import com.excilys.formationcdb.controller.cli.CliHandler;
 import com.excilys.formationcdb.exception.CompanyKeyInvalidException;
 import com.excilys.formationcdb.exception.CustomSQLException;
 import com.excilys.formationcdb.exception.InvalidInputCLIHandlerException;
@@ -20,7 +20,7 @@ public class CLI {
 
 	private BufferedReader bufferedReader;
 	private PrintStream output;
-	private CLIHandler cliHandler;
+	private CliHandler cliHandler;
 
 	public CLI() {
 		output = System.out;
@@ -184,7 +184,7 @@ public class CLI {
 		}
 	}
 
-	public void addCliHandler(CLIHandler cliHandler) {
+	public void addCliHandler(CliHandler cliHandler) {
 		this.cliHandler = cliHandler;
 	}
 

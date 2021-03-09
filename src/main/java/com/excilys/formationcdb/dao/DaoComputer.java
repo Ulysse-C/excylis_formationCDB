@@ -11,16 +11,29 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.logger.CDBLogger;
 import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Page;
 
-public final class DAOComputer {
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+public class DaoComputer {
 
-	private DBConnection dbConnection;
-	private final static DAOComputer INSTANCE = new DAOComputer();
+	//@Autowired
+	private DbConnection dbConnection;
+	
+	public DaoComputer() {
+		this.dbConnection =  DbConnection.getInstance();
+	}
+
+	
 	private static final String UPDATE_COMPUTER_COMPANYID_QUERY = "UPDATE computer "
 			+ "SET company_id = ? WHERE id = ?";
 	private static final String UPDATE_COMPUTER_DISCONTINUED_QUERY = "UPDATE computer "
@@ -48,13 +61,6 @@ public final class DAOComputer {
 	private static final String GET_COMPUTER_NUMBER_BY_NAME_QUERY = "SELECT COUNT(name) AS nbComputer"
 			+ " FROM computer WHERE computer.name LIKE ?";
 
-	private DAOComputer() {
-		dbConnection = DBConnection.getInstance();
-	}
-
-	public final static DAOComputer getInstance() {
-		return INSTANCE;
-	}
 
 	public Optional<Computer> getComputerById(int id) {
 		Optional<Computer> computer = Optional.empty();

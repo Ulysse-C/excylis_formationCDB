@@ -5,6 +5,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.formationcdb.controller.servlet.validator.AddComputerValidator;
 import com.excilys.formationcdb.dto.AddComputerDTO;
 import com.excilys.formationcdb.dto.mapper.ComputerMapper;
@@ -19,7 +24,8 @@ public class AddComputerForm {
 	public static final String INPUT_COMPANYID = "companyId";
 	public static final String SQL_ERRORS = "sqlErrors";
 
-	private static ComputerService computerService = ComputerService.getInstance();
+	@Autowired
+	private static ComputerService computerService;
 
 	private Map<String, String> errors;
 

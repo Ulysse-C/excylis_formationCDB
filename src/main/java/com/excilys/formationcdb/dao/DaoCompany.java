@@ -8,15 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.logger.CDBLogger;
 import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Page;
 
-public final class DAOCompany {
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+public final class DaoCompany {
 
-	private DBConnection dbConnection;
-	private final static DAOCompany INSTANCE = new DAOCompany();
+//	@Autowired
+	private DbConnection dbConnection = DbConnection.getInstance();
+	
+	
 	private static final String DELETE_COMPUTER_OF_COMPANY_QUERY = "DELETE FROM computer WHERE company_id = ?";
 	private static final String DELETE_COMPANY_BY_ID_QUERY = "DELETE FROM company WHERE id = ?";
 
@@ -24,13 +33,6 @@ public final class DAOCompany {
 	private static final String GET_PAGE_QUERY = "SELECT id,name FROM company ORDER BY id LIMIT ? OFFSET ?";
 	private static final String GET_COMPANY_LIST_QUERY = "SELECT id,name FROM company ORDER BY id";
 
-	private DAOCompany() {
-		dbConnection = DBConnection.getInstance();
-	}
-
-	public static DAOCompany getInstance() {
-		return INSTANCE;
-	}
 
 	public Optional<Company> getCompanyById(int id) {
 		Optional<Company> company = Optional.empty();
@@ -116,12 +118,6 @@ public final class DAOCompany {
 			}
 		} finally {
 			try {
-				if (deleteCompany != null) {
-					deleteCompany.close();
-				}
-				if (deleteComputer != null) {
-					deleteComputer.close();
-				}
 				if (connection != null) {
 					connection.close();
 				}

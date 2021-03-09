@@ -11,33 +11,46 @@
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<mysql-connector-java-version>8.0.23</mysql-connector-java-version>
-		<junit-version>4.12</junit-version>
-		<mockito-all-version>1.10.19</mockito-all-version>
-		<jstl-version>1.2</jstl-version>
-		<logback-core-version>1.2.3</logback-core-version>
-		<slf4j-api-version>1.7.30</slf4j-api-version>
-		<logback-classic-version>1.2.3</logback-classic-version>
-		<dbunit-version>2.7.0</dbunit-version>
-		<servlet-api-version>2.5</servlet-api-version>
-		<jacoco-maven-plugin-version>0.8.2</jacoco-maven-plugin-version>
-		<h2-version>1.4.200</h2-version>
-		<Hikari-version>4.0.2</Hikari-version>
+		<mysql-connector-java.version>8.0.23</mysql-connector-java.version>
+		<junit.version>4.12</junit.version>
+		<mockito-all.version>1.10.19</mockito-all.version>
+		<jstl.version>1.2</jstl.version>
+		<logback-core.version>1.2.3</logback-core.version>
+		<slf4j-api.version>1.7.30</slf4j-api.version>
+		<logback-classic.version>1.2.3</logback-classic.version>
+		<dbunit.version>2.7.0</dbunit.version>
+		<servlet-api.version>2.5</servlet-api.version>
+		<jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+		<h2.version>1.4.200</h2.version>
+		<Hikari.version>4.0.2</Hikari.version>
+		<httpUnit.version>1.7</httpUnit.version>
+		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+		<org.springframework.version>5.3.4</org.springframework.version>
 	</properties>
 
 	<dependencies>
 
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>${Hikari-version}</version>
+			<version>${Hikari.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql-connector-java-version}</version>
+			<version>${mysql-connector-java.version}</version>
 			<!-- <scope>provided</scope> -->
 		</dependency>
 
@@ -45,7 +58,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit-version}</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -53,7 +66,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<version>${mockito-all-version}</version>
+			<version>${mockito-all.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -62,33 +75,33 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>${jstl-version}</version>
+			<version>${jstl.version}</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>${logback-core-version}</version>
+			<version>${logback-core.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j-api-version}</version>
+			<version>${slf4j-api.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>${logback-classic-version}</version>
+			<version>${logback-classic.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.dbunit/dbunit -->
 		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
-			<version>${dbunit-version}</version>
+			<version>${dbunit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -96,14 +109,14 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>${servlet-api-version}</version>
+			<version>${servlet-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
+			<version>${javax.servlet-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -112,7 +125,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>${h2-version}</version>
+			<version>${h2.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -120,8 +133,24 @@
 		<dependency>
 			<groupId>httpunit</groupId>
 			<artifactId>httpunit</artifactId>
-			<version>1.7</version>
+			<version>${httpUnit.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework.version}</version>
+			<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-orm</artifactId> 
+				<version>${org.springframework.version}</version> </dependency> -->
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${org.springframework.version}</version>
 		</dependency>
 
 
@@ -131,7 +160,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco-maven-plugin-version}</version>
+				<version>${jacoco-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<goals>

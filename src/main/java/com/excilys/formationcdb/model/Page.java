@@ -7,8 +7,8 @@ import java.util.Optional;
 public class Page<E> {
 
 	public static final int DEFAULT_PAGE_SIZE = 10;
-	public final static int PAGEINDEX_SIZE = 7;
-	public final static int PAGEINDEX_BEFORE_CURRENT_PAGE = 4;
+	public final static int PAGEINDEX_SIZE = 10;
+	public final static int PAGEINDEX_BEFORE_CURRENT_PAGE = 5;
 
 	private int size;
 	private int number;
@@ -111,7 +111,7 @@ public class Page<E> {
 		if (number <= PAGEINDEX_BEFORE_CURRENT_PAGE) {
 			compensation = PAGEINDEX_BEFORE_CURRENT_PAGE - number + 1;
 		}
-		while (computerNB / size >= indexTo + number
+		while (computerNB / size > indexTo + number
 				&& indexTo + 1 + PAGEINDEX_BEFORE_CURRENT_PAGE - compensation < PAGEINDEX_SIZE) {
 			indexTo++;
 		}

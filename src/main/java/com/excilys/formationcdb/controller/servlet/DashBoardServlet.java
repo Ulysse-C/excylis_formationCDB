@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formationcdb.controller.cli.CliComputerController;
 import com.excilys.formationcdb.dto.mapper.ComputerMapper;
@@ -25,6 +30,7 @@ import com.excilys.formationcdb.service.ComputerService;
 /**
  * Servlet implementation class DashBoardServlet
  */
+@Component
 @WebServlet("/dashboard")
 public class DashBoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -45,8 +51,16 @@ public class DashBoardServlet extends HttpServlet {
 	private static final String ATT_SORT_NAME = "orderAttribute";
 	private static final String ATT_SORT_PREVIOUS_NAME = "previousOrderAttribute";
 
-	private static ComputerService serviceComputer = ComputerService.getInstance();
+	@Autowired
+	private ComputerService computerService;
 
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+		super.init(config);
+	}
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -60,6 +74,8 @@ public class DashBoardServlet extends HttpServlet {
 			CDBLogger.logError(exception);
 		}
 	}
+	
+	
 
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -100,18 +116,18 @@ public class DashBoardServlet extends HttpServlet {
 		if (request.getParameter(INPUT_SEARCH) != null) {
 			page = new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME);
 			setSortAttributes(request, page);
-			page = serviceComputer.getPageByName(page, request.getParameter(INPUT_SEARCH));
+			page = computerService.getPageByName(page, request.getParameter(INPUT_SEARCH));
 			request.setAttribute(ATT_COMPUTERDTO_LIST,
 					ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
-			computerNb = serviceComputer.getComputerNumberbyName(request.getParameter(INPUT_SEARCH));
+			computerNb = computerService.getComputerNumberbyName(request.getParameter(INPUT_SEARCH));
 			request.setAttribute(ATT_COMPUTER_NAME, request.getParameter(INPUT_SEARCH));
 		} else {
 			page = new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME);
 			setSortAttributes(request, page);
-			page = serviceComputer.getPage(page);
+			page = computerService.getPage(page);
 			request.setAttribute(ATT_COMPUTERDTO_LIST,
 					ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
-			computerNb = serviceComputer.getComputerNumber();
+			computerNb = computerService.getComputerNumber();
 		}
 		setIndexAttributes(request, page, computerNb);
 		return computerNb;
@@ -190,7 +206,7 @@ public class DashBoardServlet extends HttpServlet {
 			List<String> idToDelete = Arrays.asList(request.getParameter("selection").split(","));
 			for (String id : idToDelete) {
 				try {
-					serviceComputer.deleteComputerById(Integer.parseInt(id));
+					computerService.deleteComputerById(Integer.parseInt(id));
 				} catch (NumberFormatException numFormat) {
 					CDBLogger.logError(numFormat);
 				} catch (NothingSelectedException noComputerException) {

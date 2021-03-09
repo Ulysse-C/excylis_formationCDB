@@ -6,16 +6,20 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.formationcdb.logger.CDBLogger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-public final class DBConnection {
 
-	private static final DBConnection INSTANCE = new DBConnection();
+//@Component 
+public class DbConnection {
+
+	private static final DbConnection INSTANCE = new DbConnection();
 	private HikariDataSource dataSource;
 
-	private DBConnection() {
+	public DbConnection() {
 		try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("config/dataBase.properties")) {
 			Properties properties = new Properties();
 			properties.load(input);
@@ -33,7 +37,7 @@ public final class DBConnection {
 		}
 	}
 
-	public static DBConnection getInstance() {
+	public static DbConnection getInstance() {
 		return INSTANCE;
 	}
 

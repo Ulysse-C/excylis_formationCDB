@@ -5,6 +5,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.excilys.formationcdb.controller.servlet.validator.EditComputerValidator;
 import com.excilys.formationcdb.dto.EditComputerDTO;
 import com.excilys.formationcdb.dto.mapper.ComputerMapper;
@@ -12,6 +15,7 @@ import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.service.ComputerService;
 
+@Component
 public class EditComputerForm {
 
 	public static final String INPUT_NAME = "computerName";
@@ -20,7 +24,8 @@ public class EditComputerForm {
 	public static final String INPUT_COMPANYID = "companyId";
 	public static final String ATTR_COMPUTERID = "computerId";
 	
-	private static ComputerService computerService = ComputerService.getInstance();
+	@Autowired
+	private static ComputerService computerService;
 	private Map<String, String> errors = new HashMap<>();
 
 	public EditComputerDTO editComputer(HttpServletRequest request) {

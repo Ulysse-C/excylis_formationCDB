@@ -3,25 +3,23 @@ package com.excilys.formationcdb.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.excilys.formationcdb.dao.DAOCompany;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import com.excilys.formationcdb.dao.DaoCompany;
 import com.excilys.formationcdb.exception.CustomSQLException;
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Page;
 
-public final class CompanyService {
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
+public class CompanyService {
 	
-	private final static CompanyService INSTANCE = new CompanyService();
-	private DAOCompany daoCompany;
-	
-	private CompanyService() {
-		daoCompany = DAOCompany.getInstance();
-	}
-	
-	public static CompanyService getInstance() {
-		return INSTANCE;
-	}
-
+	@Autowired
+	private DaoCompany daoCompany;
 
 	public Optional<Company> getCompanyById(int id) {
 		return daoCompany.getCompanyById(id);

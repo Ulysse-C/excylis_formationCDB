@@ -2,11 +2,16 @@ package com.excilys.formationcdb.controller.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formationcdb.dto.EditComputerDTO;
 import com.excilys.formationcdb.dto.mapper.CompanyMapper;
@@ -18,6 +23,7 @@ import com.excilys.formationcdb.service.ComputerService;
 /**
  * Servlet implementation class EditComputerServlet
  */
+@Component
 @WebServlet("/editComputer")
 public class EditComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -28,8 +34,10 @@ public class EditComputerServlet extends HttpServlet {
 	public static final String ATT_COMPUTER_DTO = "computerDTO";
 	public static final String VIEW = "/WEB-INF/views/editComputer.jsp";
 
-	private static ComputerService serviceComputer = ComputerService.getInstance();
-	private static CompanyService serviceCompany = CompanyService.getInstance();
+	@Autowired
+	private ComputerService computerService;
+	@Autowired
+	private CompanyService companyService;
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -38,8 +46,14 @@ public class EditComputerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		handleRequest(request, response);
-
 	}
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+		super.init(config);
+	}
+
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
@@ -61,7 +75,7 @@ public class EditComputerServlet extends HttpServlet {
 			try {
 				int computerId = Integer.parseInt(request.getParameter(INPUT_ID));
 				EditComputerDTO computerDTO = ComputerMapper
-						.createEditComputerDTO(serviceComputer.getComputerById(computerId));
+						.createEditComputerDTO(computerService.getComputerById(computerId));
 				request.setAttribute(ATT_COMPUTER_DTO, computerDTO);
 			} catch (NumberFormatException numberFormatExceptoin) {
 				CDBLogger.logInfo(numberFormatExceptoin);
@@ -75,7 +89,7 @@ public class EditComputerServlet extends HttpServlet {
 	}
 
 	private void addCompanyList(HttpServletRequest request) {
-		request.setAttribute(ATT_COMPANYLIST, CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()));
+		request.setAttribute(ATT_COMPANYLIST, CompanyMapper.createAddCompanyDTOList(companyService.getCompanyList()));
 
 	}
 
