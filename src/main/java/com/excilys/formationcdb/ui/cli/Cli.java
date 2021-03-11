@@ -6,7 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.formationcdb.controller.cli.CliHandler;
+import com.excilys.formationcdb.controller.cli.CliHandlerImpl;
 import com.excilys.formationcdb.exception.CompanyKeyInvalidException;
 import com.excilys.formationcdb.exception.CustomSQLException;
 import com.excilys.formationcdb.exception.InvalidInputCLIHandlerException;
@@ -16,18 +21,22 @@ import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Page;
 
-public class CLI {
+@Component
+@Scope("prototype")
+public class Cli {
 
 	private BufferedReader bufferedReader;
 	private PrintStream output;
+	
+	@Autowired
 	private CliHandler cliHandler;
 
-	public CLI() {
+	public Cli() {
 		output = System.out;
 		bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 	}
 
-	public CLI(PrintStream printStream) {
+	public Cli(PrintStream printStream) {
 		this();
 		if (printStream == null) {
 			throw new IllegalArgumentException();
@@ -35,7 +44,7 @@ public class CLI {
 		output = printStream;
 	}
 
-	public CLI(BufferedReader bufferedReader) {
+	public Cli(BufferedReader bufferedReader) {
 		this();
 		if (bufferedReader == null) {
 			throw new IllegalArgumentException();
@@ -138,12 +147,12 @@ public class CLI {
 		output.println("7 - Delete a company / 7 [computer_id]");
 	}
 
-	private void pageNavigagtion(Page page) throws IOException, CustomSQLException {
+	private <E> void pageNavigagtion(Page<E> page) throws IOException, CustomSQLException {
 		printPage(cliHandler.getPage(new Page<Computer>(10, page.getNumber(), page.getTable())));
 		handlePageNavigationRequest(page);
 	}
 
-	private void handlePageNavigationRequest(Page page) throws IOException {
+	private <E> void handlePageNavigationRequest(Page<E> page) throws IOException {
 		output.println("previous p / next n / exit e");
 		String[] inputList = parseInput();
 		if (inputList.length > 0) {
@@ -177,14 +186,14 @@ public class CLI {
 		}
 	}
 
-	private void printPage(Page page) {
+	private <T> void printPage(Page<T> page) {
 		output.println("Page " + page.getNumber());
-		for (Object content : page.getContent()) {
-			output.println(content.toString());
+		for (Optional<T> content : page.getContent()) {
+			output.println(content.get().toString());
 		}
 	}
 
-	public void addCliHandler(CliHandler cliHandler) {
+	public void addCliHandler(CliHandlerImpl cliHandler) {
 		this.cliHandler = cliHandler;
 	}
 

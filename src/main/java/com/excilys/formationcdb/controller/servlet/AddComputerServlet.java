@@ -10,9 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import com.excilys.formationcdb.SpringConfig;
+import com.excilys.formationcdb.controller.servlet.form.AddComputerForm;
 import com.excilys.formationcdb.dto.AddComputerDTO;
 import com.excilys.formationcdb.dto.mapper.CompanyMapper;
 import com.excilys.formationcdb.logger.CDBLogger;
@@ -42,13 +47,12 @@ public class AddComputerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		handleRequest(request, response);
 	}
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
 		super.init(config);
 	}
-
 
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response) {
 		addCompanyList(request);
@@ -66,16 +70,17 @@ public class AddComputerServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-		AddComputerForm form = new AddComputerForm();
+		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+		AddComputerForm form = context.getBean(AddComputerForm.class);
 		AddComputerDTO computerDTO = form.addComputer(request);
-
+		((ConfigurableApplicationContext) context).close();
 		request.setAttribute(ATT_ERRORS, form.getErrors());
 		request.setAttribute(ATT_COMPUTERDTO, computerDTO);
 		handleRequest(request, response);
 	}
 
 	private void addCompanyList(HttpServletRequest request) {
-			request.setAttribute(ATT_COMPANYLIST,CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()) );
+		request.setAttribute(ATT_COMPANYLIST, CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()));
 
 	}
 }

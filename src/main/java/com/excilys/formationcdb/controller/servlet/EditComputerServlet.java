@@ -10,9 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import com.excilys.formationcdb.SpringConfig;
+import com.excilys.formationcdb.controller.servlet.form.EditComputerForm;
 import com.excilys.formationcdb.dto.EditComputerDTO;
 import com.excilys.formationcdb.dto.mapper.CompanyMapper;
 import com.excilys.formationcdb.dto.mapper.ComputerMapper;
@@ -47,13 +52,12 @@ public class EditComputerServlet extends HttpServlet {
 			throws ServletException, IOException {
 		handleRequest(request, response);
 	}
-	
+
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
 		super.init(config);
 	}
-
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
@@ -61,9 +65,10 @@ public class EditComputerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		EditComputerForm form = new EditComputerForm();
+		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+		EditComputerForm form = context.getBean(EditComputerForm.class);
 		EditComputerDTO computerDTO = form.editComputer(request);
-
+		((ConfigurableApplicationContext) context).close();
 		request.setAttribute(ATT_ERRORS, form.getErrors());
 		request.setAttribute(ATT_COMPUTER_DTO, computerDTO);
 		handleRequest(request, response);

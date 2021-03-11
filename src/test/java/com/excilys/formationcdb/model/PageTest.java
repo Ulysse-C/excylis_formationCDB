@@ -1,13 +1,10 @@
 package com.excilys.formationcdb.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.excilys.formationcdb.model.Page;
 
 public class PageTest {
 
@@ -66,7 +63,7 @@ public class PageTest {
 		Page page = new Page(10, 1, "string");
 		assertEquals(Page.PAGEINDEX_SIZE, page.getPageIndexTo(500));
 		page = new Page(10, 2, "string");
-		assertEquals(2 , page.getPageIndexTo(19));
+		assertEquals(2, page.getPageIndexTo(19));
 		page = new Page(10, 10, "string");
 		assertEquals(true, 10 + Page.PAGEINDEX_SIZE - Page.PAGEINDEX_BEFORE_CURRENT_PAGE >= page.getPageIndexTo(500));
 	}

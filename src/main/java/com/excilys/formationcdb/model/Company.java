@@ -1,32 +1,32 @@
 package com.excilys.formationcdb.model;
 
 public class Company {
-	
+
 	private int id;
 	private String name;
-	
-	public static class CompanyBuilder{
+
+	public static class CompanyBuilder {
 		private int id;
 		private String name;
-		
+
 		public CompanyBuilder() {
 		}
-		
+
 		public CompanyBuilder setId(int id) {
 			this.id = id;
 			return this;
 		}
-		
+
 		public CompanyBuilder setName(String name) {
 			this.name = name;
 			return this;
 		}
-		
+
 		public Company build() {
 			return new Company(id, name);
 		}
 	}
-	
+
 	private Company(int id, String name) {
 		this.id = id;
 		this.name = name;
@@ -39,7 +39,7 @@ public class Company {
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -58,20 +58,26 @@ public class Company {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Company other = (Company) obj;
-		if (id != other.id)
+		if (id != other.id) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 }

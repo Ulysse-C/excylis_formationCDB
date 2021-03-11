@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.Test;
 
-import com.excilys.formationcdb.controller.servlet.EditComputerServlet;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;

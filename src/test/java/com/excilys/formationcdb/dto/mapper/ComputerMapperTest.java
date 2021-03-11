@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import org.junit.Test;
 
 import com.excilys.formationcdb.dto.DashBoardComputerDTO;
-import com.excilys.formationcdb.dto.mapper.ComputerMapper;
 import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Computer;
 

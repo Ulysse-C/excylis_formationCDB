@@ -11,10 +11,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.logger.CDBLogger;
@@ -22,18 +23,13 @@ import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Page;
 
-@Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class DaoComputer {
+@Repository
+@Scope("singleton")
+public class ComputerDaoImpl implements ComputerDao {
 
-	//@Autowired
-	private DbConnection dbConnection;
-	
-	public DaoComputer() {
-		this.dbConnection =  DbConnection.getInstance();
-	}
+	@Autowired
+	private DataSource dataSource;
 
-	
 	private static final String UPDATE_COMPUTER_COMPANYID_QUERY = "UPDATE computer "
 			+ "SET company_id = ? WHERE id = ?";
 	private static final String UPDATE_COMPUTER_DISCONTINUED_QUERY = "UPDATE computer "
@@ -61,10 +57,9 @@ public class DaoComputer {
 	private static final String GET_COMPUTER_NUMBER_BY_NAME_QUERY = "SELECT COUNT(name) AS nbComputer"
 			+ " FROM computer WHERE computer.name LIKE ?";
 
-
 	public Optional<Computer> getComputerById(int id) {
 		Optional<Computer> computer = Optional.empty();
-		try (Connection connection = dbConnection.getconnection();
+		try (Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_COMPUTER_BY_ID_QUERY)) {
 			preparedStatement.setInt(1, id);
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -116,7 +111,7 @@ public class DaoComputer {
 
 	public void createComputer(Computer computer) {
 		if (computer != null) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection.prepareStatement(CREATE_COMPUTER_QUERY,
 							Statement.RETURN_GENERATED_KEYS)) {
 				prepareStatmentCreate(preparedStatement, computer);
@@ -145,7 +140,7 @@ public class DaoComputer {
 	}
 
 	public void deleteComputerById(int id) throws NothingSelectedException {
-		try (Connection connection = dbConnection.getconnection();
+		try (Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(DELETE_COMPUTER_BY_ID_QUERY)) {
 			preparedStatement.setInt(1, id);
 			int row = preparedStatement.executeUpdate();
@@ -170,7 +165,7 @@ public class DaoComputer {
 
 	public int getComputerNumber() {
 		int number = 0;
-		try (Connection connection = dbConnection.getconnection();
+		try (Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_COMPUTER_NUMBER_QUERY)) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			number = getComputerNumberFromResultSet(resultSet);
@@ -182,7 +177,7 @@ public class DaoComputer {
 
 	public int getComputerNumberbyName(String search) {
 		int number = 0;
-		try (Connection connection = dbConnection.getconnection();
+		try (Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_COMPUTER_NUMBER_BY_NAME_QUERY)) {
 			preparedStatement.setString(1, "%" + search + "%");
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -195,7 +190,7 @@ public class DaoComputer {
 
 	public Page<Computer> getPage(Page<Computer> page) {
 		if (page != null) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection
 							.prepareStatement(GET_PAGE_QUERY.replaceFirst("SORT_ORDER", page.getSortOrder().name())
 									.replaceFirst("SORT_ATTRIBUTE", page.getSortName().getAttribute()))) {
@@ -212,7 +207,7 @@ public class DaoComputer {
 
 	public Page<Computer> getPageByName(Page<Computer> page, String search) {
 		if (page != null) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection.prepareStatement(
 							GET_PAGE_BY_NAME_QUERY.replaceFirst("SORT_ORDER", page.getSortOrder().name())
 									.replaceFirst("SORT_ATTRIBUTE", page.getSortName().getAttribute()))) {
@@ -240,7 +235,7 @@ public class DaoComputer {
 
 	private void updateComputerName(Computer computer) throws NothingSelectedException {
 		if (computer.getName() != null && !"".equals(computer.getName())) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_COMPUTER_NAME_QUERY)) {
 				preparedStatement.setString(1, computer.getName());
 				preparedStatement.setInt(2, computer.getId());
@@ -257,7 +252,7 @@ public class DaoComputer {
 
 	private void updateComputerIntroduced(Computer computer) throws NothingSelectedException {
 		if (computer.getIntroduced() != null) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection
 							.prepareStatement(UPDATE_COMPUTER_INTRODUCED_QUERY)) {
 				prepareStatmentDate(preparedStatement, computer.getIntroduced(), 1);
@@ -274,7 +269,7 @@ public class DaoComputer {
 
 	private void updateComputerDiscontinued(Computer computer) throws NothingSelectedException {
 		if (computer.getDiscontinued() != null) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection
 							.prepareStatement(UPDATE_COMPUTER_DISCONTINUED_QUERY)) {
 				prepareStatmentDate(preparedStatement, computer.getDiscontinued(), 1);
@@ -291,7 +286,7 @@ public class DaoComputer {
 
 	private void updateComputerCompanyId(Computer computer) throws NothingSelectedException {
 		if (computer.getCompany() != null && computer.getCompany().getId() > 0) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection
 							.prepareStatement(UPDATE_COMPUTER_COMPANYID_QUERY)) {
 				preparedStatement.setInt(1, computer.getCompany().getId());

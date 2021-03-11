@@ -15,12 +15,12 @@ import com.excilys.formationcdb.model.Computer.ComputerBuilder;
 
 public class ComputerMapper {
 
-	public static String DATE_FORMAT = "yyyy-MM-dd";
+	public static final String DATE_FORMAT = "yyyy-MM-dd";
 
 	public static Computer createComputer(AddComputerDTO computerDTO) {
 		Company company = new Company.CompanyBuilder().setId(Integer.parseInt(computerDTO.companyId)).build();
 		ComputerBuilder computerBuilder = new Computer.ComputerBuilder().setCompany(company).setName(computerDTO.computerName);
-		if (!"".equals(computerDTO.introducedDate) ) {
+		if (!"".equals(computerDTO.introducedDate)) {
 			computerBuilder.setIntroduced(
 					LocalDate.parse(computerDTO.introducedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
 		}

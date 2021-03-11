@@ -51,7 +51,7 @@
 		</form>
 
 		<form id="orderForm" action="#" method="POST">
-			<input type="hidden" name="orderAttribute" value=""> </input>
+			<input type="hidden" name="orderAttribute" value=""/> 
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -71,21 +71,21 @@
 						<th>Computer name <a href="#"
 							id="orderAttributesComputerName"
 							onclick="$.fn.orderBy('COMPUTER_NAME');"><i
-								class="fa fa-fw fa-sort"></i></a></input>
+								class="fa fa-fw fa-sort"></i></a>
 						</th>
 						<th>Introduced date <a href="#"
 							id="orderAttributesIntroduced"
 							onclick="$.fn.orderBy('COMPUTER_INTRODUCED');"><i
-								class="fa fa-fw fa-sort"></i></a></input></th>
+								class="fa fa-fw fa-sort"></i></a></th>
 						<!-- Table header for Discontinued Date -->
 						<th>Discontinued date <a href="#"
 							id="orderAttributesDiscontinued"
 							onclick="$.fn.orderBy('COMPUTER_DISCONTINUED');"><i
-								class="fa fa-fw fa-sort"></i></a></input></th>
+								class="fa fa-fw fa-sort"></i></a></th>
 						<!-- Table header for Company -->
 						<th>Company <a href="#" id="orderAttributesCompanyName"
 							onclick="$.fn.orderBy('COMPANY_NAME');"><i
-								class="fa fa-fw fa-sort"></i></a></input></th>
+								class="fa fa-fw fa-sort"></i></a></th>
 					</tr>
 				</thead>
 				<!-- Browse attribute computers -->

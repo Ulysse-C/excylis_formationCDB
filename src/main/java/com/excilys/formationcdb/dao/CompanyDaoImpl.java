@@ -8,24 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.logger.CDBLogger;
 import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Page;
 
-@Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public final class DaoCompany {
+@Repository
+@Scope("singleton")
+public class CompanyDaoImpl implements CompanyDao {
 
-//	@Autowired
-	private DbConnection dbConnection = DbConnection.getInstance();
-	
-	
+	@Autowired
+	private DataSource dataSource;
+
 	private static final String DELETE_COMPUTER_OF_COMPANY_QUERY = "DELETE FROM computer WHERE company_id = ?";
 	private static final String DELETE_COMPANY_BY_ID_QUERY = "DELETE FROM company WHERE id = ?";
 
@@ -33,10 +33,9 @@ public final class DaoCompany {
 	private static final String GET_PAGE_QUERY = "SELECT id,name FROM company ORDER BY id LIMIT ? OFFSET ?";
 	private static final String GET_COMPANY_LIST_QUERY = "SELECT id,name FROM company ORDER BY id";
 
-
 	public Optional<Company> getCompanyById(int id) {
 		Optional<Company> company = Optional.empty();
-		try (Connection connection = dbConnection.getconnection();
+		try (Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_COMPANY_BY_ID_QUERY)) {
 			preparedStatement.setInt(1, id);
 			ResultSet resultSet = preparedStatement.executeQuery();
@@ -65,7 +64,7 @@ public final class DaoCompany {
 
 	public Page<Company> getPage(Page<Company> page) {
 		if (page != null) {
-			try (Connection connection = dbConnection.getconnection();
+			try (Connection connection = dataSource.getConnection();
 					PreparedStatement preparedStatement = connection.prepareStatement(GET_PAGE_QUERY)) {
 				preparedStatement.setInt(1, page.getSize());
 				preparedStatement.setInt(2, (page.getNumber() - 1) * page.getSize());
@@ -80,7 +79,7 @@ public final class DaoCompany {
 
 	public List<Optional<Company>> getCompanyList() {
 		List<Optional<Company>> companyList = new ArrayList<>();
-		try (Connection connection = dbConnection.getconnection();
+		try (Connection connection = dataSource.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(GET_COMPANY_LIST_QUERY)) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			companyList = convertToListCompanyList(resultSet);
@@ -95,12 +94,12 @@ public final class DaoCompany {
 		PreparedStatement deleteComputer = null;
 		PreparedStatement deleteCompany = null;
 		try {
-			connection = dbConnection.getconnection();
+			connection = dataSource.getConnection();
 			connection.setAutoCommit(false);
-			deleteComputer = dbConnection.getconnection().prepareStatement(DELETE_COMPUTER_OF_COMPANY_QUERY);
+			deleteComputer = dataSource.getConnection().prepareStatement(DELETE_COMPUTER_OF_COMPANY_QUERY);
 			deleteComputer.setInt(1, id);
 			deleteComputer.executeUpdate();
-			deleteCompany = dbConnection.getconnection().prepareStatement(DELETE_COMPANY_BY_ID_QUERY);
+			deleteCompany = dataSource.getConnection().prepareStatement(DELETE_COMPANY_BY_ID_QUERY);
 			deleteCompany.setInt(1, id);
 			int row = deleteCompany.executeUpdate();
 			if (row == 0) {

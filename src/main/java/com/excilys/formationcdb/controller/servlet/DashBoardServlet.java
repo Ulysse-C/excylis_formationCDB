@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import com.excilys.formationcdb.controller.cli.CliComputerController;
+import com.excilys.formationcdb.controller.cli.CliComputerControllerImpl;
 import com.excilys.formationcdb.dto.mapper.ComputerMapper;
 import com.excilys.formationcdb.exception.CustomSQLException;
 import com.excilys.formationcdb.exception.NothingSelectedException;
@@ -54,13 +54,6 @@ public class DashBoardServlet extends HttpServlet {
 	@Autowired
 	private ComputerService computerService;
 
-	
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-		super.init(config);
-	}
-	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -74,6 +67,13 @@ public class DashBoardServlet extends HttpServlet {
 			CDBLogger.logError(exception);
 		}
 	}
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+		super.init(config);
+	}
+
 	
 	
 
@@ -114,7 +114,7 @@ public class DashBoardServlet extends HttpServlet {
 		int pageSize = getPageSize(request);
 		Page<Computer> page;
 		if (request.getParameter(INPUT_SEARCH) != null) {
-			page = new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME);
+			page = new Page<Computer>(pageSize, pageNumber, CliComputerControllerImpl.COMPUTER_TABLE_NAME);
 			setSortAttributes(request, page);
 			page = computerService.getPageByName(page, request.getParameter(INPUT_SEARCH));
 			request.setAttribute(ATT_COMPUTERDTO_LIST,
@@ -122,7 +122,7 @@ public class DashBoardServlet extends HttpServlet {
 			computerNb = computerService.getComputerNumberbyName(request.getParameter(INPUT_SEARCH));
 			request.setAttribute(ATT_COMPUTER_NAME, request.getParameter(INPUT_SEARCH));
 		} else {
-			page = new Page<Computer>(pageSize, pageNumber, CliComputerController.COMPUTER_TABLE_NAME);
+			page = new Page<Computer>(pageSize, pageNumber, CliComputerControllerImpl.COMPUTER_TABLE_NAME);
 			setSortAttributes(request, page);
 			page = computerService.getPage(page);
 			request.setAttribute(ATT_COMPUTERDTO_LIST,
@@ -161,7 +161,7 @@ public class DashBoardServlet extends HttpServlet {
 
 	private void setSortOrder(Page<Computer> page, HttpServletRequest request) {
 		Page.SortOrder sortOrder = Page.SortOrder.ASC;
-		if (request.getParameter(ATT_SORT_NAME) != null && !"".equals(request.getParameter(ATT_SORT_NAME)) ) {
+		if (request.getParameter(ATT_SORT_NAME) != null && !"".equals(request.getParameter(ATT_SORT_NAME))) {
 			if (Page.SortOrder.ASC
 					.equals((Page.SortOrder) request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER))) {
 				sortOrder = Page.SortOrder.DESC;

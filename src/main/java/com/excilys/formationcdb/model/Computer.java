@@ -16,37 +16,37 @@ public class Computer {
 		private LocalDate introduced;
 		private LocalDate discontinued;
 		private Company company;
-		
+
 		public ComputerBuilder setId(int id) {
 			this.id = id;
 			return this;
 		}
-		
+
 		public ComputerBuilder setName(String name) {
 			this.name = name;
 			return this;
 		}
-		
+
 		public ComputerBuilder setIntroduced(LocalDate introduced) {
 			this.introduced = introduced;
 			return this;
 		}
-		
+
 		public ComputerBuilder setDiscontinued(LocalDate discontinued) {
 			this.discontinued = discontinued;
 			return this;
 		}
-		
+
 		public ComputerBuilder setCompany(Company company) {
 			this.company = company;
 			return this;
 		}
-		
+
 		public Computer build() {
 			return new Computer(name, id, introduced, discontinued, company);
 		}
 	}
-	
+
 	private Computer(String name, int id, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.name = name;
 		this.id = id;
@@ -74,7 +74,7 @@ public class Computer {
 	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
-	
+
 	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
@@ -91,7 +91,7 @@ public class Computer {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -127,33 +127,41 @@ public class Computer {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Computer other = (Computer) obj;
 		if (discontinued == null) {
-			if (other.discontinued != null)
+			if (other.discontinued != null) {
 				return false;
-		} else if (!discontinued.equals(other.discontinued))
+			}
+		} else if (!discontinued.equals(other.discontinued)) {
 			return false;
-		if (id != other.id)
+		}
+		if (id != other.id) {
 			return false;
+		}
 		if (introduced == null) {
-			if (other.introduced != null)
+			if (other.introduced != null) {
 				return false;
-		} else if (!introduced.equals(other.introduced))
+			}
+		} else if (!introduced.equals(other.introduced)) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
-
-
 
 }

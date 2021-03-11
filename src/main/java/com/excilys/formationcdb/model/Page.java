@@ -7,8 +7,8 @@ import java.util.Optional;
 public class Page<E> {
 
 	public static final int DEFAULT_PAGE_SIZE = 10;
-	public final static int PAGEINDEX_SIZE = 10;
-	public final static int PAGEINDEX_BEFORE_CURRENT_PAGE = 5;
+	public static final int PAGEINDEX_SIZE = 10;
+	public static final int PAGEINDEX_BEFORE_CURRENT_PAGE = 5;
 
 	private int size;
 	private int number;
@@ -29,7 +29,7 @@ public class Page<E> {
 
 		private String attribute;
 
-		private SortAttribute(String attribute) {
+		SortAttribute(String attribute) {
 			this.attribute = attribute;
 		}
 
@@ -145,17 +145,19 @@ public class Page<E> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		} else if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		} else if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Page<E> other = (Page<E>) obj;
-		if (number != other.number)
+		if (number != other.number) {
 			return false;
-		if (size != other.size)
+		} else if (size != other.size) {
 			return false;
+		}
 		return true;
 	}
 }

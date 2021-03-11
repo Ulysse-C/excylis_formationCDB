@@ -2,55 +2,26 @@ package com.excilys.formationcdb.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-import com.excilys.formationcdb.dao.DaoComputer;
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Page;
 
-@Component
-@Scope("singleton")
-public class ComputerService {
-	
-	@Autowired
-	private DaoComputer daoComputer;
+public interface ComputerService {
 
-	public Optional<Computer> getComputerById(int id) {
-		return daoComputer.getComputerById(id);
-	}
+	Page<Computer> getPageByName(Page<Computer> page, String parameter);
 
-	public void createComputer(Computer computer) {
-		daoComputer.createComputer(computer);
-	}
+	int getComputerNumberbyName(String parameter);
 
-	public void updateComputer(Computer computer) throws  NothingSelectedException {
-		daoComputer.updateComputer(computer);
-	}
+	Page<Computer> getPage(Page page);
 
-	public void deleteComputerById(int i) throws NothingSelectedException {
-		daoComputer.deleteComputerById(i);
-	}
+	int getComputerNumber();
 
-	public Page<Computer> getPage(Page<Computer> page)  {
-		return daoComputer.getPage(page);
-	}
+	void deleteComputerById(int parseInt) throws NothingSelectedException;
 
-	public int getComputerNumber() {
-		return daoComputer.getComputerNumber();
-	}
+	Optional<Computer> getComputerById(int computerId);
 
-	public int getComputerNumberbyName(String search) {
-		return daoComputer.getComputerNumberbyName(search);
-	}
+	void createComputer(Computer computer);
 
-	public Page<Computer> getPageByName(Page<Computer> page, String search)  {
-		return daoComputer.getPageByName(page, search);
-	}
-
-
+	void updateComputer(Computer computer) throws NothingSelectedException;
 
 }

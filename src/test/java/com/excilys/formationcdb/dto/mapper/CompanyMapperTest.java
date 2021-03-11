@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.junit.Test;
 
 import com.excilys.formationcdb.dto.AddCompanyDTO;
-import com.excilys.formationcdb.dto.mapper.CompanyMapper;
 import com.excilys.formationcdb.model.Company;
 
 public class CompanyMapperTest {

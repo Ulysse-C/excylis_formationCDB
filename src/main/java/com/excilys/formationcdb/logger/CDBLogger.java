@@ -1,26 +1,29 @@
 package com.excilys.formationcdb.logger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
 
 public class CDBLogger {
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(Exception.class);
+	private static Map<String, Logger> loggers = new HashMap<>();
 
-	//je ne sais pas si la granularité apporte quelque chose
-	/*
-	private static final Logger invalidWebInputLogger = (Logger) LoggerFactory.getLogger(InvalidWebInputException.class);
-
-	private static final Logger customSQLLogger = (Logger) LoggerFactory.getLogger(CustomSQLException.class);
-	private static final Logger invalidInputCLILogger = (Logger) LoggerFactory.getLogger(InvalidInputCLIHandlerException.class);
-	private static final Logger companyKeyInvalidLogger = (Logger) LoggerFactory.getLogger(CompanyKeyInvalidException.class);
-	private static final Logger noComputerSelectedLogger = (Logger) LoggerFactory.getLogger(NoComputerSelectedException.class);
-	*/
 	public static void logError(Exception exception) {
+		Logger logger = getLogger(exception);
 		logger.error(exception.getMessage());
 	}
-	
+
 	public static void logInfo(Exception exception) {
+		Logger logger = getLogger(exception);
 		logger.info(exception.getMessage());
+	}
+
+	private static Logger getLogger(Exception exception) {
+		if (!loggers.containsKey(exception.getClass().toString())) {
+			loggers.put(exception.getClass().toString(), (Logger) LoggerFactory.getLogger(exception.getClass()));
+		}
+		return loggers.get(exception.getClass().toString());
 	}
 }
