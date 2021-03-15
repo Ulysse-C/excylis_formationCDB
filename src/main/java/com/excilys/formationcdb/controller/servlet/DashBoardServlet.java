@@ -1,41 +1,31 @@
 package com.excilys.formationcdb.controller.servlet;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.excilys.formationcdb.controller.cli.CliComputerControllerImpl;
-import com.excilys.formationcdb.dto.mapper.ComputerMapper;
-import com.excilys.formationcdb.exception.CustomSQLException;
+import com.excilys.formationcdb.controller.cli.CliComputerController;
+import com.excilys.formationcdb.dto.web.mapper.WebComputerMapper;
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.logger.CDBLogger;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Page;
-import com.excilys.formationcdb.model.Page.SortAttribute;
-import com.excilys.formationcdb.model.Page.SortOrder;
 import com.excilys.formationcdb.service.ComputerService;
 
-/**
- * Servlet implementation class DashBoardServlet
- */
-@Component
-@WebServlet("/dashboard")
-public class DashBoardServlet extends HttpServlet {
+@Controller
+public class DashBoardServlet {
+
 	private static final long serialVersionUID = 1L;
 
-	public static final String VIEW = "/WEB-INF/views/dashboard.jsp";
+	public static final String VIEW = "views/dashboard";
 	public static final String ATT_PAGE_NB = "pageNumber";
 	public static final String ATT_COMPUTER_NB = "numberComputers";
 	public static final String ATT_COMPUTERDTO_LIST = "computerList";
@@ -45,165 +35,130 @@ public class DashBoardServlet extends HttpServlet {
 	public static final String INPUT_PAGE = "page";
 	public static final String INPUT_SEARCH = "search";
 	public static final String INPUT_PAGE_SIZE = "pageSize";
-	private static final String ATT_PAGE_SIZE = "pageSize";
 
-	private static final String ATT_SORT_PREVIOUS_ORDER = "orderSort";
-	private static final String ATT_SORT_NAME = "orderAttribute";
-	private static final String ATT_SORT_PREVIOUS_NAME = "previousOrderAttribute";
-
-	@Autowired
 	private ComputerService computerService;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			handleRequest(request, response);
-		} catch (ServletException exception) {
-			CDBLogger.logError(exception);
-		} catch (IOException exception) {
-			CDBLogger.logError(exception);
+	@Autowired
+	private DashBoardSessionVariable sessionVariable;
+
+	@Autowired
+	private DashBoardRequestVariable requestVariable;
+	
+	public DashBoardServlet(ComputerService computerService) {
+		this.computerService = computerService;
+	}
+
+	@GetMapping(value = "/dashboard")
+	@ResponseBody
+	public ModelAndView getDashBoard(@RequestParam(required = false) String page,
+			@RequestParam(required = false) String search) {
+		setPageNumber(page);
+		setSearch(search);
+		handleRequest();
+		return requestVariable.getModelAndView();
+	}
+
+	private void setSearch(String search) {
+		if (search != null) {
+			requestVariable.setSearch(search);
 		}
 	}
-	
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-		super.init(config);
-	}
 
-	
-	
-
-	private void handleRequest(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		try {
-			int pageNumber = 1;
-			if (request.getParameter(INPUT_PAGE) != null) {
-				try {
-					pageNumber = Integer.parseInt(request.getParameter(INPUT_PAGE));
-				} catch (NumberFormatException numberFormatExceptoin) {
-					CDBLogger.logInfo(numberFormatExceptoin);
-				}
-			}
-			setGeneralAttributes(request, response, pageNumber);
-		} catch (CustomSQLException exception) {
-			CDBLogger.logError(exception);
-		}
-		this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
-	}
-
-	private void setGeneralAttributes(HttpServletRequest request, HttpServletResponse response, int pageNumber)
-			throws CustomSQLException {
-		request.setAttribute(VIEW, response);
-		request.setAttribute(ATT_PAGE_NB, pageNumber);
-		int computerNb;
-		computerNb = setComputerList(request, pageNumber);
-		request.setAttribute(ATT_COMPUTER_NB, computerNb);
-	}
-
-	private void setIndexAttributes(HttpServletRequest request, Page page, int computerNb) {
-		request.setAttribute(ATT_PAGEINDEX_FROM, page.getPageIndexFrom());
-		request.setAttribute(ATT_PAGEINDEX_TO, page.getPageIndexTo(computerNb));
-	}
-
-	private int setComputerList(HttpServletRequest request, int pageNumber) throws CustomSQLException {
-		int computerNb;
-		int pageSize = getPageSize(request);
-		Page<Computer> page;
-		if (request.getParameter(INPUT_SEARCH) != null) {
-			page = new Page<Computer>(pageSize, pageNumber, CliComputerControllerImpl.COMPUTER_TABLE_NAME);
-			setSortAttributes(request, page);
-			page = computerService.getPageByName(page, request.getParameter(INPUT_SEARCH));
-			request.setAttribute(ATT_COMPUTERDTO_LIST,
-					ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
-			computerNb = computerService.getComputerNumberbyName(request.getParameter(INPUT_SEARCH));
-			request.setAttribute(ATT_COMPUTER_NAME, request.getParameter(INPUT_SEARCH));
-		} else {
-			page = new Page<Computer>(pageSize, pageNumber, CliComputerControllerImpl.COMPUTER_TABLE_NAME);
-			setSortAttributes(request, page);
-			page = computerService.getPage(page);
-			request.setAttribute(ATT_COMPUTERDTO_LIST,
-					ComputerMapper.createDashBoardComputerDTOList(page.getContent()));
-			computerNb = computerService.getComputerNumber();
-		}
-		setIndexAttributes(request, page, computerNb);
-		return computerNb;
-	}
-
-	private void setSortAttributes(HttpServletRequest request, Page<Computer> page) {
-		setSortAttribute(request, page);
-		setSortOrder(page, request);
-	}
-
-	private void setSortAttribute(HttpServletRequest request, Page<Computer> page) {
-		Page.SortAttribute sortAttribute = Page.SortAttribute.COMPUTER_ID;
-		HttpSession session = request.getSession();
-		if (request.getParameter(ATT_SORT_NAME) != null && !"".equals(request.getParameter(ATT_SORT_NAME))) {
-			if (!request.getParameter(ATT_SORT_NAME).equals(session.getAttribute(ATT_SORT_PREVIOUS_NAME))) {
-				request.setAttribute(ATT_SORT_PREVIOUS_ORDER, null);
-			}
+	private void setPageNumber(String page) {
+		if (page != null) {
 			try {
-				sortAttribute = Page.SortAttribute.valueOf(request.getParameter(ATT_SORT_NAME));
-				request.getSession().setAttribute(ATT_SORT_NAME, sortAttribute);
+				requestVariable.setPageNumber(Integer.parseInt(page));
+			} catch (NumberFormatException numberFormatExceptoin) {
+				CDBLogger.logInfo(numberFormatExceptoin);
+			}
+		}
+	}
+
+	@PostMapping(value = "/dashboard")
+	@ResponseBody
+	public ModelAndView postDashBoard(@RequestParam(required = false) String pageSize,
+			@RequestParam(required = false) String selection, @RequestParam(required = false) String orderAttribute) {
+		deleteSelected(selection);
+		setPageSize(pageSize);
+		setPageOrdering(orderAttribute);
+		handleRequest();
+		return requestVariable.getModelAndView();
+
+	}
+
+	private void setPageOrdering(String orderAttribute) {
+		if (orderAttribute != null) {
+			try {
+				Page.SortAttribute sortAttribute = Page.SortAttribute.valueOf(orderAttribute);
+				if (sortAttribute != sessionVariable.getSortAttribute()) {
+					sessionVariable.setSortAttribute(sortAttribute);
+				} else {
+					sessionVariable.flipSortOrder();
+				}
 			} catch (NumberFormatException numberFormatExceptoin) {
 				CDBLogger.logInfo(numberFormatExceptoin);
 			} catch (java.lang.IllegalArgumentException illegal) {
 				CDBLogger.logInfo(illegal);
 			}
-		} else if (request.getSession().getAttribute(ATT_SORT_NAME) != null) {
-			sortAttribute = (SortAttribute) session.getAttribute(ATT_SORT_NAME);
 		}
-		page.setSortName(sortAttribute);
+		
 	}
 
-	private void setSortOrder(Page<Computer> page, HttpServletRequest request) {
-		Page.SortOrder sortOrder = Page.SortOrder.ASC;
-		if (request.getParameter(ATT_SORT_NAME) != null && !"".equals(request.getParameter(ATT_SORT_NAME))) {
-			if (Page.SortOrder.ASC
-					.equals((Page.SortOrder) request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER))) {
-				sortOrder = Page.SortOrder.DESC;
-				request.getSession().setAttribute(ATT_SORT_PREVIOUS_ORDER, sortOrder);
-			} else {
-				sortOrder = Page.SortOrder.ASC;
-				request.getSession().setAttribute(ATT_SORT_PREVIOUS_ORDER, sortOrder);
-			}
-		} else if (request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER) != null) {
-			sortOrder = (SortOrder) request.getSession().getAttribute(ATT_SORT_PREVIOUS_ORDER);
-		}
-		page.setSortOrder(sortOrder);
-	}
-
-	private int getPageSize(HttpServletRequest request) {
-		int pageSize = -1;
-		if (request.getParameter(INPUT_PAGE_SIZE) != null) {
+	private void setPageSize(String pageSize) {
+		if (pageSize != null) {
 			try {
-				pageSize = Integer.parseInt(request.getParameter(INPUT_PAGE_SIZE));
-				request.getSession().setAttribute(ATT_PAGE_SIZE, pageSize);
+				sessionVariable.setPageSize(Integer.parseInt(pageSize));
 			} catch (NumberFormatException numberFormatExceptoin) {
 				CDBLogger.logInfo(numberFormatExceptoin);
 			}
-		} else if (request.getSession().getAttribute(INPUT_PAGE_SIZE) != null) {
-			pageSize = (int) request.getSession().getAttribute(INPUT_PAGE_SIZE);
 		}
-		return pageSize;
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		deleteSelected(request);
-		handleRequest(request, response);
+	private void handleRequest() {
+		setRequestAttributes();
+		setGeneralAttributes();
 	}
 
-	private void deleteSelected(HttpServletRequest request) {
-		if (request.getParameter("selection") != null) {
-			List<String> idToDelete = Arrays.asList(request.getParameter("selection").split(","));
+	private void setRequestAttributes() {
+		requestVariable.setComputerNumber(computerService.getComputerNumberbyName(requestVariable.getSearch()));
+	}
+
+	private void setGeneralAttributes() {
+		ModelAndView mv = requestVariable.getModelAndView();
+		mv.setViewName(VIEW);
+		setComputerList();
+		mv.getModel().put(ATT_PAGE_NB, requestVariable.getPageNumber());
+		mv.getModel().put(ATT_COMPUTER_NB, requestVariable.getComputerNumber());
+	}
+
+	private void setIndexAttributes(Page<Computer> page) {
+		Map<String, Object> mv = requestVariable.getModelAndView().getModel();
+		mv.put(ATT_PAGEINDEX_FROM, page.getPageIndexFrom());
+		mv.put(ATT_PAGEINDEX_TO, page.getPageIndexTo(requestVariable.getComputerNumber()));
+	}
+
+	private void setComputerList() {
+		Map<String, Object> mv = requestVariable.getModelAndView().getModel();
+		Page<Computer> page;
+		page = new Page<Computer>(sessionVariable.getPageSize(), requestVariable.getPageNumber(),
+				CliComputerController.COMPUTER_TABLE_NAME);
+		page.setSearch(requestVariable.getSearch());
+		setSortAttributes(page);
+		page = computerService.getPage(page);
+		mv.put(ATT_COMPUTERDTO_LIST, WebComputerMapper.createDashBoardComputerDTOList(page.getContent()));
+		computerService.getComputerNumberbyName(requestVariable.getSearch());
+		mv.put(ATT_COMPUTER_NAME, requestVariable.getSearch());
+		setIndexAttributes(page);
+	}
+
+	private void setSortAttributes(Page<Computer> page) {
+		page.setSortName(sessionVariable.getSortAttribute());
+		page.setSortOrder(sessionVariable.getSortOrder());
+	}
+
+	private void deleteSelected(String selection) {
+		if (selection != null) {
+			List<String> idToDelete = Arrays.asList(selection.split(","));
 			for (String id : idToDelete) {
 				try {
 					computerService.deleteComputerById(Integer.parseInt(id));

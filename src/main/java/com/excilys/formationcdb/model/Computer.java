@@ -16,6 +16,10 @@ public class Computer {
 		private LocalDate introduced;
 		private LocalDate discontinued;
 		private Company company;
+		
+		public ComputerBuilder() {
+			this.company = new Company.CompanyBuilder().build();
+		}
 
 		public ComputerBuilder setId(int id) {
 			this.id = id;
@@ -47,7 +51,7 @@ public class Computer {
 		}
 	}
 
-	private Computer(String name, int id, LocalDate introduced, LocalDate discontinued, Company company) {
+	 Computer(String name, int id, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.name = name;
 		this.id = id;
 		this.introduced = introduced;
@@ -57,6 +61,15 @@ public class Computer {
 
 	public String getName() {
 		return name;
+	}
+	
+	public Integer getCompanyId() {
+		if (company != null) {
+			if (company.getId() != 0) {
+				return company.getId();
+			}
+		}
+		return null;
 	}
 
 	public int getId() {

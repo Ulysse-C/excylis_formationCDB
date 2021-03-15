@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.dto.mapper;
+package com.excilys.formationcdb.dto.web.mapper;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.excilys.formationcdb.dto.AddComputerDTO;
-import com.excilys.formationcdb.dto.DashBoardComputerDTO;
-import com.excilys.formationcdb.dto.EditComputerDTO;
+import com.excilys.formationcdb.dto.web.AddComputerDTO;
+import com.excilys.formationcdb.dto.web.DashBoardComputerDTO;
+import com.excilys.formationcdb.dto.web.EditComputerDTO;
 import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.model.Computer.ComputerBuilder;
 
-public class ComputerMapper {
+public class WebComputerMapper {
 
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
 

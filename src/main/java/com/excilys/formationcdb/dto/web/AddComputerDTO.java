@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.dto;
+package com.excilys.formationcdb.dto.web;
 
 public class AddComputerDTO {
 	
@@ -18,6 +18,18 @@ public class AddComputerDTO {
 	}
 	public String getComputerName() {
 		return computerName;
+	}
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	public void setIntroducedDate(String introducedDate) {
+		this.introducedDate = introducedDate;
+	}
+	public void setDiscontinuedDate(String discontinuedDate) {
+		this.discontinuedDate = discontinuedDate;
+	}
+	public void setComputerName(String computerName) {
+		this.computerName = computerName;
 	}
 	
 }

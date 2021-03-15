@@ -1,33 +1,25 @@
 package com.excilys.formationcdb.controller.servlet;
 
-import java.io.IOException;
+import java.util.Map;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.excilys.formationcdb.SpringConfig;
-import com.excilys.formationcdb.controller.servlet.form.AddComputerForm;
-import com.excilys.formationcdb.dto.AddComputerDTO;
-import com.excilys.formationcdb.dto.mapper.CompanyMapper;
-import com.excilys.formationcdb.logger.CDBLogger;
+import com.excilys.formationcdb.controller.servlet.validator.AddComputerValidator;
+import com.excilys.formationcdb.dto.web.AddComputerDTO;
+import com.excilys.formationcdb.dto.web.mapper.WebCompanyMapper;
+import com.excilys.formationcdb.dto.web.mapper.WebComputerMapper;
+import com.excilys.formationcdb.model.Computer;
 import com.excilys.formationcdb.service.CompanyService;
+import com.excilys.formationcdb.service.ComputerService;
 
-/**
- * Servlet implementation class addComputerServlet
- */
-@Component
-@WebServlet("/addComputer")
+@Controller
 public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -35,52 +27,56 @@ public class AddComputerServlet extends HttpServlet {
 	public static final String ATT_ERRORS = "errors";
 	public static final String ATT_COMPANYLIST = "companyList";
 
-	public static final String VIEW = "/WEB-INF/views/addComputer.jsp";
+	public static final String VIEW = "views/addComputer";
+
+	private CompanyService serviceCompany;
+	private AddComputerValidator validator;
+	private ComputerService computerService;
 
 	@Autowired
-	private CompanyService serviceCompany;
+	private AddComputerRequestVariable requestVariable;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-		handleRequest(request, response);
+	public AddComputerServlet(CompanyService serviceCompany, ComputerService computerService, AddComputerValidator validator) {
+		this.serviceCompany = serviceCompany;
+		this.computerService = computerService;
+		this.validator = validator;
 	}
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-		super.init(config);
+	@GetMapping(value = "/addComputer")
+	@ResponseBody
+	protected ModelAndView getAddComputer() {
+		handleRequest();
+		return requestVariable.getModelAndView();
 	}
-
-	private void handleRequest(HttpServletRequest request, HttpServletResponse response) {
-		addCompanyList(request);
-		try {
-			this.getServletContext().getRequestDispatcher(VIEW).forward(request, response);
-		} catch (ServletException exception) {
-			CDBLogger.logError(exception);
-		} catch (IOException exception) {
-			CDBLogger.logError(exception);
+	
+	@PostMapping(value = "/addComputer")
+	@ResponseBody
+	protected ModelAndView postAddComputer(AddComputerDTO addComputerDTO) {
+		Map<String, Object> mv = requestVariable.getModelAndView().getModel();
+		Map<String, String> errors = validator.validate(addComputerDTO);
+		if (errors.isEmpty()) {
+			Computer computer = WebComputerMapper.createComputer(addComputerDTO);
+			computerService.createComputer(computer);
+			addComputerDTO = null;
 		}
+		mv.put(ATT_ERRORS, errors);
+		mv.put(ATT_COMPUTERDTO, addComputerDTO);
+		handleRequest();
+		
+		System.out.println(addComputerDTO);
+		return requestVariable.getModelAndView();
+	}
+	
+	private void handleRequest() {
+		ModelAndView mv = requestVariable.getModelAndView();
+		mv.setViewName(VIEW);
+		addCompanyList();
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
-		AddComputerForm form = context.getBean(AddComputerForm.class);
-		AddComputerDTO computerDTO = form.addComputer(request);
-		((ConfigurableApplicationContext) context).close();
-		request.setAttribute(ATT_ERRORS, form.getErrors());
-		request.setAttribute(ATT_COMPUTERDTO, computerDTO);
-		handleRequest(request, response);
-	}
+	
 
-	private void addCompanyList(HttpServletRequest request) {
-		request.setAttribute(ATT_COMPANYLIST, CompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()));
+	private void addCompanyList() {
+		requestVariable.getModelAndView().getModel().put(ATT_COMPANYLIST, WebCompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()));
 
 	}
 }

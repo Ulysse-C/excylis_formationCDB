@@ -24,7 +24,7 @@
 		<h2.version>1.4.200</h2.version>
 		<Hikari.version>4.0.2</Hikari.version>
 		<httpUnit.version>1.7</httpUnit.version>
-		<javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+		<javax.servlet-api.version>4.0.0</javax.servlet-api.version>
 		<org.springframework.version>5.3.4</org.springframework.version>
 	</properties>
 
@@ -105,14 +105,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>${servlet-api.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -169,6 +161,20 @@
 			<version>4.3.1</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
 
 
 

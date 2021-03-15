@@ -6,7 +6,8 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
-import com.excilys.formationcdb.dto.DashBoardComputerDTO;
+import com.excilys.formationcdb.dto.web.DashBoardComputerDTO;
+import com.excilys.formationcdb.dto.web.mapper.WebComputerMapper;
 import com.excilys.formationcdb.model.Company;
 import com.excilys.formationcdb.model.Computer;
 
@@ -19,7 +20,7 @@ public class ComputerMapperTest {
 		LocalDate dateDiscon = LocalDate.of(2021, 12, 5);
 		Computer computer = new Computer.ComputerBuilder().setId(1).setIntroduced(dateIntro).setDiscontinued(dateDiscon)
 				.setName("computerName").setCompany(company).build();
-		DashBoardComputerDTO computerDTO = ComputerMapper.createDashBoardComputerDTO(computer);
+		DashBoardComputerDTO computerDTO = WebComputerMapper.createDashBoardComputerDTO(computer);
 		assertEquals("companyName", computerDTO.companyName);
 		assertEquals("computerName", computerDTO.getComputerName());
 		assertEquals(dateIntro.toString(), computerDTO.getIntroducedDate());

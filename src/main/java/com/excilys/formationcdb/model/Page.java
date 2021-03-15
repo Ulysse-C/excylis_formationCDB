@@ -18,6 +18,7 @@ public class Page<E> {
 	private Page<E> previousPage;
 	private SortAttribute sortName = SortAttribute.COMPUTER_ID;
 	private SortOrder sortOrder = SortOrder.DESC;
+	private String search = "";
 
 	public enum SortOrder {
 		ASC, DESC
@@ -122,6 +123,14 @@ public class Page<E> {
 		return sortName;
 	}
 
+	public String getSortNameString() {
+		return sortName.getAttribute();
+	}
+
+	public String getSortOrderString() {
+		return sortOrder.name();
+	}
+
 	public void setSortName(SortAttribute sortName) {
 		this.sortName = sortName;
 	}
@@ -132,6 +141,10 @@ public class Page<E> {
 
 	public void setSortOrder(SortOrder sortOrder) {
 		this.sortOrder = sortOrder;
+	}
+	
+	public int getOffset() {
+		return (number - 1) * size;
 	}
 
 	@Override
@@ -159,5 +172,13 @@ public class Page<E> {
 			return false;
 		}
 		return true;
+	}
+
+	public String getSearchQuery() {
+		return "%" + search + "%";
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
 	}
 }

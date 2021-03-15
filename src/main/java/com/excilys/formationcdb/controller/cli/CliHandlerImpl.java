@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.excilys.formationcdb.dto.AddComputerDTO;
-import com.excilys.formationcdb.dto.mapper.ComputerMapper;
+import com.excilys.formationcdb.dto.web.AddComputerDTO;
+import com.excilys.formationcdb.dto.web.mapper.WebComputerMapper;
 import com.excilys.formationcdb.exception.CompanyKeyInvalidException;
 import com.excilys.formationcdb.exception.CustomSQLException;
 import com.excilys.formationcdb.exception.InvalidInputCLIHandlerException;
@@ -21,10 +21,13 @@ import com.excilys.formationcdb.model.Page;
 @Scope("singleton")
 public class CliHandlerImpl implements CliHandler {
 
-	@Autowired
 	private CliCompanyController cliCompanyController;
-	@Autowired
 	private CliComputerController cliComputerController;
+
+	public CliHandlerImpl(CliCompanyController cliCompanyController, CliComputerController cliComputerController) {
+		this.cliCompanyController = cliCompanyController;
+		this.cliComputerController = cliComputerController;
+	}
 
 	public Optional<Computer> getSingleComputer(String[] inputList)
 			throws InvalidInputCLIHandlerException, CustomSQLException {
@@ -49,10 +52,10 @@ public class CliHandlerImpl implements CliHandler {
 		if (inputList.length == 3 && isInteger(inputList[2], 10)) {
 			AddComputerDTO computerDTO = createComputerDTO(inputList);
 			// the mapper will not parse the date with this format yet
-			computer = ComputerMapper.createComputer(computerDTO);
+			computer = WebComputerMapper.createComputer(computerDTO);
 		} else if (inputList.length == 5 && isInteger(inputList[2], 10)) {
 			AddComputerDTO computerDTO = createComputerDTO(inputList);
-			computer = ComputerMapper.createComputer(computerDTO);
+			computer = WebComputerMapper.createComputer(computerDTO);
 		} else {
 			throw new InvalidInputCLIHandlerException(InvalidInputCLIHandlerException.WRONG_ARGUMENT_TYPE);
 		}

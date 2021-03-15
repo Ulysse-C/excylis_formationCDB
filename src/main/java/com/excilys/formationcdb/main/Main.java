@@ -3,7 +3,7 @@ package com.excilys.formationcdb.main;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.excilys.formationcdb.SpringConfig;
+import com.excilys.formationcdb.config.SpringConfig;
 import com.excilys.formationcdb.ui.cli.Cli;
 
 public class Main {

@@ -1,13 +1,13 @@
-package com.excilys.formationcdb.dto.mapper;
+package com.excilys.formationcdb.dto.web.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.excilys.formationcdb.dto.AddCompanyDTO;
+import com.excilys.formationcdb.dto.web.AddCompanyDTO;
 import com.excilys.formationcdb.model.Company;
 
-public class CompanyMapper {
+public class WebCompanyMapper {
 
 	public static AddCompanyDTO createAddCompanyDTO(Optional<Company> company) {
 		AddCompanyDTO companyDTO = new AddCompanyDTO();

@@ -49,7 +49,7 @@
 									id="introduced" class="form-control" type="text"
 									placeholder="Introduced date"
 									onfocus="(this.type='date')" onblur="(this.type='text')"
-									id="introduced" name="introduced" /> <span class="error"
+									 name="introducedDate" /> <span class="error"
 									id="dateError"><c:out value="${errors['introduced']}" /></span>
 							</div>
 							<div class="form-group">
@@ -58,7 +58,7 @@
 									placeholder="Discontinued date"
 									id="discontinued" class="form-control" type="text"
 									onfocus="(this.type='date')" onblur="(this.type='text')"
-									id="discontinued" name="discontinued" />
+									 name="discontinuedDate" />
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select

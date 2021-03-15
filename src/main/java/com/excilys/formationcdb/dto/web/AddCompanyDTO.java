@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.dto;
+package com.excilys.formationcdb.dto.web;
 
 public class AddCompanyDTO {
 	public String id = "";
