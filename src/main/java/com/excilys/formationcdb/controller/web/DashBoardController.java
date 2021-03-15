@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.controller.servlet;
+package com.excilys.formationcdb.controller.web;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.formationcdb.controller.cli.CliComputerController;
+import com.excilys.formationcdb.controller.web.request.DashBoardRequestVariable;
+import com.excilys.formationcdb.controller.web.session.DashBoardSessionVariable;
 import com.excilys.formationcdb.dto.web.mapper.WebComputerMapper;
 import com.excilys.formationcdb.exception.NothingSelectedException;
 import com.excilys.formationcdb.logger.CDBLogger;
@@ -21,7 +23,7 @@ import com.excilys.formationcdb.model.Page;
 import com.excilys.formationcdb.service.ComputerService;
 
 @Controller
-public class DashBoardServlet {
+public class DashBoardController {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,7 +46,7 @@ public class DashBoardServlet {
 	@Autowired
 	private DashBoardRequestVariable requestVariable;
 	
-	public DashBoardServlet(ComputerService computerService) {
+	public DashBoardController(ComputerService computerService) {
 		this.computerService = computerService;
 	}
 

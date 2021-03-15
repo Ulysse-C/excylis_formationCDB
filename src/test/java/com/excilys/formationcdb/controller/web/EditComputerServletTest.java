@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.controller.servlet;
+package com.excilys.formationcdb.controller.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.Test;
 
+import com.excilys.formationcdb.controller.web.EditComputerController;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
@@ -18,7 +19,7 @@ public class EditComputerServletTest {
 	@Test
 	public void testDoGet() {
 		ServletRunner servletRunner = new ServletRunner();
-		servletRunner.registerServlet("formationCDB/editComputer", EditComputerServlet.class.getName());
+		servletRunner.registerServlet("formationCDB/editComputer", EditComputerController.class.getName());
 		ServletUnitClient testServlet = servletRunner.newClient();
 		WebRequest request = new GetMethodWebRequest("http://localhost:8080/formationCDB/editComputer");
 		WebResponse response;
@@ -35,3 +36,4 @@ public class EditComputerServletTest {
 	}
 
 }
+

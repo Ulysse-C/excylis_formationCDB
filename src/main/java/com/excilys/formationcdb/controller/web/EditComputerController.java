@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.controller.servlet;
+package com.excilys.formationcdb.controller.web;
 
 import java.util.Map;
 
@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.excilys.formationcdb.controller.servlet.validator.EditComputerValidator;
+import com.excilys.formationcdb.controller.web.request.EditComputerRequestVariable;
+import com.excilys.formationcdb.controller.web.validator.EditComputerValidator;
 import com.excilys.formationcdb.dto.web.EditComputerDTO;
 import com.excilys.formationcdb.dto.web.mapper.WebCompanyMapper;
 import com.excilys.formationcdb.dto.web.mapper.WebComputerMapper;
@@ -23,7 +24,7 @@ import com.excilys.formationcdb.service.CompanyService;
 import com.excilys.formationcdb.service.ComputerService;
 
 @Controller
-public class EditComputerServlet extends HttpServlet {
+public class EditComputerController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public static final String ATT_ERRORS = "errors";
@@ -39,7 +40,7 @@ public class EditComputerServlet extends HttpServlet {
 	@Autowired
 	private EditComputerRequestVariable requestVariable;
 
-	public EditComputerServlet(ComputerService computerService, CompanyService companyService,
+	public EditComputerController(ComputerService computerService, CompanyService companyService,
 			EditComputerValidator validator) {
 		this.companyService = companyService;
 		this.computerService = computerService;
@@ -81,6 +82,11 @@ public class EditComputerServlet extends HttpServlet {
 
 	private void handleRequest(String computerIdString) {
 		addCompanyList();
+		addComputerSelected(computerIdString);
+		requestVariable.getModelAndView().setViewName(VIEW);
+	}
+
+	private void addComputerSelected(String computerIdString) {
 		if (computerIdString != null) {
 			try {
 				int computerId = Integer.parseInt(computerIdString);
@@ -91,7 +97,6 @@ public class EditComputerServlet extends HttpServlet {
 				CDBLogger.logInfo(numberFormatExceptoin);
 			}
 		}
-		requestVariable.getModelAndView().setViewName(VIEW);
 	}
 
 	private void addCompanyList() {

@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.controller.servlet;
+package com.excilys.formationcdb.controller.web;
 
 import java.util.Map;
 
@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.excilys.formationcdb.controller.servlet.validator.AddComputerValidator;
+import com.excilys.formationcdb.controller.web.request.AddComputerRequestVariable;
+import com.excilys.formationcdb.controller.web.validator.AddComputerValidator;
 import com.excilys.formationcdb.dto.web.AddComputerDTO;
 import com.excilys.formationcdb.dto.web.mapper.WebCompanyMapper;
 import com.excilys.formationcdb.dto.web.mapper.WebComputerMapper;
@@ -20,7 +21,7 @@ import com.excilys.formationcdb.service.CompanyService;
 import com.excilys.formationcdb.service.ComputerService;
 
 @Controller
-public class AddComputerServlet extends HttpServlet {
+public class AddComputerController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public static final String ATT_COMPUTERDTO = "computer";
@@ -29,15 +30,15 @@ public class AddComputerServlet extends HttpServlet {
 
 	public static final String VIEW = "views/addComputer";
 
-	private CompanyService serviceCompany;
+	private CompanyService companyService;
 	private AddComputerValidator validator;
 	private ComputerService computerService;
 
 	@Autowired
 	private AddComputerRequestVariable requestVariable;
 
-	public AddComputerServlet(CompanyService serviceCompany, ComputerService computerService, AddComputerValidator validator) {
-		this.serviceCompany = serviceCompany;
+	public AddComputerController(CompanyService companyService, ComputerService computerService, AddComputerValidator validator) {
+		this.companyService = companyService;
 		this.computerService = computerService;
 		this.validator = validator;
 	}
@@ -76,7 +77,7 @@ public class AddComputerServlet extends HttpServlet {
 	
 
 	private void addCompanyList() {
-		requestVariable.getModelAndView().getModel().put(ATT_COMPANYLIST, WebCompanyMapper.createAddCompanyDTOList(serviceCompany.getCompanyList()));
+		requestVariable.getModelAndView().getModel().put(ATT_COMPANYLIST, WebCompanyMapper.createAddCompanyDTOList(companyService.getCompanyList()));
 
 	}
 }

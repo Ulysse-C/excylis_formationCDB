@@ -1,4 +1,4 @@
-package com.excilys.formationcdb.controller.servlet;
+package com.excilys.formationcdb.controller.web.session;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
