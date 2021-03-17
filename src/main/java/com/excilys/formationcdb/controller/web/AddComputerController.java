@@ -63,7 +63,6 @@ public class AddComputerController extends HttpServlet {
 		mv.put(ATT_ERRORS, errors);
 		mv.put(ATT_COMPUTERDTO, addComputerDTO);
 		handleRequest();
-		
 		System.out.println(addComputerDTO);
 		return requestVariable.getModelAndView();
 	}

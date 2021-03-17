@@ -31,7 +31,6 @@ public class CompanyService {
 
 	public void deleteCompanyById(int id) throws NothingSelectedException {
 		daoCompany.deleteCompanyById(id);
-
 	}
 
 }

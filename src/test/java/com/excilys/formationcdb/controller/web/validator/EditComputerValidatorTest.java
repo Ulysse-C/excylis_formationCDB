@@ -5,15 +5,25 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.excilys.formationcdb.controller.web.validator.EditComputerValidator;
 import com.excilys.formationcdb.dto.web.EditComputerDTO;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = EditComputerValidator.class)
+@TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
 public class EditComputerValidatorTest {
 
+	@Autowired
+	EditComputerValidator validator;
+	
 	@Test
 	public void testValidateName() {
-		EditComputerValidator validator = new EditComputerValidator();
 		EditComputerDTO computerDTO = new EditComputerDTO();
 		computerDTO.companyId = "1";
 		computerDTO.computerName = "ok";
@@ -23,7 +33,6 @@ public class EditComputerValidatorTest {
 
 	@Test
 	public void testValidateCompanyId() {
-		EditComputerValidator validator = new EditComputerValidator();
 		EditComputerDTO computerDTO = new EditComputerDTO();
 		computerDTO.companyId = "1";
 		computerDTO.computerName = "ok";
@@ -42,7 +51,6 @@ public class EditComputerValidatorTest {
 
 	@Test
 	public void testValidateDate() {
-		EditComputerValidator validator = new EditComputerValidator();
 		EditComputerDTO computerDTO = new EditComputerDTO();
 		computerDTO.companyId = "1";
 		computerDTO.computerName = "ok";

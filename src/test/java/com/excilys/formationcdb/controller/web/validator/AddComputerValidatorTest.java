@@ -5,17 +5,24 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.excilys.formationcdb.dto.web.AddComputerDTO;
 
-//@SpringBatchTest
-//@RunWith(SpringRunner.class)
-//@ContextConfiguration(classes=AddComputerValidator.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AddComputerValidator.class)
 public class AddComputerValidatorTest {
+
+	@Autowired
+	AddComputerValidator validator;
 
 	@Test
 	public void testValidateName() {
-		AddComputerValidator validator = new AddComputerValidator();
 		AddComputerDTO computerDTO = new AddComputerDTO();
 		computerDTO.companyId = "1";
 		computerDTO.computerName = "ok";
@@ -31,7 +38,6 @@ public class AddComputerValidatorTest {
 
 	@Test
 	public void testValidateCompanyId() {
-		AddComputerValidator validator = new AddComputerValidator();
 		AddComputerDTO computerDTO = new AddComputerDTO();
 		computerDTO.companyId = "1";
 		computerDTO.computerName = "ok";
@@ -50,7 +56,6 @@ public class AddComputerValidatorTest {
 
 	@Test
 	public void testValidateDate() {
-		AddComputerValidator validator = new AddComputerValidator();
 		AddComputerDTO computerDTO = new AddComputerDTO();
 		computerDTO.companyId = "1";
 		computerDTO.computerName = "ok";

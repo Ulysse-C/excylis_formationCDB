@@ -1,11 +1,11 @@
 <%@ page pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="utf-8">
 <!-- Bootstrap -->
 <link href="../../formationCDB/css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
@@ -15,33 +15,31 @@
 	media="screen">
 </head>
 <body>
-	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database</a>
-		</div>
-	</header>
+	<%@include file="header.jsp"%>
 
 	<section id="main">
 		<div class="container">
 			<h1 id="homeTitle">
 				<c:out value="${numberComputers}" />
-				Computers found
+				<fmt:message key="label.computerFound" />
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control"
+							placeholder="<fmt:message key="label.selectName" />" /> <input
+							type="submit" id="searchsubmit"
+							value="<fmt:message key="label.filterName" />"
 							class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Delete</a>
+					<a class="btn btn-success" id="addComputer" href="addComputer"><fmt:message
+							key="label.addComputer" /></a> <a class="btn btn-default"
+						id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><fmt:message
+							key="label.deleteComputer" /></a>
 				</div>
 			</div>
 		</div>
@@ -51,7 +49,7 @@
 		</form>
 
 		<form id="orderForm" action="#" method="POST">
-			<input type="hidden" name="orderAttribute" value=""/> 
+			<input type="hidden" name="orderAttribute" value="" />
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -68,22 +66,22 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name <a href="#"
+						<th><fmt:message key="label.computerName" /> <a href="#"
 							id="orderAttributesComputerName"
 							onclick="$.fn.orderBy('COMPUTER_NAME');"><i
-								class="fa fa-fw fa-sort"></i></a>
-						</th>
-						<th>Introduced date <a href="#"
+								class="fa fa-fw fa-sort"></i></a></th>
+						<th><fmt:message key="label.introducedDate" /> <a href="#"
 							id="orderAttributesIntroduced"
 							onclick="$.fn.orderBy('COMPUTER_INTRODUCED');"><i
 								class="fa fa-fw fa-sort"></i></a></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date <a href="#"
+						<th><fmt:message key="label.discontinuedDate" /> <a href="#"
 							id="orderAttributesDiscontinued"
 							onclick="$.fn.orderBy('COMPUTER_DISCONTINUED');"><i
 								class="fa fa-fw fa-sort"></i></a></th>
 						<!-- Table header for Company -->
-						<th>Company <a href="#" id="orderAttributesCompanyName"
+						<th><fmt:message key="label.companyName" /> <a href="#"
+							id="orderAttributesCompanyName"
 							onclick="$.fn.orderBy('COMPANY_NAME');"><i
 								class="fa fa-fw fa-sort"></i></a></th>
 					</tr>
@@ -155,9 +153,12 @@
 		</div>
 
 	</footer>
-	<script src="../../formationCDB/js/jquery.min.js"></script>
 	<script src="../../formationCDB/js/bootstrap.min.js"></script>
 	<script src="../../formationCDB/js/dashboard.js"></script>
-
+	<script type="text/javascript">
+		var strings = new Array();
+		strings['view'] = "<fmt:message key="label.view" />";
+		strings['edit'] = "<fmt:message key="label.deleteComputer" />";
+	</script>
 </body>
 </html>

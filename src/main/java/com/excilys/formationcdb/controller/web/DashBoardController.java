@@ -56,7 +56,7 @@ public class DashBoardController {
 			@RequestParam(required = false) String search) {
 		setPageNumber(page);
 		setSearch(search);
-		handleRequest();
+		handleRequest(page);
 		return requestVariable.getModelAndView();
 	}
 
@@ -79,11 +79,11 @@ public class DashBoardController {
 	@PostMapping(value = "/dashboard")
 	@ResponseBody
 	public ModelAndView postDashBoard(@RequestParam(required = false) String pageSize,
-			@RequestParam(required = false) String selection, @RequestParam(required = false) String orderAttribute) {
+			@RequestParam(required = false) String selection, @RequestParam(required = false) String orderAttribute, @RequestParam(required = false) String page) {
 		deleteSelected(selection);
 		setPageSize(pageSize);
 		setPageOrdering(orderAttribute);
-		handleRequest();
+		handleRequest(page);
 		return requestVariable.getModelAndView();
 
 	}
@@ -116,7 +116,8 @@ public class DashBoardController {
 		}
 	}
 
-	private void handleRequest() {
+	private void handleRequest(String page) {
+		setPageNumber(page);
 		setRequestAttributes();
 		setGeneralAttributes();
 	}
@@ -173,5 +174,10 @@ public class DashBoardController {
 			}
 		}
 	}
-
+	
+	public DashBoardSessionVariable getSessionVariable() {
+		return this.sessionVariable;
+	}
+	
+	
 }
