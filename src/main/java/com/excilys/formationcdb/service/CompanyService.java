@@ -25,7 +25,7 @@ public class CompanyService {
 		return daoCompany.getPage(page);
 	}
 
-	public List<Optional<Company>> getCompanyList() {
+	public List<Company> getCompanyList() {
 		return daoCompany.getCompanyList();
 	}
 

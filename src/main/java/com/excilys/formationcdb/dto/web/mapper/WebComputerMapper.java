@@ -19,21 +19,8 @@ public class WebComputerMapper {
 
 	public static Computer createComputer(AddComputerDTO computerDTO) {
 		Company company = new Company.CompanyBuilder().setId(Integer.parseInt(computerDTO.companyId)).build();
-		ComputerBuilder computerBuilder = new Computer.ComputerBuilder().setCompany(company).setName(computerDTO.computerName);
-		if (!"".equals(computerDTO.introducedDate)) {
-			computerBuilder.setIntroduced(
-					LocalDate.parse(computerDTO.introducedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
-		}
-		if (!"".equals(computerDTO.discontinuedDate)) {
-			computerBuilder.setDiscontinued(
-					LocalDate.parse(computerDTO.discontinuedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
-		}
-		return computerBuilder.build();
-	}
-	
-	public static Computer createComputer(EditComputerDTO computerDTO) {
-		Company company = new Company.CompanyBuilder().setId(Integer.parseInt(computerDTO.companyId)).setName(computerDTO.companyName).build();
-		ComputerBuilder computerBuilder = new Computer.ComputerBuilder().setId(Integer.parseInt(computerDTO.computerId)).setCompany(company).setName(computerDTO.computerName);
+		ComputerBuilder computerBuilder = new Computer.ComputerBuilder().setCompany(company)
+				.setName(computerDTO.computerName);
 		if (!"".equals(computerDTO.introducedDate)) {
 			computerBuilder.setIntroduced(
 					LocalDate.parse(computerDTO.introducedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
@@ -45,20 +32,28 @@ public class WebComputerMapper {
 		return computerBuilder.build();
 	}
 
-	public static List<DashBoardComputerDTO> createDashBoardComputerDTOList(List<Optional<Computer>> list) {
+	public static Computer createComputer(EditComputerDTO computerDTO) {
+		Company company = new Company.CompanyBuilder().setId(Integer.parseInt(computerDTO.companyId))
+				.setName(computerDTO.companyName).build();
+		ComputerBuilder computerBuilder = new Computer.ComputerBuilder().setId(Integer.parseInt(computerDTO.computerId))
+				.setCompany(company).setName(computerDTO.computerName);
+		if (!"".equals(computerDTO.introducedDate)) {
+			computerBuilder.setIntroduced(
+					LocalDate.parse(computerDTO.introducedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
+		}
+		if (!"".equals(computerDTO.discontinuedDate)) {
+			computerBuilder.setDiscontinued(
+					LocalDate.parse(computerDTO.discontinuedDate, DateTimeFormatter.ofPattern(DATE_FORMAT)));
+		}
+		return computerBuilder.build();
+	}
+
+	public static List<DashBoardComputerDTO> createDashBoardComputerDTOList(List<Computer> list) {
 		List<DashBoardComputerDTO> result = new ArrayList<>();
-		for (Optional<Computer> computer : list) {
+		for (Computer computer : list) {
 			result.add(createDashBoardComputerDTO(computer));
 		}
 		return result;
-	}
-
-	private static DashBoardComputerDTO createDashBoardComputerDTO(Optional<Computer> computer) {
-		DashBoardComputerDTO computerDTO = new DashBoardComputerDTO();
-		if (computer.isPresent()) {
-			computerDTO = createDashBoardComputerDTO(computer.get());
-		}
-		return computerDTO;
 	}
 
 	public static DashBoardComputerDTO createDashBoardComputerDTO(Computer computer) {
@@ -76,8 +71,7 @@ public class WebComputerMapper {
 		}
 		return computerDTO;
 	}
-	
-	
+
 	public static EditComputerDTO createEditComputerDTO(Computer computer) {
 		EditComputerDTO computerDTO = new EditComputerDTO();
 		computerDTO.computerName = computer.getName();

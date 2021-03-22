@@ -9,21 +9,20 @@ import com.excilys.formationcdb.model.Company;
 
 public class WebCompanyMapper {
 
-	public static AddCompanyDTO createAddCompanyDTO(Optional<Company> company) {
+	public static AddCompanyDTO createAddCompanyDTO(Company company) {
 		AddCompanyDTO companyDTO = new AddCompanyDTO();
-		if (company.isPresent()) {
-			companyDTO.id = String.valueOf(company.get().getId());
-			companyDTO.name = company.get().getName();	
-		}
+		companyDTO.id = String.valueOf(company.getId());
+		companyDTO.name = company.getName();
+
 		return companyDTO;
 	}
 
-	public static List<AddCompanyDTO> createAddCompanyDTOList(List<Optional<Company>> companyList) {
+	public static List<AddCompanyDTO> createAddCompanyDTOList(List<Company> companyList) {
 		ArrayList<AddCompanyDTO> list = new ArrayList<>();
-		for (Optional<Company> company : companyList) {
+		for (Company company : companyList) {
 			list.add(createAddCompanyDTO(company));
 		}
-				
+
 		return list;
 	}
 }

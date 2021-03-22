@@ -188,8 +188,8 @@ public class Cli {
 
 	private <T> void printPage(Page<T> page) {
 		output.println("Page " + page.getNumber());
-		for (Optional<T> content : page.getContent()) {
-			output.println(content.get().toString());
+		for (T content : page.getContent()) {
+			output.println(content);
 		}
 	}
 

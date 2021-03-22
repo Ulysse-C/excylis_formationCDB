@@ -28,7 +28,7 @@ public class CliCompanyController {
 		return companyService.getPage(page);
 	}
 
-	public List<Optional<Company>> getCompanyList() {
+	public List<Company> getCompanyList() {
 		return companyService.getCompanyList();
 	}
 

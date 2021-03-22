@@ -15,7 +15,7 @@ public class CompanyMapperTest {
 	@Test
 	public void testCreateAddCompanyDTO() {
 		Company company = new Company.CompanyBuilder().setId(1).setName("name").build();
-		AddCompanyDTO companyDTO = WebCompanyMapper.createAddCompanyDTO(Optional.of(company));
+		AddCompanyDTO companyDTO = WebCompanyMapper.createAddCompanyDTO(company);
 		assertEquals("1", companyDTO.getId());
 		assertEquals("name", companyDTO.getName());
 	}

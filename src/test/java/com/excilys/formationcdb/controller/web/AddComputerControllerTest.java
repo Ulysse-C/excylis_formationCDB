@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +31,7 @@ import com.excilys.formationcdb.service.ComputerService;
 public class AddComputerControllerTest {
 
 	@Autowired
-	private AddComputerController addComputerController;
+	private ComputerController ComputerController;
 
 	private ComputerService computerServiceMock;
 	private CompanyService companyServiceMock;
@@ -44,9 +44,9 @@ public class AddComputerControllerTest {
 		companyServiceMock = Mockito.mock(CompanyService.class);
 		setCompanyServiceComportment();
 		setValidatorComportment();
-		ReflectionTestUtils.setField(addComputerController, "computerService", computerServiceMock);
-		ReflectionTestUtils.setField(addComputerController, "companyService", companyServiceMock);
-		ReflectionTestUtils.setField(addComputerController, "validator", addComputerValidatorMock);
+		ReflectionTestUtils.setField(ComputerController, "computerService", computerServiceMock);
+		ReflectionTestUtils.setField(ComputerController, "companyService", companyServiceMock);
+		ReflectionTestUtils.setField(ComputerController, "addValidator", addComputerValidatorMock);
 
 	}
 
@@ -57,25 +57,25 @@ public class AddComputerControllerTest {
 	}
 
 	private void setCompanyServiceComportment() {
-		ArrayList<Optional<Company>> content = new ArrayList<>();
-		content.add(Optional.of(new Company.CompanyBuilder().build()));
+		List<Company> content = new ArrayList<>();
+		content.add(new Company.CompanyBuilder().build());
 		Mockito.when(companyServiceMock.getCompanyList()).thenReturn(content);
 	}
 
 	@Test
 	public void getModelAttributesTest() {
-		ModelAndView mv = addComputerController.getAddComputer();
+		ModelAndView mv = ComputerController.getAddComputer();
 		assertEquals(1,
-				((ArrayList<Optional<Company>>) mv.getModel().get(AddComputerController.ATT_COMPANYLIST)).size());
-		assertEquals(AddComputerController.VIEW, mv.getViewName());
+				((ArrayList<Company>) mv.getModel().get(ComputerController.ATT_COMPANYLIST)).size());
+		assertEquals(ComputerController.VIEW_ADD, mv.getViewName());
 	}
 
 	@Test
 	public void createComputerTest() {
 		AddComputerDTO computerDTO = new AddComputerDTO();
 		computerDTO.setComputerName("name");
-		ModelAndView mv = addComputerController.postAddComputer(computerDTO);
-		assertEquals(computerDTO, mv.getModel().get(AddComputerController.ATT_COMPUTERDTO));
-		assertEquals(1, ((Map<String, String>) mv.getModel().get(AddComputerController.ATT_ERRORS)).size());
+		ModelAndView mv = ComputerController.postAddComputer(computerDTO);
+		assertEquals(computerDTO, mv.getModel().get(ComputerController.ATT_COMPUTERDTO));
+		assertEquals(1, ((Map<String, String>) mv.getModel().get(ComputerController.ATT_ERRORS)).size());
 	}
 }

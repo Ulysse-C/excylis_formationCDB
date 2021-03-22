@@ -2,6 +2,7 @@ package com.excilys.formationcdb.model;
 
 import java.time.LocalDate;
 
+
 public class Computer {
 
 	private String name;

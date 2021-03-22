@@ -13,7 +13,7 @@ public class Page<E> {
 	private int size;
 	private int number;
 	private String table;
-	private List<Optional<E>> content;
+	private List<E> content = new ArrayList<E>();
 	private Page<E> nextPage;
 	private Page<E> previousPage;
 	private SortAttribute sortName = SortAttribute.COMPUTER_ID;
@@ -25,8 +25,8 @@ public class Page<E> {
 	}
 
 	public enum SortAttribute {
-		COMPANY_NAME("company.name"), COMPUTER_NAME("computer.name"), COMPUTER_ID("computer.id"),
-		COMPUTER_INTRODUCED("computer.introduced"), COMPUTER_DISCONTINUED("computer.discontinued");
+		COMPANY_NAME("company.name"), COMPUTER_NAME("name"), COMPUTER_ID("id"),
+		COMPUTER_INTRODUCED("introduced"), COMPUTER_DISCONTINUED("discontinued");
 
 		private String attribute;
 
@@ -58,7 +58,7 @@ public class Page<E> {
 		return number;
 	}
 
-	public void setContent(List<Optional<E>> list) {
+	public void setContent(List<E> list) {
 		this.content = list;
 	}
 
@@ -66,7 +66,7 @@ public class Page<E> {
 		return table;
 	}
 
-	public List<Optional<E>> getContent() {
+	public List<E> getContent() {
 		return content;
 	}
 

@@ -29,7 +29,7 @@ import com.excilys.formationcdb.service.ComputerService;
 public class DashBoardControllerTest {
 
 	@Autowired
-	private DashBoardController dashBoardController;
+	private ComputerController ComputerController;
 
 	private ComputerService computerServiceMock;
 
@@ -37,7 +37,7 @@ public class DashBoardControllerTest {
 	public void before() {
 		computerServiceMock = Mockito.mock(ComputerService.class);
 		setComputerServiceComportment();
-		ReflectionTestUtils.setField(dashBoardController, "computerService", computerServiceMock);
+		ReflectionTestUtils.setField(ComputerController, "computerService", computerServiceMock);
 	}
 
 	private void setComputerServiceComportment() {
@@ -51,26 +51,26 @@ public class DashBoardControllerTest {
 
 	@Test
 	public void getModelAttributesTest() {
-		ModelAndView mv = dashBoardController.getDashBoard("1", "apple");
-		assertEquals(1, mv.getModel().get(DashBoardController.ATT_PAGE_NB));
-		assertEquals("apple", mv.getModel().get(DashBoardController.ATT_COMPUTER_NAME));
-		assertEquals(1, mv.getModel().get(DashBoardController.ATT_PAGEINDEX_FROM));
-		assertEquals(100, mv.getModel().get(DashBoardController.ATT_COMPUTER_NB));
-		assertEquals(Page.PAGEINDEX_SIZE, mv.getModel().get(DashBoardController.ATT_PAGEINDEX_TO));
+		ModelAndView mv = ComputerController.getDashBoard("1", "apple");
+		assertEquals(1, mv.getModel().get(ComputerController.ATT_PAGE_NB));
+		assertEquals("apple", mv.getModel().get(ComputerController.ATT_COMPUTER_NAME));
+		assertEquals(1, mv.getModel().get(ComputerController.ATT_PAGEINDEX_FROM));
+		assertEquals(100, mv.getModel().get(ComputerController.ATT_COMPUTER_NB));
+		assertEquals(Page.PAGEINDEX_SIZE, mv.getModel().get(ComputerController.ATT_PAGEINDEX_TO));
 		assertEquals(1,
-				((ArrayList<Optional<Computer>>) mv.getModel().get(DashBoardController.ATT_COMPUTERDTO_LIST)).size());
-		assertEquals(DashBoardController.VIEW, mv.getViewName());
+				((ArrayList<Optional<Computer>>) mv.getModel().get(ComputerController.ATT_COMPUTERDTO_LIST)).size());
+		assertEquals(ComputerController.VIEW_DASHBOARD, mv.getViewName());
 
 	}
 
 	@Test
 	public void postSessionAttributesTest() {
-		dashBoardController.postDashBoard("10", "1,2,3", "COMPUTER_NAME", "1");
-		DashBoardSessionVariable sessionVar = dashBoardController.getSessionVariable();
+		ComputerController.postDashBoard("10", "1,2,3", "COMPUTER_NAME", "1");
+		DashBoardSessionVariable sessionVar = ComputerController.getDashBoardSessionVariable();
 		assertEquals(10, sessionVar.getPageSize());
 		assertEquals(Page.SortAttribute.COMPUTER_NAME, sessionVar.getSortAttribute());
 		assertEquals(Page.SortOrder.DESC, sessionVar.getSortOrder());
-		dashBoardController.postDashBoard("100", null, "COMPUTER_NAME", "1");
+		ComputerController.postDashBoard("100", null, "COMPUTER_NAME", "1");
 		assertEquals(Page.SortOrder.ASC, sessionVar.getSortOrder());
 		assertEquals(100, sessionVar.getPageSize());
 	}
