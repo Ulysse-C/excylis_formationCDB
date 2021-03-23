@@ -1,12 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
 
+
+	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.excilys</groupId>
 	<artifactId>formationCDB</artifactId>
 	<version>1</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -28,261 +30,619 @@
 		<org.springframework.version>5.3.4</org.springframework.version>
 		<querydsl.version>4.4.0</querydsl.version>
 		<hibernate.version>5.4.29.Final</hibernate.version>
+		<javax.annotation-api.version>1.3.2</javax.annotation-api.version>
 	</properties>
 
 	<dependencies>
-	
-	<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
-<dependency>
-    <groupId>javax.annotation</groupId>
-    <artifactId>javax.annotation-api</artifactId>
-    <version>1.3.2</version>
-</dependency>
-	
-
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>${javax.annotation-api.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
 
 		<dependency>
+
+
 			<groupId>com.zaxxer</groupId>
+
+
 			<artifactId>HikariCP</artifactId>
+
+
 			<version>${Hikari.version}</version>
+
+
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+
+
 		<dependency>
+
+
 			<groupId>mysql</groupId>
+
+
 			<artifactId>mysql-connector-java</artifactId>
+
+
 			<version>${mysql-connector-java.version}</version>
+
+
 			<!-- <scope>provided</scope> -->
+
+
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
+
+
 		<dependency>
+
+
 			<groupId>junit</groupId>
+
+
 			<artifactId>junit</artifactId>
+
+
 			<version>${junit.version}</version>
+
+
 			<scope>test</scope>
+
+
 		</dependency>
 
+
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+
+
 		<dependency>
+
+
 			<groupId>org.mockito</groupId>
+
+
 			<artifactId>mockito-all</artifactId>
+
+
 			<version>${mockito-all.version}</version>
+
+
 			<scope>test</scope>
+
+
 		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+
+
 		<dependency>
+
+
 			<groupId>javax.servlet</groupId>
+
+
 			<artifactId>jstl</artifactId>
+
+
 			<version>${jstl.version}</version>
+
+
 		</dependency>
 
 
 		<dependency>
+
+
 			<groupId>ch.qos.logback</groupId>
+
+
 			<artifactId>logback-core</artifactId>
+
+
 			<version>${logback-core.version}</version>
+
+
 		</dependency>
 
+
 		<dependency>
+
+
 			<groupId>org.slf4j</groupId>
+
+
 			<artifactId>slf4j-api</artifactId>
+
+
 			<version>${slf4j-api.version}</version>
+
+
 		</dependency>
 
+
 		<dependency>
+
+
 			<groupId>ch.qos.logback</groupId>
+
+
 			<artifactId>logback-classic</artifactId>
+
+
 			<version>${logback-classic.version}</version>
+
+
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.dbunit/dbunit -->
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>dbunit</artifactId>
-			<version>${dbunit.version}</version>
-			<scope>test</scope>
-		</dependency>
+
 
 		<dependency>
+
+
+			<groupId>org.dbunit</groupId>
+
+
+			<artifactId>dbunit</artifactId>
+
+
+			<version>${dbunit.version}</version>
+
+
+			<scope>test</scope>
+
+
+		</dependency>
+
+
+		<dependency>
+
+
 			<groupId>javax.servlet</groupId>
+
+
 			<artifactId>javax.servlet-api</artifactId>
+
+
 			<version>${javax.servlet-api.version}</version>
+
+
 			<scope>provided</scope>
+
+
 		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+
+
 		<dependency>
+
+
 			<groupId>com.h2database</groupId>
+
+
 			<artifactId>h2</artifactId>
+
+
 			<version>${h2.version}</version>
+
+
 			<scope>test</scope>
+
+
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/httpunit/httpunit -->
+
+
 		<dependency>
+
+
 			<groupId>httpunit</groupId>
+
+
 			<artifactId>httpunit</artifactId>
+
+
 			<version>${httpUnit.version}</version>
+
+
 			<scope>test</scope>
+
+
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+
+
 		<dependency>
+
+
 			<groupId>org.springframework</groupId>
+
+
 			<artifactId>spring-context</artifactId>
+
+
 			<version>${org.springframework.version}</version>
+
+
 			<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-orm</artifactId> 
 				<version>${org.springframework.version}</version> </dependency> -->
+
+
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+
+
 		<dependency>
+
+
 			<groupId>org.springframework</groupId>
+
+
 			<artifactId>spring-web</artifactId>
+
+
 			<version>${org.springframework.version}</version>
+
+
 		</dependency>
 
+
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+
+
 		<dependency>
+
+
 			<groupId>org.springframework</groupId>
+
+
 			<artifactId>spring-test</artifactId>
+
+
 			<version>${org.springframework.version}</version>
+
+
 			<scope>test</scope>
+
+
 		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/org.springframework.batch/spring-batch-test -->
-		<dependency>
-			<groupId>org.springframework.batch</groupId>
-			<artifactId>spring-batch-test</artifactId>
-			<version>4.3.1</version>
-			<scope>test</scope>
-		</dependency>
+
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${org.springframework.version}</version>
+
+
+			<groupId>org.springframework.batch</groupId>
+
+
+			<artifactId>spring-batch-test</artifactId>
+
+
+			<version>4.3.1</version>
+
+
+			<scope>test</scope>
+
+
 		</dependency>
+
+
+		<dependency>
+
+
+			<groupId>org.springframework</groupId>
+
+
+			<artifactId>spring-jdbc</artifactId>
+
+
+			<version>${org.springframework.version}</version>
+
+
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+
+
 		<dependency>
+
+
 			<groupId>org.springframework</groupId>
+
+
 			<artifactId>spring-webmvc</artifactId>
+
+
 			<version>${org.springframework.version}</version>
+
+
 		</dependency>
 
+
 		<dependency>
+
+
 			<groupId>com.querydsl</groupId>
+
+
 			<artifactId>querydsl-apt</artifactId>
+
+
 			<version>${querydsl.version}</version>
+
+
 			<scope>provided</scope>
+
+
 		</dependency>
 
+
 		<dependency>
+
+
 			<groupId>com.querydsl</groupId>
+
+
 			<artifactId>querydsl-jpa</artifactId>
+
+
 			<version>${querydsl.version}</version>
+
+
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+
+
 		<dependency>
+
+
 			<groupId>org.hibernate</groupId>
+
+
 			<artifactId>hibernate-core</artifactId>
+
+
 			<version>${hibernate.version}</version>
+
+
 		</dependency>
 
+
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
+
+
 		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-entitymanager</artifactId> 
 			<version>${hibernate.version}</version> </dependency> -->
 
+
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+
+
 		<dependency>
+
+
 			<groupId>org.springframework</groupId>
+
+
 			<artifactId>spring-orm</artifactId>
+
+
 			<version>${org.springframework.version}</version>
+
+
 		</dependency>
 
 
-
-
-
 	</dependencies>
+
+
 	<build>
+
+
 		<plugins>
+
+
 			<plugin>
+
+
 				<groupId>org.jacoco</groupId>
+
+
 				<artifactId>jacoco-maven-plugin</artifactId>
+
+
 				<version>${jacoco-maven-plugin.version}</version>
+
+
 				<executions>
+
+
 					<execution>
+
+
 						<goals>
+
+
 							<goal>prepare-agent</goal>
+
+
 						</goals>
+
+
 					</execution>
+
+
 					<!-- attached to Maven test phase -->
+
+
 					<execution>
+
+
 						<id>report</id>
+
+
 						<phase>prepare-package</phase>
+
+
 						<goals>
+
+
 							<goal>report</goal>
+
+
 						</goals>
+
+
 					</execution>
+
+
 				</executions>
+
+
 			</plugin>
+
+
 			<plugin>
+
+
 				<groupId>com.mysema.maven</groupId>
+
+
 				<artifactId>apt-maven-plugin</artifactId>
+
+
 				<version>1.1.3</version>
+
+
 				<executions>
+
+
 					<execution>
+
+
 						<goals>
+
+
 							<goal>process</goal>
+
+
 						</goals>
+
+
 						<configuration>
+
+
 							<outputDirectory>target/generated-sources/java</outputDirectory>
+
+
 							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+
+
 						</configuration>
+
+
 					</execution>
+
+
 				</executions>
+
+
 			</plugin>
+
+
 		</plugins>
 
 
-
 		<pluginManagement>
+
+
 			<plugins>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>${checkstyle-maven-plugin.version}</version>
-					<configuration>
-						<configLocation>checkstyle.xml</configLocation>
-					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>check</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
-</project>
 
+				<plugin>
+
+
+					<groupId>org.apache.maven.plugins</groupId>
+
+
+					<artifactId>maven-checkstyle-plugin</artifactId>
+
+
+					<version>${checkstyle-maven-plugin.version}</version>
+
+
+					<configuration>
+
+
+						<configLocation>checkstyle.xml</configLocation>
+
+
+					</configuration>
+
+
+					<executions>
+
+
+						<execution>
+
+
+							<goals>
+
+
+								<goal>check</goal>
+
+
+							</goals>
+
+
+						</execution>
+
+
+					</executions>
+
+
+				</plugin>
+
+
+			</plugins>
+
+
+		</pluginManagement>
+
+
+	</build>
+
+
+	<modules>
+<module>exceptions</module>
+		<module>core</module>
+		<module>console</module>
+		<module>logger</module>
+		<module>binding</module>
+		<module>service</module>
+		<module>webapp</module>
+		<module>persistence</module>
+	</modules>
+
+</project>

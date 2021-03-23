@@ -1,0 +1,21 @@
+label.title = Base de donnée d'Ordinateur
+label.home = Application - Base de donnée d'Ordinateur
+label.pickLanguage = Langue
+label.computerFound = Ordinateurs trouvés
+label.addComputer = Ajouter un Ordinateur
+label.editComputer = Modifier l'ordinateur
+label.selectName = Nom recherché
+label.filterName = Trier par nom
+label.deleteComputer = Supprimer
+label.computerName = Nom de l'ordinateur
+label.introducedDate = Date d'introduction
+label.discontinuedDate = Date d'arrêt
+label.companyName = Société
+label.edit = Editer
+label.view = Afficher
+label.add = Ajouter
+label.or = ou
+label.cancel = Annuler
+
+label.lang.en = Anglais
+label.lang.fr = Français
