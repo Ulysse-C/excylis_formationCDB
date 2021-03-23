@@ -8,11 +8,11 @@
 <title><fmt:message key="label.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link href="../../formationCDB/css/bootstrap.min.css" rel="stylesheet"
+<link href="css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
-<link href="../../formationCDB/css/font-awesome.css" rel="stylesheet"
+<link href="css/font-awesome.css" rel="stylesheet"
 	media="screen">
-<link href="../../formationCDB/css/main.css" rel="stylesheet"
+<link href="css/main.css" rel="stylesheet"
 	media="screen">
 </head>
 <body>
@@ -81,7 +81,7 @@
 			</div>
 		</div>
 	</section>
-	<script src="../../formationCDB/js/dateValidator.js"></script>
+	<script src="js/dateValidator.js"></script>
 	
 </body>
 </html>

@@ -7,11 +7,11 @@
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
-<link href="../../formationCDB/css/bootstrap.min.css" rel="stylesheet"
+<link href="css/bootstrap.min.css" rel="stylesheet"
 	media="screen">
-<link href="../../formationCDB/css/font-awesome.css" rel="stylesheet"
+<link href="css/font-awesome.css" rel="stylesheet"
 	media="screen">
-<link href="../../formationCDB/css/main.css" rel="stylesheet"
+<link href="css/main.css" rel="stylesheet"
 	media="screen">
 </head>
 <body>
@@ -153,8 +153,8 @@
 		</div>
 
 	</footer>
-	<script src="../../formationCDB/js/bootstrap.min.js"></script>
-	<script src="../../formationCDB/js/dashboard.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/dashboard.js"></script>
 	<script type="text/javascript">
 		var strings = new Array();
 		strings['view'] = "<fmt:message key="label.view" />";

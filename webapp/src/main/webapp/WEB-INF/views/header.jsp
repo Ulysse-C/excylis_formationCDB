@@ -15,5 +15,5 @@
 		</div>
 	</div>
 </header>
-<script src="../../formationCDB/js/jquery.min.js"></script>
-<script src="../../formationCDB/js/language.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/language.js"></script>
