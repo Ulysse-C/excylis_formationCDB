@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.excilys.formationcdb.config.SpringConfig;
+import com.excilys.formationcdb.config.DaoConfig;
 import com.excilys.formationcdb.model.Computer;
 
 //@SpringBatchTest

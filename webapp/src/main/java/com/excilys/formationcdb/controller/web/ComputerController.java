@@ -47,9 +47,9 @@ public class ComputerController {
 	public static final String INPUT_PAGE_SIZE = "pageSize";
 	public static final String INPUT_ID = "computerId";
 
-	public static final String VIEW_ADD = "views/addComputer";
-	public static final String VIEW_EDIT = "/views/editComputer";
-	public static final String VIEW_DASHBOARD = "views/dashboard";
+	public static final String VIEW_ADD = "addComputer";
+	public static final String VIEW_EDIT = "editComputer";
+	public static final String VIEW_DASHBOARD = "dashboard";
 
 	@Autowired
 	private DashBoardSessionVariable sessionVariable;

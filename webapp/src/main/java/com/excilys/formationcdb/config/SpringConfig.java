@@ -1,22 +1,16 @@
 package com.excilys.formationcdb.config;
 
 import java.util.Locale;
-import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration.Dynamic;
-import javax.sql.DataSource;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -31,13 +25,9 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 @EnableWebMvc
-//@EnableTransactionManagement
 @Configuration
-@ComponentScan({ "com.excilys.formationcdb.dao", "com.excilys.formationcdb.service",
+@ComponentScan({ "com.excilys.formationcdb.service",
 		"com.excilys.formationcdb.controller.web", "com.excilys.formationcdb.controller.cli",
 		"com.excilys.formationcdb.ui.cli", "com.excilys.formationcdb.config" })
 public class SpringConfig implements WebMvcConfigurer, WebApplicationInitializer {
@@ -47,7 +37,7 @@ public class SpringConfig implements WebMvcConfigurer, WebApplicationInitializer
 		InternalResourceViewResolver bean = new InternalResourceViewResolver();
 
 		bean.setViewClass(JstlView.class);
-		bean.setPrefix("/WEB-INF/");
+		bean.setPrefix("/WEB-INF/views/");
 		bean.setSuffix(".jsp");
 
 		return bean;
@@ -57,7 +47,7 @@ public class SpringConfig implements WebMvcConfigurer, WebApplicationInitializer
 	public void onStartup(ServletContext servletContext) throws ServletException {
 
 		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-		context.register(SpringConfig.class);
+		context.register(DaoConfig.class);
 		context.setServletContext(servletContext);
 
 		Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
@@ -68,11 +58,6 @@ public class SpringConfig implements WebMvcConfigurer, WebApplicationInitializer
 	@Override
 	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		configurer.enable();
-	}
-
-	@Bean
-	public DataSource getDataSource() {
-		return new HikariDataSource(new HikariConfig("/config/hikariConfig.properties"));
 	}
 
 	@Bean
@@ -97,25 +82,5 @@ public class SpringConfig implements WebMvcConfigurer, WebApplicationInitializer
 		registry.addInterceptor(localeChangeInterceptor);
 	}
 
-	@Bean
-	public LocalSessionFactoryBean sessionFactory() {
-		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(getDataSource());
-		sessionFactory.setPackagesToScan("com.excilys.formationcdb.dto.dao");
-		sessionFactory.setHibernateProperties(hibernateProperties());
-		return sessionFactory;
-	}
 
-	@Bean
-	public PlatformTransactionManager hibernateTransactionManager() {
-		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-		transactionManager.setSessionFactory(sessionFactory().getObject());
-		return transactionManager;
-	}
-
-	private Properties hibernateProperties() {
-		Properties hibernateProperties = new Properties();
-		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
-		return hibernateProperties;
-	}
 }
