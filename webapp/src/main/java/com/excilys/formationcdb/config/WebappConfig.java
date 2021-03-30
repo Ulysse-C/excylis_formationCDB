@@ -27,10 +27,8 @@ import org.springframework.web.servlet.view.JstlView;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan({ "com.excilys.formationcdb.service",
-		"com.excilys.formationcdb.controller.web", "com.excilys.formationcdb.controller.cli",
-		"com.excilys.formationcdb.ui.cli", "com.excilys.formationcdb.config" })
-public class SpringConfig implements WebMvcConfigurer, WebApplicationInitializer {
+@ComponentScan({ "com.excilys.formationcdb.controller.web",  "com.excilys.formationcdb.config" })
+public class WebappConfig implements WebMvcConfigurer, WebApplicationInitializer {
 
 	@Bean
 	public ViewResolver viewResolver() {
@@ -81,6 +79,5 @@ public class SpringConfig implements WebMvcConfigurer, WebApplicationInitializer
 		localeChangeInterceptor.setParamName("lang");
 		registry.addInterceptor(localeChangeInterceptor);
 	}
-
 
 }

@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,6 +18,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @ComponentScan({ "com.excilys.formationcdb.dao", 
 		"com.excilys.formationcdb.config" })
+@EnableAspectJAutoProxy
 public class DaoConfig  {
 
 
@@ -42,6 +44,7 @@ public class DaoConfig  {
 	}
 
 	private Properties hibernateProperties() {
+		System.setProperty("org.jboss.logging.provider", "slf4j");
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 		return hibernateProperties;

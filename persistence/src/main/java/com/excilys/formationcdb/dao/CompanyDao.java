@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formationcdb.dto.dao.CompanyPersist;
 import com.excilys.formationcdb.dto.dao.QCompanyPersist;
+import com.excilys.formationcdb.dto.dao.QComputerPersist;
 import com.excilys.formationcdb.dto.dao.mapper.DaoCompanyMapper;
 import com.excilys.formationcdb.dto.dao.mapper.DaoMapper;
 import com.excilys.formationcdb.exception.NothingSelectedException;
@@ -22,14 +23,16 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 public class CompanyDao {
 
 	private EntityManager entityManager;
+	private QCompanyPersist companyPersist;
+	private JPAQueryFactory queryFactory;
 	
 	public CompanyDao(SessionFactory sessionFactory) {
 		this.entityManager = sessionFactory.createEntityManager();
+		this.queryFactory = new JPAQueryFactory(entityManager);
+		this.companyPersist = QCompanyPersist.companyPersist;
 	}
 
 	public List<Company> getCompanyList() {
-		JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-		QCompanyPersist companyPersist = QCompanyPersist.companyPersist;
 		List<CompanyPersist> companyList = queryFactory.selectFrom(companyPersist).orderBy(companyPersist.id.asc())
 				.fetch();
 		return DaoCompanyMapper.toCompanyList(companyList);
@@ -37,8 +40,6 @@ public class CompanyDao {
 
 	public Page<Company> getPage(Page<Company> page) {
 		if (page != null) {
-			JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-			QCompanyPersist companyPersist = QCompanyPersist.companyPersist;
 			OrderSpecifier<?> order = DaoMapper.getSortedColumn(DaoCompanyMapper.getOrder(page.getSortOrder()), page.getSortNameString());
 			List<CompanyPersist> companyList = queryFactory.selectFrom(companyPersist).orderBy(order).offset(page.getOffset()).limit(page.getNumber())
 					.fetch();
@@ -50,8 +51,6 @@ public class CompanyDao {
 
 	@Transactional
 	public void deleteCompanyById(int id) throws NothingSelectedException {
-		JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-		QCompanyPersist companyPersist = QCompanyPersist.companyPersist;
 		entityManager.getTransaction().begin();
 		queryFactory.delete(companyPersist).where(companyPersist.id.eq(Integer.valueOf(id))).execute();
 		entityManager.getTransaction().commit();

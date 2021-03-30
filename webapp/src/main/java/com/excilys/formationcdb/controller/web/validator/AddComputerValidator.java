@@ -29,22 +29,22 @@ public class AddComputerValidator {
 			validateName(computerDTO.computerName);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(INPUT_NAME, invalidInput.getMessage());
-			CDBLogger.logInfo(invalidInput);
+			CDBLogger.logInfo(AddComputerValidator.class, invalidInput);
 		}
 		try {
 			validateCompanyID(computerDTO.companyId);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(INPUT_COMPANYID, invalidInput.getMessage());
-			CDBLogger.logInfo(invalidInput);
+			CDBLogger.logInfo(AddComputerValidator.class, invalidInput);
 		}
 		try {
 			validateDates(computerDTO.introducedDate, computerDTO.discontinuedDate);
 		} catch (InvalidWebInputException invalidInput) {
 			errors.put(INPUT_INTRODUCED, invalidInput.getMessage());
-			CDBLogger.logInfo(invalidInput);
+			CDBLogger.logInfo(AddComputerValidator.class, invalidInput);
 		} catch (DateTimeParseException invalidInput) {
 			errors.put(INPUT_INTRODUCED, "invalid dates");
-			CDBLogger.logInfo(invalidInput);
+			CDBLogger.logInfo(AddComputerValidator.class, invalidInput);
 		}
 
 		return errors;

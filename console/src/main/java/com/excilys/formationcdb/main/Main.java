@@ -1,18 +1,26 @@
 package com.excilys.formationcdb.main;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-import com.excilys.formationcdb.config.DaoConfig;
-import com.excilys.formationcdb.ui.cli.Cli;
+import com.excilys.formationcdb.logger.CDBLogger;
 
 public class Main {
 	public static void main(String[] args) {
-		ApplicationContext context = new AnnotationConfigApplicationContext(DaoConfig.class);
-		final Cli cli = context.getBean(Cli.class);
-		cli.startReadingUserInput();
-		((ConfigurableApplicationContext) context).close();
+		String command = "curl --user "
+				+ "http://localhost:8080/cdb/computer/count";
+		Process process = null;
+		try {
+			process = Runtime.getRuntime().exec(command);
+			BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(),"UTF-8") );
+			System.out.println(br.readLine());
+		} catch (IOException e) {
+			CDBLogger.logError(Main.class, e);
+		} finally {
+			if (process != null) {
+				process.destroy();
+			}
+		}
 	}
 }

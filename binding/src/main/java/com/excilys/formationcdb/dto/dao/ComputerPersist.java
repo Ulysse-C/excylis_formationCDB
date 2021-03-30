@@ -19,7 +19,7 @@ public class ComputerPersist {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	private String name = "testQuery";
+	private String name = "";
 
 	private LocalDate introduced;
 	private LocalDate discontinued;

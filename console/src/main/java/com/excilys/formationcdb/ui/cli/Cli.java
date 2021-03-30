@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.excilys.formationcdb.controller.cli.CliHandler;
-import com.excilys.formationcdb.controller.cli.CliHandlerImpl;
+import com.excilys.formationcdb.controller.cli.CliHandler;
 import com.excilys.formationcdb.exception.CompanyKeyInvalidException;
 import com.excilys.formationcdb.exception.CustomSQLException;
 import com.excilys.formationcdb.exception.InvalidInputCLIHandlerException;
@@ -27,7 +27,7 @@ public class Cli {
 
 	private BufferedReader bufferedReader;
 	private PrintStream output;
-	
+
 	@Autowired
 	private CliHandler cliHandler;
 
@@ -58,7 +58,7 @@ public class Cli {
 				handleGeneralRequest();
 			}
 		} catch (IOException exception) {
-			CDBLogger.logError(exception);
+			CDBLogger.logError(Cli.class, exception);
 		}
 	}
 
@@ -74,14 +74,19 @@ public class Cli {
 	private void handleGeneralRequest() throws IOException {
 		output.println("type a number, exit or \"help\"");
 		String[] inputList = parseInput();
+		Page page;
 		try {
 			if (inputList.length > 0) {
 				switch (inputList[0]) {
 				case "1":
-					pageNavigagtion(new Page<Computer>(10, 1, "computer"));
+					page = new Page<Computer>(10, 1);
+					page.setTable("computer");
+					pageNavigagtion(page);
 					break;
 				case "2":
-					pageNavigagtion(new Page<Company>(10, 1, "company"));
+					page = new Page<Computer>(10, 1);
+					page.setTable("company");
+					pageNavigagtion(page);
 					break;
 				case "3":
 					printSingleComputer(cliHandler.getSingleComputer(inputList));
@@ -119,19 +124,19 @@ public class Cli {
 				handleGeneralRequest();
 			}
 		} catch (InvalidInputCLIHandlerException invalidInputException) {
-			CDBLogger.logInfo(invalidInputException);
+			CDBLogger.logInfo(Cli.class, invalidInputException);
 			output.println("Input not valid: " + invalidInputException.getMessage());
 			handleGeneralRequest();
 		} catch (CustomSQLException customSqlException) {
-			CDBLogger.logError(customSqlException);
+			CDBLogger.logError(Cli.class, customSqlException);
 			output.println("Sql Error: " + customSqlException.getMessage());
 			handleGeneralRequest();
 		} catch (CompanyKeyInvalidException companyKeyInvalidException) {
-			CDBLogger.logInfo(companyKeyInvalidException);
+			CDBLogger.logInfo(Cli.class, companyKeyInvalidException);
 			output.println("Sql Error: The company id is not valid");
 			handleGeneralRequest();
 		} catch (NothingSelectedException noComputerException) {
-			CDBLogger.logError(noComputerException);
+			CDBLogger.logError(Cli.class, noComputerException);
 			output.println("Sql Error: No computer could be selected");
 			handleGeneralRequest();
 		}
@@ -148,7 +153,9 @@ public class Cli {
 	}
 
 	private <E> void pageNavigagtion(Page<E> page) throws IOException, CustomSQLException {
-		printPage(cliHandler.getPage(new Page<Computer>(10, page.getNumber(), page.getTable())));
+		Page pagePrinted = new Page<Computer>(10, page.getNumber());
+		page.setTable(page.getTable());
+		printPage(cliHandler.getPage(pagePrinted));
 		handlePageNavigationRequest(page);
 	}
 
@@ -168,7 +175,7 @@ public class Cli {
 					handleGeneralRequest();
 				}
 			} catch (CustomSQLException customSqlException) {
-				CDBLogger.logInfo(customSqlException);
+				CDBLogger.logError(Cli.class, customSqlException);
 				output.println("Sql Error:" + customSqlException.getMessage());
 				handleGeneralRequest();
 			}
@@ -193,7 +200,7 @@ public class Cli {
 		}
 	}
 
-	public void addCliHandler(CliHandlerImpl cliHandler) {
+	public void addCliHandler(CliHandler cliHandler) {
 		this.cliHandler = cliHandler;
 	}
 

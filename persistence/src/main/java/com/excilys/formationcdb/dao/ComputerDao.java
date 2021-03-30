@@ -26,14 +26,16 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 public class ComputerDao {
 
 	private EntityManager entityManager;
+	private QComputerPersist computerPersist;
+	private JPAQueryFactory queryFactory;
 
 	public ComputerDao(SessionFactory sessionFactory) {
 		this.entityManager = sessionFactory.createEntityManager();
+		this.queryFactory = new JPAQueryFactory(entityManager);
+		this.computerPersist = QComputerPersist.computerPersist;
 	}
 
 	public Optional<Computer> getComputerById(int id) {
-		JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-		QComputerPersist computerPersist = QComputerPersist.computerPersist;
 		ComputerPersist computer = queryFactory.selectFrom(computerPersist)
 				.where(computerPersist.id.eq(Integer.valueOf(id))).fetchOne();
 		return Optional.ofNullable(DaoComputerMapper.toComputer(computer));
@@ -49,27 +51,22 @@ public class ComputerDao {
 	}
 
 	public void deleteComputerById(int id) throws NothingSelectedException {
-		JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-		QComputerPersist computerPersist = QComputerPersist.computerPersist;
 		entityManager.getTransaction().begin();
 		queryFactory.delete(computerPersist).where(computerPersist.id.eq(Integer.valueOf(id))).execute();
 		entityManager.getTransaction().commit();
 	}
 
 	public int getComputerNumberbyName(String search) {
-		JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-		QComputerPersist computerPersist = QComputerPersist.computerPersist;
 		return (int) queryFactory.selectFrom(computerPersist).where(computerPersist.name.contains(search)).fetchCount();
 	}
 
 	public Page<Computer> getPage(Page<Computer> page) {
 		if (page != null) {
-			JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-			QComputerPersist computerPersist = QComputerPersist.computerPersist;
 			OrderSpecifier<?> order = DaoMapper.getSortedColumn(DaoComputerMapper.getOrder(page.getSortOrder()),
 					page.getSortNameString());
 			List<ComputerPersist> computerList = queryFactory.selectFrom(computerPersist).orderBy(order)
-					.offset(page.getOffset()).limit(page.getSize()).fetch();
+					.offset(page.getOffset()).limit(page.getSize())
+					.where(computerPersist.name.containsIgnoreCase(page.getSearch())).fetch();
 			page.setContent(DaoComputerMapper.toComputerList(computerList));
 		}
 		return page;
@@ -77,8 +74,6 @@ public class ComputerDao {
 
 	public void updateComputer(Computer computer) throws NothingSelectedException {
 		if (computer != null) {
-			JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-			QComputerPersist computerPersist = QComputerPersist.computerPersist;
 			entityManager.getTransaction().begin();
 			queryFactory.update(computerPersist).where(computerPersist.id.eq(Integer.valueOf(computer.getId())))
 					.set(computerPersist.name, computer.getName())
@@ -86,12 +81,6 @@ public class ComputerDao {
 					.set(computerPersist.discontinued, computer.getDiscontinued())
 					.set(computerPersist.companyId, computer.getCompanyId()).execute();
 			entityManager.getTransaction().commit();
-//			SqlParameterSource params = new BeanPropertySqlParameterSource(computer);
-//			NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-//			int row = jdbcTemplate.update(UPDATE_COMPUTER_QUERY, params);
-//			if (row == 0) {
-//				throw new NothingSelectedException("Update");
-//			}
 		}
 	}
 

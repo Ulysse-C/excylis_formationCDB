@@ -1,6 +1,6 @@
 package com.excilys.formationcdb.dto.web;
 
-public class AddCompanyDTO {
+public class WebCompanyDTO {
 	public String id = "";
 	public String name = "";
 	
