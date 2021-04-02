@@ -1,5 +1,7 @@
 package com.excilys.formationcdb.config;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -17,7 +19,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @ComponentScan({ "com.excilys.formationcdb.dao", 
-		"com.excilys.formationcdb.config" })
+		"com.excilys.formationcdb.config", "com.excilys.formationcdb.aspects" })
 @EnableAspectJAutoProxy
 public class DaoConfig  {
 
@@ -44,9 +46,12 @@ public class DaoConfig  {
 	}
 
 	private Properties hibernateProperties() {
-		System.setProperty("org.jboss.logging.provider", "slf4j");
 		Properties hibernateProperties = new Properties();
-		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+		try (InputStream input = this.getClass().getResourceAsStream("/config/hibernate.properties")) {
+    		hibernateProperties.load(input);
+		}catch (IOException ex) {
+            ex.printStackTrace();
+        }
 		return hibernateProperties;
 	}
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset xmlns:xsi="http://w3.org/2001/XMLSchema-instance" xmlns:xs="http://w3.org/2001/XMLSchema" dev="">
+	<company id="1" name="company_1"/>
+	<company id="2" name="company_2"/>
+	<company id="3" name="company_3"/>
+	
+	<computer id="1" name="computer_1_a" introduced="2000-10-10" discontinued="2010-10-10" company_id="1"/>
+	<computer id="2" name="computer_2_a" introduced="2000-10-10" discontinued="2010-10-10" company_id="2"/>
+	<computer id="3" name="computer_3_b" introduced="2000-10-10" discontinued="2010-10-10" company_id="3"/>
+	<computer id="4" name="computer_4_b" discontinued="2010-10-10" company_id="3"/>
+	<computer id="5" name="test" introduced="2000-10-10" discontinued="2000-11-11" company_id="1"/>
+</dataset>

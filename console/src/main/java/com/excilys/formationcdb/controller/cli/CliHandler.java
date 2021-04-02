@@ -84,10 +84,8 @@ public class CliHandler {
 					.build();
 			cliComputerController.updateComputer(computer);
 		} else if (inputList.length == 5 && isInteger(inputList[1], 10)) {
-			computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1]))
+			computer = new Computer.ComputerBuilder().setName(inputList[2]).setId(Integer.parseInt(inputList[1])).setDiscontinued(LocalDate.parse(inputList[4])).setIntroduced(LocalDate.parse(inputList[3]))
 					.build();
-			computer.setIntroduced(LocalDate.parse(inputList[3]));
-			computer.setDiscontinued(LocalDate.parse(inputList[4]));
 			cliComputerController.updateComputer(computer);
 		} else {
 			throw new InvalidInputCLIHandlerException(InvalidInputCLIHandlerException.WRONG_ARGUMENT_TYPE);

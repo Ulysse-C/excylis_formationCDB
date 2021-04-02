@@ -2,7 +2,6 @@ package com.excilys.formationcdb.model;
 
 import java.time.LocalDate;
 
-
 public class Computer {
 
 	private String name;
@@ -17,7 +16,7 @@ public class Computer {
 		private LocalDate introduced;
 		private LocalDate discontinued;
 		private Company company;
-		
+
 		public ComputerBuilder() {
 			this.company = new Company.CompanyBuilder().build();
 		}
@@ -52,7 +51,7 @@ public class Computer {
 		}
 	}
 
-	 Computer(String name, int id, LocalDate introduced, LocalDate discontinued, Company company) {
+	Computer(String name, int id, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.name = name;
 		this.id = id;
 		this.introduced = introduced;
@@ -62,15 +61,6 @@ public class Computer {
 
 	public String getName() {
 		return name;
-	}
-	
-	public Integer getCompanyId() {
-		if (company != null) {
-			if (company.getId() != 0) {
-				return company.getId();
-			}
-		}
-		return null;
 	}
 
 	public int getId() {
@@ -85,25 +75,8 @@ public class Computer {
 		return discontinued;
 	}
 
-	public void setDiscontinued(LocalDate discontinued) {
-		this.discontinued = discontinued;
-	}
-
-	public void setIntroduced(LocalDate introduced) {
-		this.introduced = introduced;
-	}
-
 	public LocalDate getIntroduced() {
 		return introduced;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-
-	}
-
-	public void setCompany(Company company) {
-		this.company = company;
 	}
 
 	@Override
@@ -132,6 +105,7 @@ public class Computer {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((company == null) ? 0 : company.hashCode());
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
 		result = prime * result + id;
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
@@ -151,6 +125,13 @@ public class Computer {
 			return false;
 		}
 		Computer other = (Computer) obj;
+		if (company == null) {
+			if (other.company != null) {
+				return false;
+			}
+		} else if (!company.equals(other.company)) {
+			return false;
+		}
 		if (discontinued == null) {
 			if (other.discontinued != null) {
 				return false;

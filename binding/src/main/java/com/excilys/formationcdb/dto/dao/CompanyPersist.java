@@ -14,12 +14,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "company")
 public class CompanyPersist {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 	private int id;
 	private String name;
 	
-	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "companyId")
 	private Set<ComputerPersist> computerList = new HashSet<>(0);
 
 	public String getName() {
@@ -30,6 +28,9 @@ public class CompanyPersist {
 		this.name = name;
 	}
 
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public int getId() {
 		return id;
 	}
@@ -38,11 +39,28 @@ public class CompanyPersist {
 		this.id = id;
 	}
 
+	@OneToMany(cascade = CascadeType.MERGE, mappedBy = "company")
 	public Set<ComputerPersist> getComputerList() {
-		return computerList;
+		return new HashSet<>(computerList);
 	}
 
 	public void setComputerList(Set<ComputerPersist> computerList) {
 		this.computerList = computerList;
+	}
+
+	public void removeComputer(ComputerPersist computerPersist) {
+		if (!computerList.contains(computerPersist)) {
+			return;
+		}
+		computerList.remove(computerPersist);
+		computerPersist.setCompany(null);
+	}
+
+	public void addComputer(ComputerPersist computerPersist) {
+		if (computerList.contains(computerPersist)) {
+			return;
+		}
+		computerList.add(computerPersist);
+		computerPersist.setCompany(this);
 	}
 }

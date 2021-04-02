@@ -36,6 +36,13 @@
 	</properties>
 
 	<dependencies>
+	
+	<dependency>
+			<groupId>com.github.springtestdbunit</groupId>
+			<artifactId>spring-test-dbunit</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
@@ -230,21 +237,9 @@
 
 
 		<dependency>
-
-
 			<groupId>org.springframework</groupId>
-
-
 			<artifactId>spring-context</artifactId>
-
-
 			<version>${org.springframework.version}</version>
-
-
-			<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-orm</artifactId> 
-				<version>${org.springframework.version}</version> </dependency> -->
-
-
 		</dependency>
 
 
@@ -286,36 +281,10 @@
 
 		</dependency>
 
-
-		<!-- https://mvnrepository.com/artifact/org.springframework.batch/spring-batch-test -->
-
-
 		<dependency>
-
-
-			<groupId>org.springframework.batch</groupId>
-			<artifactId>spring-batch-test</artifactId>
-			<version>4.3.1</version>
-
-
-			<scope>test</scope>
-
-
-		</dependency>
-
-
-		<dependency>
-
-
 			<groupId>org.springframework</groupId>
-
-
 			<artifactId>spring-jdbc</artifactId>
-
-
 			<version>${org.springframework.version}</version>
-
-
 		</dependency>
 
 
@@ -323,50 +292,24 @@
 
 
 		<dependency>
-
-
 			<groupId>org.springframework</groupId>
-
-
 			<artifactId>spring-webmvc</artifactId>
-
-
 			<version>${org.springframework.version}</version>
-
-
 		</dependency>
 
 
 		<dependency>
-
-
 			<groupId>com.querydsl</groupId>
-
-
 			<artifactId>querydsl-apt</artifactId>
-
-
 			<version>${querydsl.version}</version>
-
-
 			<scope>provided</scope>
-
-
 		</dependency>
 
 
 		<dependency>
-
-
 			<groupId>com.querydsl</groupId>
-
-
 			<artifactId>querydsl-jpa</artifactId>
-
-
 			<version>${querydsl.version}</version>
-
-
 		</dependency>
 
 

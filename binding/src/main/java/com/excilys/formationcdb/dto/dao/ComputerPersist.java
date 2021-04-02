@@ -2,8 +2,9 @@ package com.excilys.formationcdb.dto.dao;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,22 +16,19 @@ import javax.persistence.Table;
 @Table(name = "computer")
 public class ComputerPersist {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
 	private int id;
 
 	private String name = "";
 
 	private LocalDate introduced;
 	private LocalDate discontinued;
-
-	@Column(name = "company_id")
-	private Integer companyId;
-
-	@ManyToOne
-	@JoinColumn(name = "company_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private int companyId;
+	
 	private CompanyPersist company;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
 	}
@@ -68,20 +66,29 @@ public class ComputerPersist {
 		this.discontinued = discontinued;
 	}
 
-	public int getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(int companyId) {
-		this.companyId = companyId;
-	}
-
+	
+	@ManyToOne(cascade = CascadeType.MERGE,fetch= FetchType.EAGER)
+	@JoinColumn(name = "company_id", referencedColumnName = "id")
 	public CompanyPersist getCompany() {
 		return company;
 	}
 
 	public void setCompany(CompanyPersist company) {
+		if (sameAsFormer(company))
+			return;
+		CompanyPersist oldCompany = this.company;
+		this.company = company;
+		if (oldCompany != null) {
+			oldCompany.removeComputer(this);
+		}
+		if (company != null) {
+			company.addComputer(this);
+		}
 		this.company = company;
 	}
 
+	private boolean sameAsFormer(CompanyPersist newCompany) {
+		return company == null ? newCompany == null : company.equals(newCompany);
+	}
+	
 }

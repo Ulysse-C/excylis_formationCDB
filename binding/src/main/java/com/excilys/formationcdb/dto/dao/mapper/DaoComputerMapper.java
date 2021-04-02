@@ -29,7 +29,7 @@ public class DaoComputerMapper extends DaoMapper {
 
 	public static ComputerPersist toComputerPersist(Computer computer) {
 		ComputerPersist computerPersist = new ComputerPersist();
-		computerPersist.setCompanyId(computer.getCompanyId());
+		computerPersist.setCompany(DaoCompanyMapper.toCompanyPersist(computer.getCompany()));
 		computerPersist.setDiscontinued(computer.getDiscontinued());
 		computerPersist.setIntroduced(computer.getIntroduced());
 		computerPersist.setName(computer.getName());

@@ -20,5 +20,12 @@ public class DaoCompanyMapper extends DaoMapper {
 	public static List<Company> toCompanyList(List<CompanyPersist> companyPersistList) {
 		return companyPersistList.stream().map(DaoCompanyMapper::toCompany).collect(Collectors.toList());
 	}
+	
+	public static CompanyPersist toCompanyPersist(Company company) {
+		CompanyPersist companyPersist = new CompanyPersist();
+		companyPersist.setId(company.getId());
+		companyPersist.setName(company.getName());
+		return companyPersist;
+	}
 
 }

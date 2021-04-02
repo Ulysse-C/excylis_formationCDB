@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import com.excilys.formationcdb.dto.dao.ComputerPersist;
 import com.excilys.formationcdb.dto.dao.QComputerPersist;
+import com.excilys.formationcdb.dto.dao.mapper.DaoCompanyMapper;
 import com.excilys.formationcdb.dto.dao.mapper.DaoComputerMapper;
 import com.excilys.formationcdb.dto.dao.mapper.DaoMapper;
 import com.excilys.formationcdb.exception.NothingSelectedException;
@@ -45,7 +46,7 @@ public class ComputerDao {
 		if (computer != null) {
 			ComputerPersist computerPersist = DaoComputerMapper.toComputerPersist(computer);
 			entityManager.getTransaction().begin();
-			entityManager.persist(computerPersist);
+			entityManager.merge(computerPersist);
 			entityManager.getTransaction().commit();
 		}
 	}
@@ -57,7 +58,7 @@ public class ComputerDao {
 	}
 
 	public int getComputerNumberbyName(String search) {
-		return (int) queryFactory.selectFrom(computerPersist).where(computerPersist.name.contains(search)).fetchCount();
+		return (int) queryFactory.selectFrom(computerPersist).where(computerPersist.name.containsIgnoreCase(search)).fetchCount();
 	}
 
 	public Page<Computer> getPage(Page<Computer> page) {
@@ -79,7 +80,7 @@ public class ComputerDao {
 					.set(computerPersist.name, computer.getName())
 					.set(computerPersist.introduced, computer.getIntroduced())
 					.set(computerPersist.discontinued, computer.getDiscontinued())
-					.set(computerPersist.companyId, computer.getCompanyId()).execute();
+					.set(computerPersist.company, DaoCompanyMapper.toCompanyPersist( computer.getCompany())).execute();
 			entityManager.getTransaction().commit();
 		}
 	}
