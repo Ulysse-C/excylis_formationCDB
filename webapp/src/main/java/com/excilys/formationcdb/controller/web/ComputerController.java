@@ -76,6 +76,11 @@ public class ComputerController {
 		return ResponseEntity.ok(computerService.getComputerNumberbyName(searchAttribute));
 	}
 	
+	@GetMapping(value = "/getTen", produces = "application/json")
+	public ResponseEntity<Integer> getTen() {
+		return ResponseEntity.ok(10);
+	}
+	
 	@DeleteMapping(value = "/delete")
 	public ResponseEntity<String> deleteComputer(@RequestParam String delete) {
 		String[] deleteList = delete.split(",");
