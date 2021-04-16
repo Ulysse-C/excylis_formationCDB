@@ -8,7 +8,7 @@ phases:
     commands:
       - java -version
       - mvn package
-      - mv webapp/target/webapp-1.0-SNAPSHOT.war ROOT.war
+      - mv webapp/target/webapp-1.war ROOT.war
 artifacts:
   files:
     - ROOT.war
